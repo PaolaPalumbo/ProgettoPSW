@@ -32,7 +32,11 @@ public class RecensioneService {
         recensioneRepository.save(recensione);
     }
 
-    public List<Recensione> getRecensioniByProdotto(Long prodottoId) {
-    return recensioneRepository.findByProdottoId(prodottoId);
-}
+   public List<Recensione> getRecensioniByProdotto(Long prodottoId) {
+    return recensioneRepository.findByProdotto_IdAndApprovataTrue(prodottoId);
+    }
+
+    public List<Recensione> getRecensioniDaApprovare() {
+    return recensioneRepository.findByApprovataFalse();
+    }
 }

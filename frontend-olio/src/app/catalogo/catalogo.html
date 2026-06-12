@@ -5,6 +5,7 @@
   </div>
 
   <div class="row g-4">
+    <!-- Inizio ciclo: ogni prodotto genera una colonna -->
     <div class="col-md-4" *ngFor="let prodotto of prodotti">
       <div class="card premium-card h-100">
         
@@ -54,6 +55,7 @@
           </button>
         </div>
 
+        <!-- Sezione Recensioni -->
         <div class="card-body pt-2 text-center" *ngIf="!recensioniPerProdotto[prodotto.id] || recensioniPerProdotto[prodotto.id].length === 0">
             <p class="small text-muted mb-0">Ancora nessuna recensione. Sii il primo!</p>
         </div>
@@ -65,4 +67,7 @@
           </div>
         </div>
 
-      </div> </div> </div> </div>
+      </div> <!-- Chiusura Card -->
+    </div> <!-- Chiusura Col-md-4 (Ciclo) -->
+  </div> <!-- Chiusura Row -->
+</div> <!-- Chiusura Catalogo-container -->

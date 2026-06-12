@@ -1,7 +1,9 @@
 import { Routes } from '@angular/router';
-import { CatalogoComponent } from './catalogo/catalogo'; // o ./catalogo/catalogo a seconda del nome del file
+import { CatalogoComponent } from './catalogo/catalogo';
+import { AdminRecensioniComponent } from './admin-recensioni/admin-recensioni';
 
 export const routes: Routes = [
-  // Dico ad Angular: quando il percorso è vuoto (Home Page), mostra il Catalogo
-  { path: '', component: CatalogoComponent } 
+  { path: '', component: CatalogoComponent },
+  { path: 'admin/recensioni', component: AdminRecensioniComponent },
+  { path: '**', redirectTo: '' } // Se non trova nulla, rimanda alla home
 ];

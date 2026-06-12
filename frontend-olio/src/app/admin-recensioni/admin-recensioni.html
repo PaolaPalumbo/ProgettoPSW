@@ -1,0 +1,30 @@
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
+    <h2 style="color: #3b4d2e;">Pannello di Moderazione</h2>
+    <span class="badge bg-warning text-dark fs-6">{{ recensioniInAttesa.length }} da controllare</span>
+  </div>
+
+  <div *ngIf="recensioniInAttesa.length === 0" class="alert alert-success text-center shadow-sm">
+    <h5 class="mb-0">Tutto pulito! Nessuna recensione in attesa di moderazione.</h5>
+  </div>
+
+  <div class="card mb-3 shadow-sm border-0" style="background-color: #fafafa;" *ngFor="let rec of recensioniInAttesa">
+    <div class="card-body">
+      <div class="d-flex justify-content-between">
+        <h5 class="card-title text-success mb-1">Olio: {{ rec.prodotto?.nome }}</h5>
+        <span class="fw-bold">{{ rec.voto }} Stelle ★</span>
+      </div>
+      <h6 class="card-subtitle mb-3 text-muted">Scritta da: {{ rec.utente?.nome }} {{ rec.utente?.cognome }}</h6>
+      
+      <div class="p-3 bg-white border rounded mb-3">
+        <p class="card-text mb-0"><em>"{{ rec.commento }}"</em></p>
+      </div>
+
+      <div class="text-end">
+        <button class="btn btn-success px-4" (click)="approva(rec.id!)">
+          <i class="bi bi-check-circle"></i> Approva e Pubblica
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

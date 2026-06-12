@@ -23,4 +23,14 @@ export class RecensioneService {
     // Supponendo che il tuo controller Spring Boot abbia un endpoint tipo /api/recensioni/prodotto/1
     return this.http.get<Recensione[]>(`${this.apiUrl}/prodotto/${prodottoId}`);
   }
+
+  // Metodo per l'amministratore: recupera tutte le recensioni in attesa
+  getRecensioniDaApprovare(): Observable<Recensione[]> {
+    return this.http.get<Recensione[]>(`${this.apiUrl}/da-approvare`);
+  }
+
+  // Metodo per l'amministratore: approva una recensione specifica
+  approvaRecensione(id: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/approva/${id}`, {});
+  }
 }

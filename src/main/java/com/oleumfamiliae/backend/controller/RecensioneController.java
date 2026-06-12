@@ -31,5 +31,9 @@ public class RecensioneController {
         return recensioneService.getRecensioniByProdotto(id);
     }
     
+    @GetMapping("/da-approvare")
+    public List<Recensione> getDaApprovare() {
+        return recensioneService.getRecensioniDaApprovare();
+    }
 }
 
