@@ -1,0 +1,74 @@
+<div class="catalogo-container">
+  <div class="header-vetrina text-center">
+    <h2 class="titolo-olio">Il Nostro Oro Verde</h2>
+    <p class="sottotitolo">Tradizione e passione in ogni goccia</p>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-4" *ngFor="let prodotto of prodotti">
+      <div class="card premium-card h-100">
+        
+        <div class="card-body text-center">
+          <h5 class="nome-prodotto">{{ prodotto.nome }}</h5>
+          <hr class="divisore-elegante">
+          <p class="descrizione-prodotto">{{ prodotto.descrizione }}</p>
+        </div>
+        
+        <div class="dettagli-tecnici">
+          <div class="dettaglio">
+            <span>Formato:</span> 
+            <strong>{{ prodotto.formato }}</strong>
+          </div>
+          <div class="dettaglio">
+            <span>Prezzo:</span> 
+            <strong class="prezzo-evidenza">€ {{ prodotto.prezzo }}</strong>
+          </div>
+          <div class="dettaglio">
+            <span>Disponibilità:</span> 
+            <span class="badge-disponibilita">{{ prodotto.quantitaDisponibile }} latte</span>
+          </div>
+        </div>
+        
+        <!-- Pulsante Carrello -->
+        <div class="card-footer sfondo-trasparente text-center">
+          <button class="btn btn-acquisto" (click)="mettiNelCarrello(prodotto)">Aggiungi al Carrello</button>
+        </div>
+
+        <!-- Modulo INVIO Recensione -->
+        <div class="card-body border-top pt-3" style="background-color: #fafafa;">
+          <h6 style="color: #3b4d2e; font-weight: 600; text-align: center;">Lascia una recensione</h6>
+          <div class="mb-2 text-start">
+            <label class="form-label mb-0 small">Voto:</label>
+            <select class="form-select form-select-sm" [(ngModel)]="nuovoVoto">
+              <option value="5">5 Stelle</option>
+              <option value="4">4 Stelle</option>
+              <option value="3">3 Stelle</option>
+              <option value="2">2 Stelle</option>
+              <option value="1">1 Stella</option>
+            </select>
+          </div>
+          <div class="mb-3 text-start">
+            <label class="form-label mb-0 small">Commento:</label>
+            <textarea class="form-control form-control-sm" rows="2" [(ngModel)]="nuovoCommento" placeholder="Scrivi qui..."></textarea>
+          </div>
+          <button class="btn btn-sm btn-outline-success w-100" (click)="inviaRecensione(prodotto)" style="border-color: #3b4d2e; color: #3b4d2e;">
+            Invia Recensione
+          </button>
+        </div>
+
+          <div class="card-body pt-2 text-center" *ngIf="!recensioniPerProdotto[prodotto.id] || recensioniPerProdotto[prodotto.id].length === 0">
+                    <p class="small text-muted mb-0">Ancora nessuna recensione. Sii il primo!</p>
+          </div>
+
+        <!-- Visualizzazione Recensioni (Il pezzo GET) -->
+        <div class="card-body pt-2" *ngIf="recensioniPerProdotto[prodotto.id]?.length > 0">
+          <h6 class="small fw-bold border-bottom">Cosa dicono i clienti:</h6>
+          <div *ngFor="let rec of recensioniPerProdotto[prodotto.id]" class="small mb-2">
+            <strong>{{ rec.utente.nome }}:</strong> {{ rec.voto }}★ - <em>{{ rec.commento }}</em>
+          </div>
+        </div>
+
+      </div> <!-- Chiusura card -->
+    </div> <!-- Chiusura col -->
+  </div> <!-- Chiusura row -->
+</div>

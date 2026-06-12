@@ -1,0 +1,108 @@
+/* Sfondo generale leggermente panna, non bianco ottico */
+.catalogo-container { 
+    padding: 3rem 1rem; 
+    background-color: #fdfcf9; 
+}
+
+/* Tipografia elegante per i titoli */
+.titolo-olio { 
+    font-family: 'Georgia', serif; 
+    color: #3b4d2e; /* Verde scuro oliva */
+    font-weight: bold; 
+    font-size: 2.5rem; 
+}
+
+.sottotitolo { 
+    color: #8a7b52; /* Oro antico/Nocciola */
+    font-style: italic; 
+    margin-bottom: 3rem; 
+}
+
+/* Stile della card: ombreggiatura morbida e animazione al passaggio del mouse */
+.premium-card { 
+    border: none; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    background: #ffffff; 
+}
+
+.premium-card:hover { 
+    transform: translateY(-8px); 
+    box-shadow: 0 12px 25px rgba(59, 77, 46, 0.12); 
+}
+
+.nome-prodotto { 
+    color: #3b4d2e; 
+    font-family: 'Georgia', serif; 
+    font-size: 1.4rem; 
+    margin-top: 1rem; 
+}
+
+/* Divisore dorato sotto il titolo */
+.divisore-elegante { 
+    width: 50px; 
+    margin: 15px auto; 
+    border-top: 2px solid #c2a878; 
+    opacity: 1; 
+}
+
+.descrizione-prodotto { 
+    color: #666; 
+    font-size: 0.95rem; 
+    line-height: 1.6; 
+}
+
+/* Layout pulito per i dati tecnici */
+.dettagli-tecnici { 
+    padding: 0 1.5rem 1.5rem; 
+}
+
+.dettaglio { 
+    display: flex; 
+    justify-content: space-between; 
+    padding: 10px 0; 
+    border-bottom: 1px dashed #eae8e1; 
+    font-size: 0.95rem; 
+}
+
+.dettaglio:last-child { 
+    border-bottom: none; 
+}
+
+.prezzo-evidenza { 
+    color: #3b4d2e; 
+    font-size: 1.15rem; 
+}
+
+.badge-disponibilita { 
+    background-color: #f1efeb; 
+    color: #8a7b52; 
+    padding: 5px 12px; 
+    border-radius: 20px; 
+    font-weight: bold; 
+    font-size: 0.8rem; 
+}
+
+/* Bottone su misura */
+.btn-acquisto { 
+    background-color: #3b4d2e; 
+    color: white; 
+    border-radius: 30px; 
+    padding: 10px 20px; 
+    font-weight: 500; 
+    border: none; 
+    transition: background-color 0.3s; 
+    width: 85%; 
+    margin-bottom: 1.2rem; 
+}
+
+.btn-acquisto:hover { 
+    background-color: #2c3a22; 
+    color: #fdfcf9; 
+}
+
+.sfondo-trasparente { 
+    background: transparent; 
+    border-top: none; 
+}
