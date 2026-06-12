@@ -3,6 +3,7 @@ package com.oleumfamiliae.backend.controller;
 import com.oleumfamiliae.backend.model.Recensione;
 import com.oleumfamiliae.backend.service.RecensioneService;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/recensioni")
@@ -24,5 +25,11 @@ public class RecensioneController {
     public void approva(@PathVariable Long id) {
         recensioneService.approvaRecensione(id);
     }
+    
+    @GetMapping("/prodotto/{id}")
+    public List<Recensione> getRecensioniPerProdotto(@PathVariable Long id) {
+        return recensioneService.getRecensioniByProdotto(id);
+    }
+    
 }
 

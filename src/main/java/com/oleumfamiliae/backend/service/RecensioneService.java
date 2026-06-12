@@ -5,6 +5,7 @@ import com.oleumfamiliae.backend.model.Recensione;
 import com.oleumfamiliae.backend.repository.RecensioneRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 @Service
 public class RecensioneService {
@@ -30,4 +31,8 @@ public class RecensioneService {
         recensione.setApprovata(true);
         recensioneRepository.save(recensione);
     }
+
+    public List<Recensione> getRecensioniByProdotto(Long prodottoId) {
+    return recensioneRepository.findByProdottoId(prodottoId);
+}
 }

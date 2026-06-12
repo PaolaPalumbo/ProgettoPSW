@@ -16,4 +16,6 @@ public interface RecensioneRepository extends JpaRepository<Recensione, Long> {
     // 2. Per il Pannello di Amministrazione (Frontend lato Admin):
     // Estrae tutte le recensioni che sono ancora in attesa di moderazione (approvata = false)
     List<Recensione> findByApprovataFalse();
+
+    List<Recensione> findByProdottoId(Long prodottoId);
 }
