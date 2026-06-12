@@ -29,12 +29,10 @@
           </div>
         </div>
         
-        <!-- Pulsante Carrello -->
         <div class="card-footer sfondo-trasparente text-center">
           <button class="btn btn-acquisto" (click)="mettiNelCarrello(prodotto)">Aggiungi al Carrello</button>
         </div>
 
-        <!-- Modulo INVIO Recensione -->
         <div class="card-body border-top pt-3" style="background-color: #fafafa;">
           <h6 style="color: #3b4d2e; font-weight: 600; text-align: center;">Lascia una recensione</h6>
           <div class="mb-2 text-start">
@@ -56,19 +54,15 @@
           </button>
         </div>
 
-          <div class="card-body pt-2 text-center" *ngIf="!recensioniPerProdotto[prodotto.id] || recensioniPerProdotto[prodotto.id].length === 0">
-                    <p class="small text-muted mb-0">Ancora nessuna recensione. Sii il primo!</p>
-          </div>
+        <div class="card-body pt-2 text-center" *ngIf="!recensioniPerProdotto[prodotto.id] || recensioniPerProdotto[prodotto.id].length === 0">
+            <p class="small text-muted mb-0">Ancora nessuna recensione. Sii il primo!</p>
+        </div>
 
-        <!-- Visualizzazione Recensioni (Il pezzo GET) -->
-        <div class="card-body pt-2" *ngIf="recensioniPerProdotto[prodotto.id]?.length > 0">
+        <div class="card-body pt-2" *ngIf="recensioniPerProdotto[prodotto.id] && recensioniPerProdotto[prodotto.id].length > 0">
           <h6 class="small fw-bold border-bottom">Cosa dicono i clienti:</h6>
           <div *ngFor="let rec of recensioniPerProdotto[prodotto.id]" class="small mb-2">
             <strong>{{ rec.utente.nome }}:</strong> {{ rec.voto }}★ - <em>{{ rec.commento }}</em>
           </div>
         </div>
 
-      </div> <!-- Chiusura card -->
-    </div> <!-- Chiusura col -->
-  </div> <!-- Chiusura row -->
-</div>
+      </div> </div> </div> </div>
