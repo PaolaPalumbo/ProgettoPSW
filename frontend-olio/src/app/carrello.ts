@@ -1,4 +1,13 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http'; // Aggiunto per le chiamate di rete
+import { Observable } from 'rxjs'; // Aggiunto per gestire l'asincronia
+
+// Definiamo la "busta" DTO per comunicare con Spring Boot in modo sicuro
+export interface CheckoutDTO {
+  idUtente: number;
+  idProdotto: number;
+  quantita: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -6,7 +15,8 @@ import { Injectable } from '@angular/core';
 export class CarrelloService {
   private articoli: any[] = [];
 
-  constructor() { }
+  // Iniettiamo il client HTTP per abilitare le transazioni
+  constructor(private http: HttpClient) { }
 
   aggiungi(prodotto: any) {
     this.articoli.push(prodotto);
@@ -28,5 +38,17 @@ export class CarrelloService {
       // Se lo troviamo, lo rimuoviamo (1 elemento a partire da quell'indice)
       this.articoli.splice(index, 1);
     }
+  }
+
+  // --- NUOVI METODI PER IL CHECKOUT REALE ---
+
+  // Metodo per resettare lo stato dopo l'acquisto
+  svuotaCarrello(): void {
+    this.articoli = [];
+  }
+
+  // Metodo che spedisce materialmente i dati a Spring Boot
+  effettuaCheckout(checkoutData: CheckoutDTO): Observable<any> {
+    return this.http.post('http://localhost:8080/api/ordini/checkout', checkoutData);
   }
 }

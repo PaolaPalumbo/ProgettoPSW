@@ -49,7 +49,7 @@ export class CatalogoComponent implements OnInit {
           console.log("Prodotti caricati con successo dal Backend:", this.prodotti);
           
           // NUOVA RIGA: Per ogni prodotto caricato, chiediamo al backend le sue recensioni
-          this.prodotti.forEach(p => this.caricaRecensioni(p.id));
+          //this.prodotti.forEach(p => this.caricaRecensioni(p.id));
         },
         error: (errore) => {
           console.error("Errore di connessione a Spring Boot:", errore);
@@ -59,6 +59,7 @@ export class CatalogoComponent implements OnInit {
 
   mettiNelCarrello(prodotto: Prodotto): void {
     this.carrelloService.aggiungi(prodotto);
+    console.log('Prodotto aggiunto:', prodotto.nome);
   }
 
   // AGGIUNTO: Metodo che scatta quando l'utente clicca "Invia Recensione"

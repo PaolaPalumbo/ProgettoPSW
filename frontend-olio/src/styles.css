@@ -1,1 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+/* Forza il link del carrello ad essere cliccabile */
+.btn-outline-success {
+  position: relative;
+  z-index: 9999;
+}

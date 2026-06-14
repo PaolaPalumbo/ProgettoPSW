@@ -13,3 +13,11 @@
     letter-spacing: 2px; /* Allarga leggermente le lettere per maggiore eleganza */
     text-transform: uppercase;
 }
+
+/* Stile per il link del carrello */
+.btn-nav-carrello:hover {
+  background-color: #3b4d2e !important;
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}

@@ -40,7 +40,8 @@ public class DatabaseLoader implements CommandLineRunner {
             p.setNome("Olio Extravergine 1L");
             p.setPrezzo(15.00);
             p.setDescrizione("Olio di oliva di qualità superiore.");
-            // Aggiungi altri campi se necessari
+            p.setFormato("Bottiglia 1L"); 
+            p.setQuantitaDisponibile(100);
             prodottoRepository.save(p);
             System.out.println("--- Prodotto di test inserito nel database! ---");
         }
