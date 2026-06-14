@@ -20,4 +20,13 @@ export class CarrelloService {
   getNumeroArticoli() {
     return this.articoli.length;
   }
+
+  rimuovi(prodotto: any) {
+    // Cerchiamo l'indice del prodotto all'interno dell'array
+    const index = this.articoli.findIndex(a => a.id === prodotto.id);
+    if (index > -1) {
+      // Se lo troviamo, lo rimuoviamo (1 elemento a partire da quell'indice)
+      this.articoli.splice(index, 1);
+    }
+  }
 }
