@@ -26,11 +26,12 @@
           <button class="btn btn-acquisto" (click)="mettiNelCarrello(prodotto)">Aggiungi al Carrello</button>
         </div>
 
-        <div class="card-body border-top pt-3" style="background-color: #fafafa;">
+        <div class="card-body border-top pt-3" style="background-color: #fafafa;" *ngIf="nuoveRecensioni[prodotto.id]">
           <h6 style="color: #3b4d2e; font-weight: 600; text-align: center;">Lascia una recensione</h6>
+          
           <div class="mb-2 text-start">
             <label class="form-label mb-0 small">Voto:</label>
-            <select class="form-select form-select-sm" [(ngModel)]="nuovoVoto">
+            <select class="form-select form-select-sm" [(ngModel)]="nuoveRecensioni[prodotto.id].voto">
               <option value="5">5 Stelle</option>
               <option value="4">4 Stelle</option>
               <option value="3">3 Stelle</option>
@@ -38,10 +39,12 @@
               <option value="1">1 Stella</option>
             </select>
           </div>
+          
           <div class="mb-3 text-start">
             <label class="form-label mb-0 small">Commento:</label>
-            <textarea class="form-control form-control-sm" rows="2" [(ngModel)]="nuovoCommento" placeholder="Scrivi qui..."></textarea>
+            <textarea class="form-control form-control-sm" rows="2" [(ngModel)]="nuoveRecensioni[prodotto.id].commento" placeholder="Scrivi qui..."></textarea>
           </div>
+          
           <button class="btn btn-sm btn-outline-success w-100" (click)="inviaRecensione(prodotto)" style="border-color: #3b4d2e; color: #3b4d2e;">Invia Recensione</button>
         </div>
 
@@ -49,11 +52,14 @@
           <p class="small text-muted mb-0">Ancora nessuna recensione.</p>
         </div>
 
-        <div class="card-body pt-2" *ngIf="recensioniPerProdotto[prodotto.id]?.length > 0">
+        <div class="card-body pt-2" *ngIf="recensioniPerProdotto[prodotto.id] && recensioniPerProdotto[prodotto.id].length > 0">
           <h6 class="small fw-bold border-bottom">Recensioni:</h6>
           <div *ngFor="let rec of recensioniPerProdotto[prodotto.id]" class="small mb-2">
             <strong>{{ rec.utente?.nome || 'Cliente' }}:</strong> {{ rec.voto }}★ - <em>{{ rec.commento }}</em>
           </div>
         </div>
         
-      </div> </div> </div> </div>
+      </div> 
+    </div> 
+  </div> 
+</div>

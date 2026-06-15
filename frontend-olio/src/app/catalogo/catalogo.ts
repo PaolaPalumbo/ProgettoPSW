@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms'; // AGGIUNTO: Necessario per il for
 import { CarrelloService } from '../carrello';
 import { RecensioneService } from '../services/recensione.service'; // AGGIUNTO: Importa il nuovo servizio
 import { Recensione } from '../models/recensione.model'; // AGGIUNTO: Importa il modello
+import { ChangeDetectorRef } from '@angular/core';
 
 // 1. Definisco la struttura del Prodotto (lo "specchio" della classe Java)
 export interface Prodotto {
@@ -21,7 +22,7 @@ export interface Prodotto {
   standalone: true,
   imports: [CommonModule, FormsModule], // MODIFICATO: Aggiunto FormsModule
   templateUrl: './catalogo.html', 
-  styleUrl: './catalogo.css'      
+  styleUrl: './catalogo.css'       
 })
 export class CatalogoComponent implements OnInit {
   // 2. Qui salvo l'olio in arrivo dal database
@@ -32,24 +33,32 @@ export class CatalogoComponent implements OnInit {
   nuovoCommento: string = '';
   // Dizionario per associare l'ID del prodotto alla sua lista di recensioni
   recensioniPerProdotto: { [idProdotto: number]: Recensione[] } = {};
-
+  nuoveRecensioni: { [id: number]: { voto: number, commento: string } } = {};
   // MODIFICATO: Iniezione del nuovo RecensioneService nel costruttore
   constructor(
     private http: HttpClient, 
     private carrelloService: CarrelloService,
-    private recensioneService: RecensioneService // AGGIUNTO
+    private recensioneService: RecensioneService, // AGGIUNTO
+    private cdRef: ChangeDetectorRef // AGGIUNTO
   ) {}
 
- // 3. Questo metodo scatta in automatico appena si apre la pagina
+  // 3. Questo metodo scatta in automatico appena si apre la pagina
   ngOnInit(): void {
+    // Inizializzazione esplicita: resettiamo gli array per evitare conflitti tra rotte
+    this.prodotti = [];
+    this.recensioniPerProdotto = {};
+    this.nuoveRecensioni = {};
+
     this.http.get<Prodotto[]>('http://localhost:8080/api/prodotti')
       .subscribe({
         next: (dati) => {
           this.prodotti = dati;
           console.log("Prodotti caricati con successo dal Backend:", this.prodotti);
           
-          // NUOVA RIGA: Per ogni prodotto caricato, chiediamo al backend le sue recensioni
-          //this.prodotti.forEach(p => this.caricaRecensioni(p.id));
+          // FORZO ANGULAR A RIFARSI IL TRUCCO
+          this.cdRef.detectChanges();
+          //Per ogni prodotto caricato, chiediamo al backend le sue recensioni
+          this.prodotti.forEach(p => this.caricaRecensioni(p.id));
         },
         error: (errore) => {
           console.error("Errore di connessione a Spring Boot:", errore);
@@ -74,7 +83,7 @@ export class CatalogoComponent implements OnInit {
     this.recensioneService.inviaRecensione(recensioneDaInviare).subscribe({
       next: (risposta) => {
         alert('Grazie! La tua recensione è stata inviata ed è in attesa di moderazione.');
-        // Svuotiamo i campi per la prossima recensione
+        // Svuoto i campi per la prossima recensione
         this.nuovoCommento = ''; 
         this.nuovoVoto = 5;
       },
@@ -85,17 +94,22 @@ export class CatalogoComponent implements OnInit {
     });
   }
 
-// Metodo per recuperare le recensioni approvate
+  // Metodo per recuperare le recensioni approvate
   caricaRecensioni(idProdotto: number) {
+    // Inizializziamo sempre come array vuoto per evitare "undefined"
+    if (!this.recensioniPerProdotto[idProdotto]) {
+        this.recensioniPerProdotto[idProdotto] = [];
+    }
+    
     this.recensioneService.getRecensioniProdotto(idProdotto).subscribe({
       next: (dati) => {
-        // Salviamo le recensioni ricevute nel dizionario, usando l'ID come chiave
         this.recensioniPerProdotto[idProdotto] = dati;
       },
       error: (errore) => {
-        console.error(`Errore nel caricamento recensioni per prodotto ${idProdotto}:`, errore);
+        console.error(`Errore recensioni per ${idProdotto}:`, errore);
+        // Anche in caso di errore, garantiamo che sia un array vuoto
+        this.recensioniPerProdotto[idProdotto] = [];
       }
     });
   }
-
 }
