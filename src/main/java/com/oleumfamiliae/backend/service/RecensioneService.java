@@ -39,4 +39,5 @@ public class RecensioneService {
     public List<Recensione> getRecensioniDaApprovare() {
     return recensioneRepository.findByApprovataFalse();
     }
+    
 }

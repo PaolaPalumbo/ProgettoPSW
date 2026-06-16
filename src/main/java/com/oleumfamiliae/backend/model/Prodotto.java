@@ -22,6 +22,8 @@ public class Prodotto {
     
     private Integer quantitaDisponibile;
 
+    private String immagineUrl; // Nuovo campo per il percorso immagine
+
     public Long getId() {
         return id;
     }
@@ -70,5 +72,12 @@ public class Prodotto {
         this.quantitaDisponibile = quantitaDisponibile;
     } // Quantità disponibile per gestire l'inventario
 
+    public String getImmagineUrl() {
+        return immagineUrl;
+    }
+
+    public void setImmagineUrl(String immagineUrl) {
+        this.immagineUrl = immagineUrl;
+    }
     
 }

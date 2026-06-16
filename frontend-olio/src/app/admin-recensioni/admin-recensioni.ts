@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecensioneService } from '../services/recensione.service';
-// Assicurati che il percorso di importazione del modello sia corretto:
 import { Recensione } from '../models/recensione.model'; 
 
 @Component({
@@ -13,9 +12,12 @@ import { Recensione } from '../models/recensione.model';
 })
 export class AdminRecensioniComponent implements OnInit {
   
-  recensioniInAttesa: Recensione[] = [];
+  recensioniInSospeso: Recensione[] = [];
 
-  constructor(private recensioneService: RecensioneService) {}
+  constructor(
+    private recensioneService: RecensioneService,
+    private cdRef: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.caricaRecensioni();
@@ -25,19 +27,23 @@ export class AdminRecensioniComponent implements OnInit {
   caricaRecensioni() {
     this.recensioneService.getRecensioniDaApprovare().subscribe({
       next: (dati) => {
-        this.recensioniInAttesa = dati;
+        console.log("DATI IN INGRESSO DAL BACKEND:", dati);
+        this.recensioniInSospeso = [...dati]; 
+        // Forza l'aggiornamento della vista dopo il caricamento asincrono
+        this.cdRef.detectChanges();
       },
-      error: (errore) => console.error('Errore nel caricamento delle recensioni da approvare', errore)
+      error: (errore) => console.error('Errore nel caricamento', errore)
     });
   }
 
-  // Metodo per approvare e far sparire la recensione dalla lista
-  approva(id: number) {
-    this.recensioneService.approvaRecensione(id).subscribe({
+  // CORRETTO: Adattato per ricevere l'intero oggetto come richiede il tuo HTML
+  approva(recensione: Recensione) {
+    // CORRETTO: Il metodo corretto nel service si chiama "approva"
+    this.recensioneService.approva(recensione.id!).subscribe({
       next: () => {
         alert('Recensione approvata e pubblicata con successo!');
-        // Aggiorniamo la lista a schermo rimuovendo quella appena approvata
-        this.recensioniInAttesa = this.recensioniInAttesa.filter(r => r.id !== id);
+        // Aggiorno la lista a schermo rimuovendo quella appena approvata
+        this.recensioniInSospeso = this.recensioniInSospeso.filter(r => r.id !== recensione.id);
       },
       error: (errore) => {
         console.error("Errore durante l'approvazione", errore);

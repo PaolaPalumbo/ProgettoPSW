@@ -30,7 +30,7 @@ export class RecensioneService {
   }
 
   // Metodo per l'amministratore: approva una recensione specifica
-  approvaRecensione(id: number): Observable<any> {
+  approva(id: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/approva/${id}`, {});
   }
 }

@@ -10,6 +10,8 @@
     <div class="col-md-4" *ngFor="let prodotto of prodotti">
       <div class="card premium-card h-100">
         
+        <img [src]="prodotto.immagineUrl" class="card-img-top" [alt]="prodotto.nome" style="height: 250px; object-fit: cover;">
+        
         <div class="card-body text-center">
           <h5 class="nome-prodotto">{{ prodotto.nome }}</h5>
           <hr class="divisore-elegante">
@@ -24,6 +26,12 @@
         
         <div class="card-footer sfondo-trasparente text-center">
           <button class="btn btn-acquisto" (click)="mettiNelCarrello(prodotto)">Aggiungi al Carrello</button>
+        </div>
+
+        <div class="card-body border-top pt-2 pb-2 text-center" style="background-color: #fafafa;" *ngIf="!nuoveRecensioni[prodotto.id]">
+          <button class="btn btn-sm btn-outline-success" style="border-color: #3b4d2e; color: #3b4d2e;" (click)="apriFormRecensione(prodotto.id)">
+            <i class="bi bi-pencil-square"></i> Scrivi una recensione
+          </button>
         </div>
 
         <div class="card-body border-top pt-3" style="background-color: #fafafa;" *ngIf="nuoveRecensioni[prodotto.id]">
@@ -45,7 +53,10 @@
             <textarea class="form-control form-control-sm" rows="2" [(ngModel)]="nuoveRecensioni[prodotto.id].commento" placeholder="Scrivi qui..."></textarea>
           </div>
           
-          <button class="btn btn-sm btn-outline-success w-100" (click)="inviaRecensione(prodotto)" style="border-color: #3b4d2e; color: #3b4d2e;">Invia Recensione</button>
+          <div class="d-flex gap-2 mt-2">
+            <button class="btn btn-sm btn-outline-secondary w-50" (click)="chiudiFormRecensione(prodotto.id)">Annulla</button>
+            <button class="btn btn-sm btn-success w-50" (click)="inviaRecensione(prodotto)" style="background-color: #3b4d2e; border-color: #3b4d2e;">Invia</button>
+          </div>
         </div>
 
         <div class="card-body pt-2 text-center" *ngIf="!recensioniPerProdotto[prodotto.id] || recensioniPerProdotto[prodotto.id].length === 0">

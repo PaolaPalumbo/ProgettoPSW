@@ -44,6 +44,7 @@ public class DatabaseLoader implements CommandLineRunner {
             p1.setDescrizione("Olio di oliva di qualità superiore, estratto a freddo.");
             p1.setFormato("Bottiglia 1L"); 
             p1.setQuantitaDisponibile(100);
+            p1.setImmagineUrl("assets/images/bottiglia.jpg");
             prodottoRepository.save(p1);
 
             // Prodotto 2: La latta grande
@@ -53,6 +54,7 @@ public class DatabaseLoader implements CommandLineRunner {
             p2.setDescrizione("Ideale per la scorta di famiglia. Conserva intatta tutta la freschezza e le proprietà nutrizionali.");
             p2.setFormato("Latta 5L"); 
             p2.setQuantitaDisponibile(50);
+            p2.setImmagineUrl("assets/images/latta5L.jpg");
             prodottoRepository.save(p2);
 
             // Prodotto 3: La bottiglia elegante
@@ -62,6 +64,7 @@ public class DatabaseLoader implements CommandLineRunner {
             p3.setDescrizione("Elegante bottiglia in vetro scuro. Perfetta da portare in tavola o come idea regalo.");
             p3.setFormato("Bottiglia 750ml"); 
             p3.setQuantitaDisponibile(80);
+            p3.setImmagineUrl("assets/images/bottiglia.jpg");
             prodottoRepository.save(p3);
 
             // Prodotto 4: La latta media
@@ -71,6 +74,7 @@ public class DatabaseLoader implements CommandLineRunner {
             p4.setDescrizione("Il giusto compromesso per l'uso quotidiano, pratico e maneggevole.");
             p4.setFormato("Latta 3L"); 
             p4.setQuantitaDisponibile(60);
+            p4.setImmagineUrl("assets/images/lattaPiccola.jpg");
             prodottoRepository.save(p4);
 
             System.out.println("--- Catalogo prodotti di test inserito nel database! ---");

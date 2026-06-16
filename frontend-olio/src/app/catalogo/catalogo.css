@@ -106,3 +106,32 @@
     background: transparent; 
     border-top: none; 
 }
+
+/* 1. Preparo il contenitore dell'immagine */
+.card {
+  /* Toglio overflow: hidden perché altrimenti l'immagine non può 'uscire' */
+  overflow: visible; 
+  transition: transform 0.3s ease;
+}
+
+/* 2. L'immagine deve poter uscire dai bordi */
+.card-img-top {
+  position: relative;
+  transition: top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Effetto 'elastico' */
+  top: 0;
+}
+
+/* 3. Quando passo col mouse, l'immagine scivola in alto */
+.card:hover .card-img-top {
+  top: -30px; /* Esce verso l'alto di 30 pixel */
+  box-shadow: 0 15px 25px rgba(0,0,0,0.2); /* Aggiunge profondità */
+}
+
+.card {
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-10px); /* La card si solleva leggermente */
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+}
