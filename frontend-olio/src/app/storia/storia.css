@@ -1,0 +1,87 @@
+/* L'animazione di entrata cinematografica */
+@keyframes fadeInScale {
+  0% { 
+    opacity: 0; 
+    transform: scale(0.95) translateY(30px); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1) translateY(0); 
+  }
+}
+
+.finestra-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh; /* Centra la finestra verticalmente sotto la navbar */
+  padding: 2rem;
+  background-color: #fafafa;
+}
+
+.finestra-contenuto {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 4rem 3rem;
+  max-width: 800px;
+  position: relative;
+  border-top: 4px solid #c2a878; /* Il tuo oro antico */
+  /* Qui applichiamo l'animazione creata sopra */
+  animation: fadeInScale 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* Bottone per chiudere */
+.btn-chiudi {
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  color: #3b4d2e; /* Il tuo verde oliva */
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.3s ease;
+  line-height: 1;
+}
+
+.btn-chiudi:hover {
+  color: #c2a878;
+  transform: rotate(90deg); /* Ruota leggermente per un tocco chic */
+}
+
+/* Tipografia elegante */
+.titolo-storia {
+  color: #3b4d2e;
+  font-family: 'Georgia', serif;
+  font-size: 2.5rem;
+}
+
+.divisore-oro {
+  width: 80px;
+  border: 1px solid #c2a878;
+  margin: 20px auto;
+  opacity: 1;
+}
+
+.paragrafo-elegante {
+  color: #555;
+  line-height: 1.9;
+  font-size: 1.15rem;
+  text-align: justify;
+}
+
+/* Bottone di rimando al catalogo */
+.btn-esplora {
+  border: 1px solid #3b4d2e;
+  color: #3b4d2e;
+  border-radius: 30px;
+  padding: 10px 30px;
+  font-weight: 500;
+  transition: all 0.4s ease;
+  text-decoration: none;
+}
+
+.btn-esplora:hover {
+  background-color: #3b4d2e;
+  color: #ffffff;
+}
