@@ -4,6 +4,8 @@ import com.oleumfamiliae.backend.model.Recensione;
 import com.oleumfamiliae.backend.service.RecensioneService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import org.springframework.web.bind.annotation.CrossOrigin; // Importante!
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/recensioni")

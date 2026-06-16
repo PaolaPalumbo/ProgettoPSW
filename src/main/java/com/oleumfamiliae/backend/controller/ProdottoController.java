@@ -3,7 +3,8 @@ package com.oleumfamiliae.backend.controller;
 import com.oleumfamiliae.backend.model.Prodotto;
 import com.oleumfamiliae.backend.service.ProdottoService;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.CrossOrigin; // Importante!
+import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController

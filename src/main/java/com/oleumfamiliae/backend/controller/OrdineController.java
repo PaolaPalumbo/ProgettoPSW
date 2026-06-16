@@ -5,6 +5,8 @@ import com.oleumfamiliae.backend.model.Ordine;
 import com.oleumfamiliae.backend.service.OrdineService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin; // Importante!
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/ordini")

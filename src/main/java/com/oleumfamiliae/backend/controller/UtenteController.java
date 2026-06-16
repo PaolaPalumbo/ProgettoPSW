@@ -3,6 +3,8 @@ package com.oleumfamiliae.backend.controller;
 import com.oleumfamiliae.backend.model.Utente;
 import com.oleumfamiliae.backend.service.UtenteService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin; // Importante!
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/utenti")
