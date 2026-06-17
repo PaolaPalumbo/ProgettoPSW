@@ -7,8 +7,8 @@ import { Recensione } from '../models/recensione.model';
   selector: 'app-admin-recensioni',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './admin-recensioni.html',
-  styleUrl: './admin-recensioni.css'
+  templateUrl: './admin_recensioni.html',
+  styleUrl: './admin_recensioni.css',
 })
 export class AdminRecensioniComponent implements OnInit {
   

@@ -6,6 +6,7 @@ import { Router, NavigationEnd } from '@angular/router'; // AGGIUNTO: Per gestir
 import { filter } from 'rxjs/operators'; // AGGIUNTO: Per filtrare gli eventi del router
 import { CarrelloService } from '../carrello';
 import { RecensioneService } from '../services/recensione.service'; // AGGIUNTO: Importa il nuovo servizio
+import { CatalogoService } from '../services/catalogo.service'; // AGGIUNTO: Importa il CatalogoService
 import { Recensione } from '../models/recensione.model'; // AGGIUNTO: Importa il modello
 import { ChangeDetectorRef } from '@angular/core';
 
@@ -43,6 +44,7 @@ export class CatalogoComponent implements OnInit {
     private http: HttpClient, 
     private carrelloService: CarrelloService,
     private recensioneService: RecensioneService, // AGGIUNTO
+    private catalogoService: CatalogoService, // AGGIUNTO: Inietto il servizio del catalogo
     private cdRef: ChangeDetectorRef, // AGGIUNTO
     private router: Router // AGGIUNTO: Iniettato per ascoltare il cambio rotta
   ) {
@@ -61,7 +63,8 @@ export class CatalogoComponent implements OnInit {
     this.recensioniPerProdotto = {};
     this.nuoveRecensioni = {};
 
-    this.http.get<Prodotto[]>('http://localhost:8080/api/prodotti')
+    // MODIFICATO: Uso il CatalogoService invece di this.http.get diretto
+    this.catalogoService.getProdotti()
       .subscribe({
         next: (dati) => {
           this.prodotti = dati;
@@ -119,6 +122,7 @@ export class CatalogoComponent implements OnInit {
   }
 
   // Metodo per recuperare le recensioni approvate
+  // Metodo per recuperare le recensioni approvate
   caricaRecensioni(idProdotto: number) {
     // Inizializzo sempre come array vuoto per evitare "undefined"
     if (!this.recensioniPerProdotto[idProdotto]) {
@@ -128,11 +132,18 @@ export class CatalogoComponent implements OnInit {
     this.recensioneService.getRecensioniProdotto(idProdotto).subscribe({
       next: (dati) => {
         this.recensioniPerProdotto[idProdotto] = dati;
+        
+        // FORZO ANGULAR A RIFARSI IL TRUCCO: 
+        // Aggiorniamo la vista per mostrare le recensioni appena arrivate
+        this.cdRef.detectChanges();
       },
       error: (errore) => {
         console.error(`Errore recensioni per ${idProdotto}:`, errore);
         // Anche in caso di errore, garantisco che sia un array vuoto
         this.recensioniPerProdotto[idProdotto] = [];
+        
+        // Anche in caso di errore, rinfreschiamo la vista per gestire lo stato vuoto
+        this.cdRef.detectChanges();
       }
     });
   }
@@ -148,7 +159,8 @@ export class CatalogoComponent implements OnInit {
   // vecchia lista di prodotti con quella nuova e, per ognuno di essi, chiedo 
   // nuovamente al server le recensioni (incluse quelle appena approvate nel pannello admin).
   aggiornaTutto() {
-    this.http.get<Prodotto[]>('http://localhost:8080/api/prodotti').subscribe(dati => {
+    // MODIFICATO: Uso il CatalogoService invece di this.http.get diretto
+    this.catalogoService.getProdotti().subscribe(dati => {
       this.prodotti = dati;
       // Per ogni prodotto, rigenero la richiesta delle recensioni per mostrare 
       // i cambiamenti avvenuti nel frattempo
