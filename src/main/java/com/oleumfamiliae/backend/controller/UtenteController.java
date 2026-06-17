@@ -3,6 +3,7 @@ package com.oleumfamiliae.backend.controller;
 import com.oleumfamiliae.backend.model.Utente;
 import com.oleumfamiliae.backend.service.UtenteService;
 import com.oleumfamiliae.backend.security.JwtUtils;
+import com.oleumfamiliae.backend.dto.LoginRequest; // Importato il DTO per leggere il body JSON
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,11 +35,11 @@ public class UtenteController {
 
     // 2. Login
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String email, @RequestParam String password) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         // Nota: questo è un login evoluto con token JWT.
         // Utilizzo l'AuthenticationManager per validare le credenziali.
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password));
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         
         // Genero il token JWT tramite la classe JwtUtils
         String jwt = jwtUtils.generateJwtToken(authentication);

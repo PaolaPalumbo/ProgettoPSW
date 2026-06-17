@@ -46,6 +46,7 @@ public class WebSecurityConfig {
                 
                 // 5. Apriamo le porte esatte al catalogo
                 .requestMatchers(
+                    "/api/utenti/**",
                     "/api/auth/**", 
                     "/api/prodotti", "/api/prodotti/**", 
                     "/api/recensioni", "/api/recensioni/**",

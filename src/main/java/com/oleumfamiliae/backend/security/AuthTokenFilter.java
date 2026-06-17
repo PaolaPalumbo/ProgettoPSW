@@ -33,7 +33,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         
         // CORREZIONE 403: Se la richiesta è per il login, saltiamo il filtro JWT
         // altrimenti il sistema cercherebbe un token che non esiste ancora!
-        if (request.getRequestURI().contains("/api/auth/login")) {
+        if (request.getRequestURI().contains("/api/utenti/login")) {
             filterChain.doFilter(request, response);
             return;
         }
