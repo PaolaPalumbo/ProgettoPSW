@@ -9,6 +9,7 @@ import com.oleumfamiliae.backend.repository.ProdottoRepository;
 import com.oleumfamiliae.backend.repository.UtenteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 import java.time.LocalDateTime; // Ricorda di importare LocalDateTime
 
@@ -57,5 +58,13 @@ public class OrdineService {
         nuovoOrdine.setStato("ricevuto"); 
         
         return ordineRepository.save(nuovoOrdine);
+    }
+
+    // Questo metodo NON necessita di @Transactional perché esegue una sola operazione di lettura (SELECT)
+   @Transactional(readOnly = true) //Indica a JPA che quella transazione è ottimizzata solo per la lettura.
+   //un'ottima pratica di ingegneria del software che migliora leggermente le performance
+   //soprattutto se il sistema è sotto carico.
+    public List<Ordine> trovaOrdiniPerUtente(String email) {
+        return ordineRepository.findByUtenteEmail(email);
     }
 }
