@@ -2,7 +2,8 @@ import { ApplicationConfig } from '@angular/core';
 import { provideRouter, withRouterConfig } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http'; 
-import { authInterceptor } from './services/auth.interceptor';
+import { utenteInterceptor } from './services/utente.interceptor';
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -11,6 +12,6 @@ export const appConfig: ApplicationConfig = {
       withRouterConfig({ onSameUrlNavigation: 'reload' }) 
     ),
     provideHttpClient(),
-    provideHttpClient(withInterceptors([authInterceptor]))
+    provideHttpClient(withInterceptors([utenteInterceptor]))
   ]
 };

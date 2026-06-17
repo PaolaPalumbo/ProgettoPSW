@@ -1,0 +1,49 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card login-card">
+        <div class="card-body p-4">
+          <h3 class="text-center mb-4 login-title">Crea un Account</h3>
+          
+          <div *ngIf="messaggioErrore" class="alert alert-danger" role="alert">
+            {{ messaggioErrore }}
+          </div>
+          <div *ngIf="messaggioSuccesso" class="alert alert-success" role="alert">
+            {{ messaggioSuccesso }}
+          </div>
+
+          <form (ngSubmit)="onSubmit()" #regForm="ngForm">
+            <div class="mb-3">
+              <label for="nome" class="form-label">Nome</label>
+              <input type="text" class="form-control" id="nome" name="nome" [(ngModel)]="nuovoUtente.nome" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" name="email" [(ngModel)]="nuovoUtente.email" required>
+            </div>
+
+            <div class="mb-4">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name="password" [(ngModel)]="nuovoUtente.password" required minlength="6">
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="login-btn btn" [disabled]="!regForm.valid">
+                Registrati
+              </button>
+            </div>
+          </form>
+
+          <div class="mt-4 text-center">
+            <span class="text-muted">Hai già un account?</span><br>
+            <a routerLink="/login" style="color: #c2a878; font-weight: 600; text-decoration: none; cursor: pointer;">
+              Torna al Login
+            </a>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

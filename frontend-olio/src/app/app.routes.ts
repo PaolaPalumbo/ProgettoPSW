@@ -4,6 +4,9 @@ import { AdminRecensioniComponent } from './admin-recensioni/admin-recensioni';
 import { CarrelloComponent } from './carrello/carrello';
 import { StoriaComponent } from './storia/storia'; 
 import { TenuteComponent } from './tenute/tenute'; 
+import { LoginComponent } from './login/login';
+import { RegistrazioneComponent } from './registrazione/registrazione';
+import { utenteGuard } from './interceptors/utente.guard';
 
 export const routes: Routes = [
   { 
@@ -12,10 +15,14 @@ export const routes: Routes = [
     // Forza il ricaricamento della rotta ogni volta che l'utente accede alla home
     runGuardsAndResolvers: 'always' 
   },
+  { path: 'login', component: LoginComponent },
+  { path: 'registrazione', component: RegistrazioneComponent },
   { path: 'carrello', component: CarrelloComponent },
   { path: 'admin/recensioni', component: AdminRecensioniComponent },
-  { path: 'storia', component: StoriaComponent }, // Collega la rotta al nuovo componente
+  { path: 'storia', component: StoriaComponent }, 
   { path: 'tenute', component: TenuteComponent },
-  { path: 'prodotti', component: CatalogoComponent }, // Aggiunta la rotta per I NOSTRI PRODOTTI
-  { path: '**', redirectTo: '' } // Se non trova nulla, rimanda alla home
+  { path: 'prodotti', component: CatalogoComponent }, 
+  
+  // Questa rotta "jolly" deve stare SEMPRE e RIGOROSAMENTE per ultima
+  { path: '**', redirectTo: '' } 
 ];

@@ -2,6 +2,7 @@ package com.oleumfamiliae.backend.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod; // Import aggiunto
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,41 +24,35 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        // LA NOSTRA CIMICE: Se Spring legge questo file, stamperà questa frase nel terminale!
         System.out.println("===============================================");
         System.out.println("STO CARICANDO LA NOSTRA SICUREZZA PERSONALIZZATA!");
         System.out.println("===============================================");
         
         http
-            // 1. Applichiamo il CORS globale per far comunicare Angular
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
-            
-            // 2. Disattiviamo le vecchie pagine HTML di login di Spring Boot
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
             
             .authorizeHttpRequests(auth -> auth
-                // 3. Sblocchiamo la visibilità degli errori interni (il finto 401)
                 .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll() 
                 
-                // 4. Proteggiamo il pannello di controllo
-                // .requestMatchers("/api/recensioni/approva/**").hasRole("ADMIN")
+                // CORREZIONE CRITICA: Permettiamo sempre le richieste OPTIONS per il CORS
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 
-                // 5. Apriamo le porte esatte al catalogo
                 .requestMatchers(
                     "/api/utenti/**",
                     "/api/auth/**", 
                     "/api/prodotti", "/api/prodotti/**", 
                     "/api/recensioni", "/api/recensioni/**",
-                    "/api/recensioni/approva/**", // <-- AGGIUNTA QUI TEMPORANEAMENTE
+                    "/api/recensioni/approva/**",
+                    "/api/utenti/login",
                     "/error"
                 ).permitAll()
                 
                 .anyRequest().authenticated() 
             );
 
-        // Aggiungo il MIO filtro (ora che non è più un @Component globale)
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         
         return http.build();
@@ -68,7 +63,7 @@ public class WebSecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

@@ -1,0 +1,58 @@
+<div class="container mt-5">
+  <h2>La tua Cronologia Ordini</h2>
+  <hr>
+  <div *ngIf="ordini.length === 0" class="alert alert-info">
+    Non hai ancora effettuato nessun ordine.
+  </div>
+  
+  <table class="table" *ngIf="ordini.length > 0">
+    <thead>
+      <tr>
+        <th>ID Ordine</th>
+        <th>Data</th>
+        <th>Totale</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ordine of ordini">
+        <td>{{ ordine.id }}</td>
+        <td>{{ ordine.data }}</td>
+        <td>€{{ ordine.totale }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div><div class="container mt-5">
+  <h2 class="login-title mb-4">La tua Cronologia Ordini</h2>
+  <hr>
+
+  <div *ngIf="caricamento" class="text-center py-4">
+    <div class="spinner-border text-success" role="status">
+      <span class="visually-hidden">Caricamento...</span>
+    </div>
+  </div>
+
+  <div *ngIf="messaggioErrore" class="alert alert-danger">
+    {{ messaggioErrore }}
+  </div>
+
+  <div *ngIf="!caricamento && !messaggioErrore">
+    <div *ngIf="ordini.length === 0" class="alert alert-info">
+      Non hai ancora effettuato nessun ordine.
+    </div>
+    
+    <table class="table" *ngIf="ordini.length > 0">
+      <thead>
+        <tr>
+          <th>ID Ordine</th>
+          <th>Data</th>
+          <th>Totale</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ordine of ordini">
+          <td>{{ ordine.id }}</td>
+          <td>{{ ordine.data | date:'shortDate' }}</td> <td>€{{ ordine.totale | number:'1.2-2' }}</td> </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
