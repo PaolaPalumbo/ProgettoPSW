@@ -2,26 +2,30 @@ package com.oleumfamiliae.backend.service;
 
 import com.oleumfamiliae.backend.model.Utente;
 import com.oleumfamiliae.backend.repository.UtenteRepository;
+import org.springframework.security.crypto.password.PasswordEncoder; // IMPORTANTE
 import org.springframework.stereotype.Service;
 
 @Service
 public class UtenteService {
 
     private final UtenteRepository utenteRepository;
+    private final PasswordEncoder passwordEncoder; // Iniezione del codificatore
 
-    public UtenteService(UtenteRepository utenteRepository) {
+    public UtenteService(UtenteRepository utenteRepository, PasswordEncoder passwordEncoder) {
         this.utenteRepository = utenteRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // 1. Registrazione nuovo cliente
     public Utente registraUtente(Utente utente) {
-        // Uso il metodo personalizzato creato nel Repository!
         if (utenteRepository.findByEmail(utente.getEmail()).isPresent()) {
             throw new RuntimeException("Esiste già un account con questa email!");
         }
         
-        // da implementare 
-        // la sicurezza per "criptare" questa password prima di salvarla!
+        // Protezione: cripto la password prima di salvarla nel database
+        String passwordCriptata = passwordEncoder.encode(utente.getPassword());
+        utente.setPassword(passwordCriptata);
+        
         return utenteRepository.save(utente);
     }
 
@@ -30,15 +34,11 @@ public class UtenteService {
         Utente utente = utenteRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato!"));
         
-        if (!utente.getPassword().equals(password)) {
+        // Verifica: confronto la password in chiaro con quella criptata nel database
+        if (!passwordEncoder.matches(password, utente.getPassword())) {
             throw new RuntimeException("Password errata!");
         }
         
         return utente;
     }
 }
-
-
-/*Cosa fa: Questo servizio gestisce l'accesso. Controlla che non ci siano
- due clienti con la stessa email durante la registrazione e verifica
- che la password sia corretta durante il login. */

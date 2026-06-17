@@ -1,17 +1,16 @@
-package com.oleumfamiliae.backend.security; // Assicurati che il package sia corretto
+package com.oleumfamiliae.backend.security;
 
 import io.jsonwebtoken.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.security.SignatureException;
 import java.util.Date;
 
 @Component
 public class JwtUtils {
     
-    // Una chiave segreta di almeno 512 bit per l'algoritmo HS512
+    // Chiave segreta per l'algoritmo HS512
     private static final String jwtSecret = "OleumFamiliaeSecretKey2026OleumFamiliaeSecretKey2026"; 
     private static final int jwtExpirationMs = 86400000; // 24 ore
 
@@ -27,19 +26,17 @@ public class JwtUtils {
             .compact();
     }
 
-    // Estrae l'username dal token per verificare chi sta chiamando l'API
+    // Estrae l'username dal token
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
 
-    // Verifica se il token è valido e non scaduto
+    // Verifica se il token è valido
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            // JwtException cattura SignatureException, ExpiredJwtException, etc.
-            // IllegalArgumentException cattura token vuoti o nulli
             return false;
         }
     }    

@@ -13,6 +13,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import jakarta.servlet.DispatcherType;
 import java.util.Arrays;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -25,10 +27,10 @@ public class WebSecurityConfig {
         System.out.println("===============================================");
         System.out.println("STO CARICANDO LA NOSTRA SICUREZZA PERSONALIZZATA!");
         System.out.println("===============================================");
+        
         http
-           .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             // 1. Applichiamo il CORS globale per far comunicare Angular
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) 
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             
             // 2. Disattiviamo le vecchie pagine HTML di login di Spring Boot
@@ -40,7 +42,7 @@ public class WebSecurityConfig {
                 .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll() 
                 
                 // 4. Proteggiamo il pannello di controllo
-               // .requestMatchers("/api/recensioni/approva/**").hasRole("ADMIN")
+                // .requestMatchers("/api/recensioni/approva/**").hasRole("ADMIN")
                 
                 // 5. Apriamo le porte esatte al catalogo
                 .requestMatchers(
@@ -80,5 +82,10 @@ public class WebSecurityConfig {
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

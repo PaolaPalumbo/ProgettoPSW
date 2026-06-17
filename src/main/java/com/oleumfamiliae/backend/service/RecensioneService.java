@@ -25,12 +25,17 @@ public class RecensioneService {
     // Metodo per l'amministratore per approvare la recensione
     @Transactional
     public void approvaRecensione(Long id) {
-        Recensione recensione = recensioneRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Recensione non trovata!"));
-        
-        recensione.setApprovata(true);
+    Recensione recensione = recensioneRepository.findById(id)
+        .orElse(null); // Invece di esplodere, restituisci null se non la trovi
+
+    if (recensione != null) {
+        recensione.setApprovata(true); // O il campo che usi per l'approvazione
         recensioneRepository.save(recensione);
+    } else {
+        // Logga l'errore senza far crashare tutto
+        System.out.println("Attenzione: tentativo di approvare una recensione inesistente (ID: " + id + ")");
     }
+}
 
    public List<Recensione> getRecensioniByProdotto(Long prodottoId) {
     return recensioneRepository.findByProdotto_IdAndApprovataTrue(prodottoId);
