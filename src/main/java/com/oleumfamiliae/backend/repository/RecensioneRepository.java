@@ -18,4 +18,7 @@ public interface RecensioneRepository extends JpaRepository<Recensione, Long> {
     List<Recensione> findByApprovataFalse();
 
     List<Recensione> findByProdottoId(Long prodottoId);
+
+    // Io cerco le recensioni associate all'email dell'utente
+List<Recensione> findByUtenteEmail(String email);
 }

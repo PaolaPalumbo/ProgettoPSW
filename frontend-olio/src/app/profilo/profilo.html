@@ -1,5 +1,7 @@
 <div class="container mt-5">
-  <h2 class="login-title mb-4">La mia Cronologia Ordini</h2>
+  <h2 class="login-title mb-4">
+    {{ sezioneAttiva === 'ordini' ? 'La mia Cronologia Ordini' : 'Le Mie Recensioni' }}
+  </h2>
   <hr>
 
   <div *ngIf="caricamento" class="text-center py-4">
@@ -12,8 +14,7 @@
     {{ messaggioErrore }}
   </div>
 
-  <div *ngIf="!caricamento && !messaggioErrore">
-    
+  <div *ngIf="!caricamento && !messaggioErrore && sezioneAttiva === 'ordini'">
     <div *ngIf="ordini.length === 0" class="text-center py-5">
       <h4 class="text-muted">Ancora nessun ordine effettuato, approfittane!</h4>
       <a routerLink="/prodotti" class="btn btn-outline-success mt-3">Vai allo Shop</a>
@@ -35,5 +36,23 @@
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <div *ngIf="!caricamento && !messaggioErrore && sezioneAttiva === 'recensioni'">
+    <div *ngIf="recensioni.length === 0" class="text-center py-5">
+      <h4 class="text-muted">Ancora non hai scritto nessuna recensione!</h4>
+      <p class="text-muted">Trova il prodotto che hai acquistato e raccontaci com'è.</p>
+      <a routerLink="/prodotti" class="btn btn-outline-success mt-3">Vai allo Shop</a>
+    </div>
+
+    <div *ngIf="recensioni.length > 0">
+      <div class="card mb-3" *ngFor="let recensione of recensioni">
+        <div class="card-body">
+          <h5 class="card-title">{{ recensione.nomeProdotto }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Voto: {{ recensione.voto }}/5</h6>
+          <p class="card-text">{{ recensione.commento }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
