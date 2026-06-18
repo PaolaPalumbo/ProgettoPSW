@@ -54,7 +54,7 @@ public class OrdineController {
         List<OrdineResponseDTO> ordiniDTO = ordini.stream()
             .map(ordine -> new OrdineResponseDTO(
                 ordine.getId(),
-                ordine.getData(),
+                ordine.getDataOrdine(),
                 ordine.getTotale()
             ))
             .collect(Collectors.toList());

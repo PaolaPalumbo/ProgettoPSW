@@ -65,6 +65,7 @@ public class OrdineService {
    //un'ottima pratica di ingegneria del software che migliora leggermente le performance
    //soprattutto se il sistema è sotto carico.
     public List<Ordine> trovaOrdiniPerUtente(String email) {
-        return ordineRepository.findByUtenteEmail(email);
+    // Chiamo il nuovo metodo che mi restituisce gli ordini già ordinati cronologicamente
+        return ordineRepository.findByUtenteEmailOrderByDataOrdineDesc(email);    
     }
 }

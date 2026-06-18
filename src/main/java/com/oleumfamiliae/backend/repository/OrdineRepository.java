@@ -13,6 +13,6 @@ public interface OrdineRepository extends JpaRepository<Ordine, Long> {
     // Query Derivation: Spring genera automaticamente la query SQL corretta.
     // AGGIORNAMENTO: Ho aggiunto "OrderByDataDesc" così il database mi restituisce 
     // la cronologia già ordinata, dal mio acquisto più recente a quello più vecchio.
-    List<Ordine> findByUtenteEmailOrderByDataDesc(String email);
+    List<Ordine> findByUtenteEmailOrderByDataOrdineDesc(String email);
     
 }
