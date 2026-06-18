@@ -14,8 +14,9 @@
 
   <div *ngIf="!caricamento && !messaggioErrore">
     
-    <div *ngIf="ordini.length === 0" class="alert alert-info">
-      Non ho ancora effettuato nessun ordine.
+    <div *ngIf="ordini.length === 0" class="text-center py-5">
+      <h4 class="text-muted">Ancora nessun ordine effettuato, approfittane!</h4>
+      <a routerLink="/prodotti" class="btn btn-outline-success mt-3">Vai allo Shop</a>
     </div>
     
     <table class="table table-hover" *ngIf="ordini.length > 0">

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, Router } from '@angular/router'; // Aggiunto Router per il redirect dopo il logout
+import { RouterLink, Router } from '@angular/router'; 
 import { CarrelloService } from '../carrello'; 
-import { UtenteService } from '../services/utente.service'; // Importo il mio servizio utente
+import { UtenteService } from '../services/utente.service'; 
 
 @Component({
   selector: 'app-navbar',
@@ -12,35 +12,43 @@ import { UtenteService } from '../services/utente.service'; // Importo il mio se
   styleUrl: './navbar.css'
 })
 export class NavbarComponent {
-  // Variabile che controlla lo stato della tendina (aperta/chiusa)
+  // Stato per l'hamburger menu (mobile)
   isMenuAperto: boolean = false;
+  
+  // Stato per la tendina Area Personale
+  isDropdownAperto: boolean = false;
 
-  // Iniezione dei servizi nel costruttore. 
-  // FONDAMENTALE: sia carrelloService che utenteService sono 'public' per poterli usare nell'HTML!
   constructor(
     public carrelloService: CarrelloService,
     public utenteService: UtenteService,
     private router: Router
   ) {}
 
-  // Getter per avere il numero del carrello aggiornato in tempo reale
   get contatore(): number {
     return this.carrelloService.getNumeroArticoli();
   }
 
-  // Metodo che scatta quando clicco sulle "tre lineette" (bottone hamburger)
+  // Hamburger Menu
   toggleMenu(): void {
     this.isMenuAperto = !this.isMenuAperto;
   }
 
-  // Metodo per nascondere la tendina appena clicco su una voce del menu
   chiudiMenu(): void {
     this.isMenuAperto = false;
   }
 
-  // Metodo per uscire: cancello il token e chiudo la sessione
+  // --- LOGICA PER IL DROPDOWN AREA PERSONALE ---
+  toggleDropdown(): void {
+    this.isDropdownAperto = !this.isDropdownAperto;
+  }
+
+  chiudiDropdown(): void {
+    this.isDropdownAperto = false;
+  }
+
+  // Logout
   logout(): void {
     this.utenteService.logout();
-    this.router.navigate(['/']); // Mi riporta alla home page dopo essere uscita
+    this.router.navigate(['/']);
   }
 }

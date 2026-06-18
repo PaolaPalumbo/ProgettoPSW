@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // Ho importato ChangeDetectorRef
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router'; // Aggiunto Router per il reindirizzamento
-import { UtenteService } from '../services/utente.service'; // Importo il mio servizio per il controllo login
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
+import { UtenteService } from '../services/utente.service';
 
 @Component({
   selector: 'app-profilo',
@@ -12,62 +12,71 @@ import { UtenteService } from '../services/utente.service'; // Importo il mio se
   styleUrls: ['./profilo.css']
 })
 export class ProfiloComponent implements OnInit {
-  // Array che conterranno i miei dati
   ordini: any[] = [];
-  recensioni: any[] = []; // Aggiunto per gestire la sezione "Le Mie Recensioni" dell'HTML
+  recensioni: any[] = [];
   
-  // Variabili per gestire gli stati dell'interfaccia
   caricamento: boolean = true;
   messaggioErrore: string = '';
-
-  // VARIABILE NUOVA: Mi serve per capire quale pulsante è stato cliccato nell'HTML. 
-  // Di default mostro la cronologia ordini.
   sezioneAttiva: 'ordini' | 'recensioni' = 'ordini';
 
-  // L'URL che punta al mio controller Spring Boot
   private apiUrl = 'http://localhost:8080/api/ordini/miei'; 
 
-  // Inietto i servizi di cui ho bisogno
   constructor(
     private http: HttpClient,
     private utenteService: UtenteService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef // Inietto il ChangeDetector per forzare l'aggiornamento
   ) {}
 
   ngOnInit() {
-    // PROTEZIONE: Se non sono loggata, mi reindirizzo automaticamente al login
     if (!this.utenteService.isLoggedIn()) {
       console.log('Accesso negato: devo prima fare il login.');
       this.router.navigate(['/login']);
       return;
     }
 
-    // Se sono autorizzata, avvio il recupero dei miei dati
-    this.caricaOrdini();
-    this.caricaRecensioni();
+    this.route.queryParams.subscribe(params => {
+      this.sezioneAttiva = params['tab'] === 'recensioni' ? 'recensioni' : 'ordini';
+      
+      // Quando cambio tab, imposto il caricamento a true e forzo l'aggiornamento
+      this.caricamento = true; 
+      this.cdr.detectChanges(); 
+      
+      if (this.sezioneAttiva === 'ordini') {
+        this.caricaOrdini();
+      } else {
+        this.caricaRecensioni();
+      }
+    });
   }
 
-  // METODO NUOVO: Cambia la vista dell'interfaccia quando clicco sui pulsanti
   cambiaSezione(sezione: 'ordini' | 'recensioni') {
     this.sezioneAttiva = sezione;
   }
 
   caricaOrdini() {
+    this.messaggioErrore = ''; 
+    
     this.http.get<any[]>(this.apiUrl).subscribe({
       next: (data) => {
+        console.log('Ho ricevuto i dati:', data); // Debug: vedo cosa arriva
         this.ordini = data;
-        this.caricamento = false;
+        this.caricamento = false; // Fermo lo spinner
+        this.cdr.detectChanges(); // Forza l'aggiornamento della UI
       },
       error: (err) => {
         console.error('Errore durante il recupero ordini:', err);
-        this.messaggioErrore = 'Non è stato possibile caricare i miei ordini. Riprova più tardi.';
-        this.caricamento = false;
+        this.messaggioErrore = 'Non è stato possibile caricare i miei ordini.';
+        this.caricamento = false; // Fermo lo spinner
+        this.cdr.detectChanges(); // Forza l'aggiornamento della UI
       }
     });
   }
 
   caricaRecensioni() {
-    // TODO: In futuro inserirò qui la chiamata HTTP per recuperare le mie recensioni
-    console.log('Predisposizione per il caricamento delle mie recensioni completata.');
+    console.log('Caricamento recensioni...');
+    this.caricamento = false; 
+    this.cdr.detectChanges(); // Forza l'aggiornamento della UI
   }
 }

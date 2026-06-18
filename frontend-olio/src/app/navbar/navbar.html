@@ -53,10 +53,31 @@
       </ng-container>
 
       <ng-container *ngIf="utenteService.isLoggedIn()">
-        <a class="btn ms-3 d-flex align-items-center" routerLink="/profilo"
-           style="background-color: #3b4d2e; color: #ffffff; border-radius: 20px; padding: 6px 20px; font-weight: 500; border: 1px solid #3b4d2e; transition: all 0.3s;">
-          Area Personale
-        </a>
+        
+        <div class="dropdown ms-3">
+          <a class="btn d-flex align-items-center dropdown-toggle" 
+             (click)="toggleDropdown()"
+             style="background-color: #3b4d2e; color: #ffffff; border-radius: 20px; padding: 6px 20px; font-weight: 500; border: 1px solid #3b4d2e; cursor: pointer;">
+            Area Personale
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0" 
+              [class.show]="isDropdownAperto" 
+              style="border-radius: 15px; margin-top: 10px; display: block;" 
+              *ngIf="isDropdownAperto">
+            <li>
+              <a class="dropdown-item py-2" routerLink="/profilo" [queryParams]="{ tab: 'ordini' }" (click)="chiudiDropdown()" style="color: #3b4d2e; font-weight: 500;">
+                Cronologia Ordini
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item py-2" routerLink="/profilo" [queryParams]="{ tab: 'recensioni' }" (click)="chiudiDropdown()" style="color: #3b4d2e; font-weight: 500;">
+                Le Mie Recensioni
+              </a>
+            </li>
+          </ul>
+        </div>
         
         <button class="btn ms-3 d-flex align-items-center" (click)="logout()"
                 style="border: 1px solid #dc3545; color: #dc3545; background-color: transparent; border-radius: 20px; padding: 6px 20px; font-weight: 500; transition: all 0.3s;">
