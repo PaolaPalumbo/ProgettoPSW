@@ -25,7 +25,8 @@ export class RecensioneService {
   }
 
   // Metodo per l'amministratore: recupera tutte le recensioni in attesa
-  getRecensioniDaApprovare(): Observable<Recensione[]> {
+  // <-- MODIFICATO: Rinominato per farlo combaciare con admin-dashboard.ts
+  getRecensioniInAttesa(): Observable<Recensione[]> {
     // AGGIUNTO: Recupero il token per superare la sicurezza del backend
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({

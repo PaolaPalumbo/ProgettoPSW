@@ -39,6 +39,17 @@ public class DatabaseLoader implements CommandLineRunner {
             
             utenteRepository.save(u);
             System.out.println("--- Utente di test inserito nel database con password criptata! ---");
+
+            // AGGIUNTA: Creo anche l'account Amministratore per la Dashboard
+            Utente admin = new Utente();
+            admin.setNome("Admin");
+            admin.setCognome("Oleum Familiae");
+            // Questa email farà scattare il bivio nel frontend verso /login/admin
+            admin.setEmail("admin@oleumfamiliae.it"); 
+            admin.setPassword(passwordEncoder.encode("admin123")); 
+            
+            utenteRepository.save(admin);
+            System.out.println("--- Utente ADMIN inserito nel database con password criptata! ---");
         }
 
         // 2. Crea un catalogo di prodotti di test se il database è vuoto

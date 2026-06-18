@@ -1,0 +1,89 @@
+<div class="container mt-5 admin-container">
+  <h2 class="text-center mb-4 admin-title">Pannello di Amministrazione</h2>
+
+  <ul class="nav nav-tabs justify-content-center mb-4 custom-tabs">
+    <li class="nav-item">
+      <button 
+        class="nav-link" 
+        [class.active]="sezioneAttiva === 'recensioni'"
+        (click)="cambiaSezione('recensioni')">
+        Recensioni da Approvare
+      </button>
+    </li>
+    <li class="nav-item">
+      <button 
+        class="nav-link" 
+        [class.active]="sezioneAttiva === 'inventario'"
+        (click)="cambiaSezione('inventario')">
+        Gestione Inventario
+      </button>
+    </li>
+  </ul>
+
+  <div *ngIf="sezioneAttiva === 'recensioni'" class="fade-in">
+    <div *ngIf="recensioniDaApprovare.length === 0" class="alert alert-info text-center shadow-sm">
+      Nessuna recensione in attesa di moderazione.
+    </div>
+
+    <div class="table-responsive shadow-sm rounded" *ngIf="recensioniDaApprovare.length > 0">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-dark-custom">
+          <tr>
+            <th>Autore</th>
+            <th>Prodotto</th>
+            <th>Commento</th>
+            <th class="text-center">Azione</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rec of recensioniDaApprovare">
+            <td>{{ rec.utente?.nome || 'Anonimo' }}</td>
+            <td>{{ rec.prodotto?.nome }}</td>
+            <td><small>{{ rec.commento }}</small></td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-approva" (click)="approvaRecensione(rec.id!)">
+                Approva
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="sezioneAttiva === 'inventario'" class="fade-in">
+    <div *ngIf="catalogoProdotti.length === 0" class="alert alert-secondary text-center shadow-sm">
+      Caricamento inventario in corso o nessun prodotto presente...
+    </div>
+
+    <div class="table-responsive shadow-sm rounded" *ngIf="catalogoProdotti.length > 0">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-dark-custom">
+          <tr>
+            <th>ID</th>
+            <th>Prodotto e Formato</th>
+            <th style="width: 120px;">Giacenza</th>
+            <th class="text-center">Azione</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let prod of catalogoProdotti">
+            <td>#{{ prod.id }}</td>
+            <td>
+              <strong>{{ prod.nome }}</strong><br>
+              <small class="text-muted">{{ prod.formato }}</small>
+            </td>
+            <td>
+              <input type="number" class="form-control form-control-sm text-center" [(ngModel)]="prod.quantitaDisponibile" min="0">
+            </td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-aggiorna" (click)="aggiornaScorte(prod.id!, prod.quantitaDisponibile)">
+                Salva Scorte
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

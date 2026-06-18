@@ -43,7 +43,14 @@ export class LoginComponent implements OnInit {
     this.utenteService.login(this.credenziali).subscribe({
       next: (response) => {
         console.log('Login effettuato con successo!');
-        this.router.navigate(['/']);
+        
+        // --- NUOVO BIVIO DI NAVIGAZIONE ---
+        // Controlliamo se l'utente che ha appena fatto login è un amministratore.
+        if (this.isAdminLogin || this.credenziali.email === 'admin@oleumfamiliae.it') {
+          this.router.navigate(['/login/admin']); // Rotta per la Dashboard Admin
+        } else {
+          this.router.navigate(['/']); // Rotta per i clienti normali (Vetrina/Home)
+        }
       },
       error: (err) => {
         console.error('Errore dal server:', err);

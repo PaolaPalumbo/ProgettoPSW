@@ -21,11 +21,11 @@ export class AdminRecensioniComponent implements OnInit {
   }
 
   caricaRecensioniDaApprovare() {
-    this.recensioneService.getRecensioniDaApprovare().subscribe({
-      next: (dati) => {
+    this.recensioneService.getRecensioniInAttesa().subscribe({ // <-- Aggiornato il nome del metodo
+      next: (dati: any) => { // <-- Tipizzato con : any
         this.recensioniInSospeso = dati;
       },
-      error: (errore) => {
+      error: (errore: any) => { // <-- Tipizzato con : any
         console.error("Errore nel recupero delle recensioni in sospeso:", errore);
       }
     });
@@ -39,7 +39,7 @@ export class AdminRecensioniComponent implements OnInit {
         // Rimuove dinamicamente la recensione appena approvata dall'interfaccia admin
         this.recensioniInSospeso = this.recensioniInSospeso.filter(r => r.id !== recensione.id);
       },
-      error: (errore) => {
+      error: (errore: any) => { // <-- Tipizzato con : any
         console.error("Errore durante l'approvazione:", errore);
         alert("Ops! Qualcosa è andato storto nell'approvazione.");
       }

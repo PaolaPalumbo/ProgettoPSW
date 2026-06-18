@@ -2,6 +2,8 @@ package com.oleumfamiliae.backend.controller;
 
 import com.oleumfamiliae.backend.model.Prodotto;
 import com.oleumfamiliae.backend.service.ProdottoService;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -20,7 +22,7 @@ public class ProdottoController {
     public String ping() {
         return "Backend Sbloccato!";
     }
-    
+
     // accetto l'URI sia con lo slash che senza!
     @GetMapping({"", "/"})
     public List<Prodotto> getCatalogo() {
@@ -31,5 +33,19 @@ public class ProdottoController {
     @PostMapping({"", "/"})
     public Prodotto aggiungiProdotto(@RequestBody Prodotto prodotto) {
         return prodottoService.aggiungiProdotto(prodotto);
+    }
+
+    // Endpoint riservato all'amministratore per aggiornare l'inventario
+    @PutMapping("/{id}/quantita")
+    public ResponseEntity<?> aggiornaQuantita(
+            @PathVariable Long id, 
+            @RequestParam int quantita) {
+        
+        try {
+            Prodotto prodottoAggiornato = prodottoService.aggiornaQuantita(id, quantita);
+            return ResponseEntity.ok(prodottoAggiornato);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

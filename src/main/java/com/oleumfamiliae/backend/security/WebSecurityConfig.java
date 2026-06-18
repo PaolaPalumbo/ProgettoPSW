@@ -51,10 +51,15 @@ public class WebSecurityConfig {
                 // CORREZIONE CRITICA: Permettiamo sempre le richieste OPTIONS per il CORS
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 
+                // AGGIUNTO: Permettiamo a tutti solo di LEGGERE (GET) il catalogo
+                .requestMatchers(HttpMethod.GET, "/api/prodotti", "/api/prodotti/**").permitAll()
+                
+                // AGGIUNTO: Richiediamo permessi per MODIFICARE (PUT) l'inventario
+                .requestMatchers(HttpMethod.PUT, "/api/prodotti/**").authenticated()
+                
                 .requestMatchers(
                     "/api/utenti/**",
                     "/api/auth/**", 
-                    "/api/prodotti", "/api/prodotti/**", 
                     "/api/recensioni", "/api/recensioni/**",
                     "/api/recensioni/approva/**",
                     "/api/utenti/login",

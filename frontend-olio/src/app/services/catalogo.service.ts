@@ -15,4 +15,9 @@ export class CatalogoService {
   getProdotti(): Observable<any> {
     return this.http.get(this.apiUrl);
   }
+
+  aggiornaQuantita(id: number, quantita: number) {
+    // Usiamo PUT passando la quantità come parametro nell'URL
+    return this.http.put(`${this.apiUrl}/${id}/quantita?quantita=${quantita}`, {});
+  }
 }

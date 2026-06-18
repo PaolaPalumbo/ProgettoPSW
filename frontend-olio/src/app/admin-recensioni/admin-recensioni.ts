@@ -25,14 +25,14 @@ export class AdminRecensioniComponent implements OnInit {
 
   // Metodo per chiedere a Spring Boot la lista delle recensioni bloccate
   caricaRecensioni() {
-    this.recensioneService.getRecensioniDaApprovare().subscribe({
-      next: (dati) => {
+    this.recensioneService.getRecensioniInAttesa().subscribe({ // <-- Aggiornato il nome del metodo
+      next: (dati: any) => { // <-- Tipizzato con : any
         console.log("DATI IN INGRESSO DAL BACKEND:", dati);
         this.recensioniInSospeso = [...dati]; 
         // Forza l'aggiornamento della vista dopo il caricamento asincrono
         this.cdRef.detectChanges();
       },
-      error: (errore) => console.error('Errore nel caricamento', errore)
+      error: (errore: any) => console.error('Errore nel caricamento', errore) // <-- Tipizzato con : any
     });
   }
 
@@ -45,7 +45,7 @@ export class AdminRecensioniComponent implements OnInit {
         // Aggiorno la lista a schermo rimuovendo quella appena approvata
         this.recensioniInSospeso = this.recensioniInSospeso.filter(r => r.id !== recensione.id);
       },
-      error: (errore) => {
+      error: (errore: any) => { // <-- Tipizzato con : any
         console.error("Errore durante l'approvazione", errore);
         alert("Ops! Qualcosa è andato storto.");
       }

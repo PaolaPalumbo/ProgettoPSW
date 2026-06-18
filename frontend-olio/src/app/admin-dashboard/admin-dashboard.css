@@ -1,0 +1,93 @@
+.admin-container {
+  max-width: 950px;
+  margin-bottom: 50px;
+}
+
+.admin-title {
+  color: #c2a878;
+  font-family: Georgia, serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+
+/* Stili per i Tab della Dashboard */
+.custom-tabs {
+  border-bottom: 2px solid #e9ecef;
+}
+
+.custom-tabs .nav-link {
+  color: #3b4d2e;
+  font-family: Georgia, serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  border: none;
+  background-color: transparent;
+  padding: 10px 25px;
+  margin: 0 5px;
+  border-radius: 0;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.custom-tabs .nav-link:hover {
+  color: #c2a878;
+}
+
+.custom-tabs .nav-link.active {
+  color: #ffffff;
+  background-color: #3b4d2e;
+  border-bottom: 3px solid #c2a878;
+}
+
+/* Personalizzazione delle Tabelle */
+.table-dark-custom th {
+  background-color: #3b4d2e !important;
+  color: #ffffff !important;
+  font-weight: 500;
+  border-bottom: 3px solid #c2a878 !important;
+  vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(194, 168, 120, 0.08); /* Effetto hover dorato leggerissimo */
+}
+
+/* Bottoni di Azione */
+.btn-approva {
+  background-color: #3b4d2e;
+  color: white;
+  border: none;
+  font-weight: 600;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-approva:hover {
+  background-color: #2a3821;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.btn-aggiorna {
+  background-color: #c2a878;
+  color: white;
+  border: none;
+  font-weight: 600;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-aggiorna:hover {
+  background-color: #a88d5c;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Animazione di transizione tra i tab */
+.fade-in {
+  animation: fadeIn 0.4s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

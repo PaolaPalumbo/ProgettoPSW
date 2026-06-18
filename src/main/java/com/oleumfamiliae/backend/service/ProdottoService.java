@@ -24,6 +24,19 @@ public class ProdottoService {
     public Prodotto aggiungiProdotto(Prodotto prodotto) {
         return prodottoRepository.save(prodotto);
     }
+
+    // Metodo per l'amministratore: aggiorna la giacenza a magazzino
+    public Prodotto aggiornaQuantita(Long id, int nuovaQuantita) {
+        // Cerchiamo il prodotto. Se non esiste, lanciamo un'eccezione
+        Prodotto prodotto = prodottoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Errore: Prodotto con ID " + id + " non trovato."));
+            
+        // Aggiorniamo la quantità
+        prodotto.setQuantitaDisponibile(nuovaQuantita);
+        
+        // Salviamo le modifiche nel database
+        return prodottoRepository.save(prodotto);
+    }
 }
 
 /*Cosa fa: Usa i metodi automatici del Repository (findAll e save) 
