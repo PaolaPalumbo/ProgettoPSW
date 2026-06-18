@@ -7,9 +7,12 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrdineRepository extends JpaRepository<Ordine, Long> {
-    // Eredito automaticamente tutti i metodi per salvare e aggiornare gli ordini
-    // Query Derivation: Spring genera automaticamente la query SQL corretta
-    List<Ordine> findByUtenteEmail(String email);
-}
-
     
+    // Eredito automaticamente tutti i metodi base per salvare e aggiornare i miei ordini
+    
+    // Query Derivation: Spring genera automaticamente la query SQL corretta.
+    // AGGIORNAMENTO: Ho aggiunto "OrderByDataDesc" così il database mi restituisce 
+    // la cronologia già ordinata, dal mio acquisto più recente a quello più vecchio.
+    List<Ordine> findByUtenteEmailOrderByDataDesc(String email);
+    
+}
