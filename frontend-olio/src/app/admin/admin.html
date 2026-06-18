@@ -1,0 +1,33 @@
+<div class="container mt-5">
+  <h2 class="mb-4">Dashboard Amministratore</h2>
+  
+  <div *ngIf="caricamento" class="text-center">
+    <div class="spinner-border" role="status"></div>
+  </div>
+
+  <table class="table table-striped" *ngIf="!caricamento">
+    <thead>
+      <tr>
+        <th>ID Ordine</th>
+        <th>Utente</th>
+        <th>Data</th>
+        <th>Totale</th>
+        <th>Stato</th>
+        <th>Azioni</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ordine of ordini">
+        <td>#{{ ordine.id }}</td>
+        <td>{{ ordine.utente.email }}</td>
+        <td>{{ ordine.dataOrdine | date:'short' }}</td>
+        <td>€{{ ordine.totale | number:'1.2-2' }}</td>
+        <td><strong>{{ ordine.stato }}</strong></td>
+        <td>
+          <button class="btn btn-sm btn-primary" (click)="aggiornaStato(ordine.id, 'spedito')">Spedisci</button>
+          <button class="btn btn-sm btn-success ms-2" (click)="aggiornaStato(ordine.id, 'consegnato')">Consegna</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,43 @@
+/* Stili per la mia Dashboard Admin - Oleum Familiae */
+
+.container {
+  margin-top: 2rem;
+}
+
+h2 {
+  color: #2d5a27; /* Verde oliva scuro, il colore del mio brand */
+  font-weight: bold;
+}
+
+.table {
+  margin-top: 1.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.table thead {
+  background-color: #2d5a27;
+  color: white;
+}
+
+.table tbody tr:hover {
+  background-color: #f1f8e9; /* Un tocco di verde chiarissimo quando passo sopra le righe */
+}
+
+/* Gestione dei bottoni di azione */
+.btn-sm {
+  margin-right: 0.5rem;
+  transition: transform 0.2s;
+}
+
+.btn-sm:hover {
+  transform: scale(1.05);
+}
+
+/* Spinner di caricamento */
+.spinner-border {
+  color: #2d5a27;
+  width: 3rem;
+  height: 3rem;
+}

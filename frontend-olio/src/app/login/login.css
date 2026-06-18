@@ -43,3 +43,10 @@
   border-color: #c2a878;
   box-shadow: 0 0 0 0.25rem rgba(194, 168, 120, 0.25);
 }
+
+/* Stile specifico per il titolo della modalità Admin */
+.admin-title {
+  color: #c2a878; /* Applichiamo l'oro antico per distinguere l'area admin */
+  border-bottom: 2px solid #c2a878;
+  padding-bottom: 10px;
+}

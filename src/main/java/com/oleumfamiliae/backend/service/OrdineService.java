@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
-import java.time.LocalDateTime; // Ricorda di importare LocalDateTime
+import java.time.LocalDateTime;
 
 @Service
 public class OrdineService {
@@ -61,11 +61,26 @@ public class OrdineService {
     }
 
     // Questo metodo NON necessita di @Transactional perché esegue una sola operazione di lettura (SELECT)
-   @Transactional(readOnly = true) //Indica a JPA che quella transazione è ottimizzata solo per la lettura.
-   //un'ottima pratica di ingegneria del software che migliora leggermente le performance
-   //soprattutto se il sistema è sotto carico.
+    @Transactional(readOnly = true) 
     public List<Ordine> trovaOrdiniPerUtente(String email) {
-    // Chiamo il nuovo metodo che mi restituisce gli ordini già ordinati cronologicamente
-        return ordineRepository.findByUtenteEmailOrderByDataOrdineDesc(email);    
+        // Chiamo il nuovo metodo che mi restituisce gli ordini già ordinati cronologicamente
+        return ordineRepository.findByUtenteEmailOrderByDataOrdineDesc(email);     
+    }
+
+    // --- NUOVI METODI PER LA DASHBOARD ADMIN ---
+
+    // Io recupero tutti gli ordini presenti nel database per la dashboard
+    @Transactional(readOnly = true)
+    public List<Ordine> findAll() {
+        return ordineRepository.findAll();
+    }
+
+    // Io aggiorno lo stato dell'ordine specifico quando l'admin interviene
+    @Transactional
+    public void aggiornaStato(Long id, String nuovoStato) {
+        Ordine ordine = ordineRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Ordine non trovato"));
+        ordine.setStato(nuovoStato);
+        ordineRepository.save(ordine);
     }
 }

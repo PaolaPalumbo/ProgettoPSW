@@ -7,12 +7,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy; // Import aggiunto per la politica stateless
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import jakarta.servlet.DispatcherType;
+import jakarta.servlet.http.HttpServletResponse; // Import aggiunto per l'errore 401
 import java.util.Arrays;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +35,15 @@ public class WebSecurityConfig {
             .csrf(csrf -> csrf.disable())
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
+            // CRITICO PER JWT: Imposta la sessione come stateless
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            
+            // AGGIUNTO: Istruisce Spring a restituire 401 invece di 403 in caso di fallimento
+            .exceptionHandling(exc -> exc
+                .authenticationEntryPoint((request, response, authException) -> 
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Credenziali non valide o inesistenti")
+                )
+            )
             
             .authorizeHttpRequests(auth -> auth
                 .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll() 
@@ -47,6 +58,7 @@ public class WebSecurityConfig {
                     "/api/recensioni", "/api/recensioni/**",
                     "/api/recensioni/approva/**",
                     "/api/utenti/login",
+                    "/api/utenti/registrazione",
                     "/error"
                 ).permitAll()
                 

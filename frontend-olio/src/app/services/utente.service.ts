@@ -45,4 +45,23 @@ export class UtenteService {
   logout(): void {
     localStorage.removeItem('jwt_token');
   }
+
+  // Io controllo se il ruolo passato è presente nel token
+  hasRole(role: string): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+
+    try {
+      // Il token JWT è composto da 3 parti divise dal punto: header.payload.signature
+      // Io prendo la parte centrale (payload) e la decodifico da Base64
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      
+      // Controllo se il payload ha una lista di ruoli (di solito chiamata 'roles' o 'authorities')
+      // E verifico se include il ruolo richiesto (es. 'ROLE_ADMIN')
+      return payload.roles && payload.roles.includes('ROLE_' + role);
+    } catch (e) {
+      console.error('Errore nella lettura del token:', e);
+      return false;
+    }
+  }
 }

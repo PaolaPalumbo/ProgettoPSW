@@ -3,9 +3,15 @@
     <div class="col-md-6 col-lg-4">
       <div class="card login-card">
         <div class="card-body p-4">
-          <h3 class="text-center mb-4 login-title">Accedi</h3>
+          <h3 class="text-center mb-4 login-title" [ngClass]="{'admin-title': isAdminLogin}">
+            {{ isAdminLogin ? 'Accesso Amministratore' : 'Accedi' }}
+          </h3>
           
-          <div *ngIf="messaggioErrore" class="alert alert-danger" role="alert">
+          <div *ngIf="avvisoAdmin" class="alert alert-warning mb-3" role="alert">
+            {{ avvisoAdmin }}
+          </div>
+
+          <div *ngIf="messaggioErrore" class="alert alert-danger mb-3" role="alert">
             {{ messaggioErrore }}
           </div>
 

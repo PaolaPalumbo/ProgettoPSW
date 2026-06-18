@@ -2,14 +2,15 @@ package com.oleumfamiliae.backend.service;
 
 import com.oleumfamiliae.backend.model.Utente;
 import com.oleumfamiliae.backend.repository.UtenteRepository;
-import org.springframework.security.crypto.password.PasswordEncoder; // IMPORTANTE
+import org.springframework.security.crypto.password.PasswordEncoder; 
 import org.springframework.stereotype.Service;
+import java.util.Optional; // Import fondamentale per gestire Optional
 
 @Service
 public class UtenteService {
 
     private final UtenteRepository utenteRepository;
-    private final PasswordEncoder passwordEncoder; // Iniezione del codificatore
+    private final PasswordEncoder passwordEncoder; 
 
     public UtenteService(UtenteRepository utenteRepository, PasswordEncoder passwordEncoder) {
         this.utenteRepository = utenteRepository;
