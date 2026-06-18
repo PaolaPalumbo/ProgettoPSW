@@ -41,18 +41,30 @@ export class LoginComponent implements OnInit {
     this.messaggioErrore = ''; // Puliamo solo l'errore, non l'avvisoAdmin
 
     this.utenteService.login(this.credenziali).subscribe({
-      next: (response) => {
+      next: (response: any) => { // <-- Tipizzato per lo Strict Mode
         console.log('Login effettuato con successo!');
         
-        // --- NUOVO BIVIO DI NAVIGAZIONE ---
-        // Controlliamo se l'utente che ha appena fatto login è un amministratore.
-        if (this.isAdminLogin || this.credenziali.email === 'admin@oleumfamiliae.it') {
-          this.router.navigate(['/login/admin']); // Rotta per la Dashboard Admin
-        } else {
-          this.router.navigate(['/']); // Rotta per i clienti normali (Vetrina/Home)
+        // --- PASSAGGIO FONDAMENTALE: SALVATAGGIO TOKEN ---
+        // Se il backend invia un token, lo salviamo subito nel localStorage
+        if (response && response.token) {
+          localStorage.setItem('token', response.token);
+          console.log("Token salvato nel localStorage.");
         }
+        
+        // --- NUOVO BIVIO DI NAVIGAZIONE CON RITARDO ---
+        // Usiamo setTimeout per evitare conflitti con la adminGuard
+        setTimeout(() => {
+          const emailInserita = this.credenziali.email.trim().toLowerCase();
+
+          // Controlliamo se l'utente che ha appena fatto login è un amministratore
+          if (this.isAdminLogin || emailInserita === 'admin@oleumfamiliae.it') {
+            this.router.navigate(['/login/admin']); // Rotta per la Dashboard Admin
+          } else {
+            this.router.navigate(['/']); // Rotta per i clienti normali (Vetrina/Home)
+          }
+        }, 100);
       },
-      error: (err) => {
+      error: (err: any) => { // <-- Tipizzato per lo Strict Mode
         console.error('Errore dal server:', err);
 
         if (err.status === 401 || err.status === 403 || err.status === 404) {

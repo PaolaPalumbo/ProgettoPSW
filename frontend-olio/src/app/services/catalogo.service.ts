@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http'; // Aggiunto HttpHeaders
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -17,7 +17,13 @@ export class CatalogoService {
   }
 
   aggiornaQuantita(id: number, quantita: number) {
-    // Usiamo PUT passando la quantità come parametro nell'URL
-    return this.http.put(`${this.apiUrl}/${id}/quantita?quantita=${quantita}`, {});
+    // Recupera il token dal localStorage per autorizzare la richiesta
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    // Usiamo PUT passando la quantità come parametro nell'URL e includendo gli headers
+    return this.http.put(`${this.apiUrl}/${id}/quantita?quantita=${quantita}`, {}, { headers: headers });
   }
 }

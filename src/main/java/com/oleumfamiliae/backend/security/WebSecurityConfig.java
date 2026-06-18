@@ -2,19 +2,19 @@ package com.oleumfamiliae.backend.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod; // Import aggiunto
+import org.springframework.http.HttpMethod; 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy; // Import aggiunto per la politica stateless
+import org.springframework.security.config.http.SessionCreationPolicy; 
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import jakarta.servlet.DispatcherType;
-import jakarta.servlet.http.HttpServletResponse; // Import aggiunto per l'errore 401
+import jakarta.servlet.http.HttpServletResponse; 
 import java.util.Arrays;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,10 +35,8 @@ public class WebSecurityConfig {
             .csrf(csrf -> csrf.disable())
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
-            // CRITICO PER JWT: Imposta la sessione come stateless
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
-            // AGGIUNTO: Istruisce Spring a restituire 401 invece di 403 in caso di fallimento
             .exceptionHandling(exc -> exc
                 .authenticationEntryPoint((request, response, authException) -> 
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Credenziali non valide o inesistenti")
@@ -47,15 +45,13 @@ public class WebSecurityConfig {
             
             .authorizeHttpRequests(auth -> auth
                 .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll() 
-                
-                // CORREZIONE CRITICA: Permettiamo sempre le richieste OPTIONS per il CORS
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 
-                // AGGIUNTO: Permettiamo a tutti solo di LEGGERE (GET) il catalogo
-                .requestMatchers(HttpMethod.GET, "/api/prodotti", "/api/prodotti/**").permitAll()
+                // 1. REGOLA SPECIFICA: Richiediamo autenticazione per MODIFICARE la quantità
+                .requestMatchers(HttpMethod.PUT, "/api/prodotti/**/quantita").authenticated()
                 
-                // AGGIUNTO: Richiediamo permessi per MODIFICARE (PUT) l'inventario
-                .requestMatchers(HttpMethod.PUT, "/api/prodotti/**").authenticated()
+                // 2. REGOLA GENERALE: Permettiamo letture pubbliche dei prodotti
+                .requestMatchers(HttpMethod.GET, "/api/prodotti", "/api/prodotti/**").permitAll()
                 
                 .requestMatchers(
                     "/api/utenti/**",

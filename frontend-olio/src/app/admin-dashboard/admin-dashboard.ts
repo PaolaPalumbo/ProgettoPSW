@@ -19,7 +19,6 @@ export class AdminDashboardComponent implements OnInit {
   catalogoProdotti: any[] = [];
 
   constructor(
-    // 2. Aggiorniamo il costruttore per usare la classe corretta
     private catalogoService: CatalogoService, 
     private recensioneService: RecensioneService
   ) {}
@@ -29,16 +28,13 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   caricaDati() {
-    // 1. Carica le recensioni in attesa (verifica che il metodo nel service si chiami così)
     this.recensioneService.getRecensioniInAttesa().subscribe({
-      next: (dati: any) => this.recensioniDaApprovare = dati, // <-- Tipizzato con : any
-      error: (err: any) => console.error('Errore nel caricamento recensioni', err) // <-- Tipizzato con : any
+      error: (err: any) => console.error('Errore nel caricamento recensioni', err)
     });
 
-    // 2. Carica l'inventario prodotti
     this.catalogoService.getProdotti().subscribe({
-      next: (dati: any) => this.catalogoProdotti = dati, // <-- Tipizzato con : any
-      error: (err: any) => console.error('Errore nel caricamento prodotti', err) // <-- Tipizzato con : any
+      next: (dati: any) => this.catalogoProdotti = dati,
+      error: (err: any) => console.error('Errore nel caricamento prodotti', err)
     });
   }
 
@@ -52,22 +48,26 @@ export class AdminDashboardComponent implements OnInit {
     this.recensioneService.approva(id).subscribe({
       next: () => {
         console.log('Recensione approvata!');
-        // Ricarica i dati per far sparire la recensione appena approvata dalla tabella
         this.caricaDati(); 
       },
-      error: (err: any) => console.error('Errore durante l\'approvazione', err) // <-- Tipizzato con : any
+      error: (err: any) => console.error('Errore durante l\'approvazione', err)
     });
   }
 
   aggiornaScorte(id: number, nuovaQuantita: number) {
+    // DEBUG: Verifichiamo il token prima di inviare
+    const token = localStorage.getItem('token');
+    console.log("DEBUG - Token presente nel localStorage:", token ? "SÌ" : "NO");
+
     this.catalogoService.aggiornaQuantita(id, nuovaQuantita).subscribe({
       next: () => {
         console.log('Scorte aggiornate con successo!');
         alert('Quantità aggiornata a magazzino!');
       },
-      error: (err: any) => { // <-- Tipizzato con : any
-        console.error('Errore durante l\'aggiornamento scorte', err);
-        alert('Errore durante il salvataggio.');
+      error: (err: any) => { 
+        // DEBUG: Stampiamo l'errore completo per vedere il codice di stato
+        console.error('DETTAGLIO ERRORE SERVER:', err);
+        alert('Errore durante il salvataggio. Controlla la console (F12).');
       }
     });
   }
