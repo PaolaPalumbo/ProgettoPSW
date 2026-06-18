@@ -5,33 +5,40 @@ import com.oleumfamiliae.backend.model.Utente;
 import com.oleumfamiliae.backend.repository.ProdottoRepository;
 import com.oleumfamiliae.backend.repository.UtenteRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder; // Aggiunto import per l'encoder
 import org.springframework.stereotype.Component;
 
 @Component
 public class DatabaseLoader implements CommandLineRunner {
 
     private final ProdottoRepository prodottoRepository;
-    private final UtenteRepository utenteRepository; // Aggiungiamo la repository dell'utente
+    private final UtenteRepository utenteRepository; // La repository dell'utente
+    private final PasswordEncoder passwordEncoder;   // Aggiungiamo l'encoder per la sicurezza
 
-    // Aggiorniamo il costruttore per iniettare entrambe le repository
-    public DatabaseLoader(ProdottoRepository prodottoRepository, UtenteRepository utenteRepository) {
+    // Aggiorniamo il costruttore per iniettare le repository e l'encoder
+    public DatabaseLoader(ProdottoRepository prodottoRepository, UtenteRepository utenteRepository, PasswordEncoder passwordEncoder) {
         this.prodottoRepository = prodottoRepository;
         this.utenteRepository = utenteRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void run(String... args) throws Exception {
         
-        // 1. Crea un utente di test se il database è vuoto
+        // 1. Creo il mio utente di test se il database è vuoto
         if (utenteRepository.count() == 0) {
             Utente u = new Utente();
-            // Inserisci i campi in base a come li hai definiti nel tuo model Utente
-            u.setNome("Mario"); 
-            u.setCognome("Rossi");
-            u.setEmail("mario.rossi@test.com");
-            u.setPassword("passwordSicura");
+            // Inserisco i miei dati per testare il login
+            u.setNome("Paola"); 
+            u.setCognome("Palumbo");
+            u.setEmail("palumbo.paola12@gmail.com");
+            
+            // FONDAMENTALE: Cripto la password prima di salvarla, 
+            // altrimenti Spring Security la rifiuterà durante il login!
+            u.setPassword(passwordEncoder.encode("passwordSicura2026")); 
+            
             utenteRepository.save(u);
-            System.out.println("--- Utente di test inserito nel database! ---");
+            System.out.println("--- Utente di test inserito nel database con password criptata! ---");
         }
 
         // 2. Crea un catalogo di prodotti di test se il database è vuoto

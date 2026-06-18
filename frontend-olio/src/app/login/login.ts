@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { Router,RouterModule  } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { UtenteService } from '../services/utente.service'; // Path corretto!
+import { UtenteService } from '../services/utente.service'; 
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule,RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
@@ -21,19 +21,20 @@ export class LoginComponent {
   constructor(private utenteService: UtenteService, private router: Router) {}
 
   onSubmit() {
-    console.log('--- SUBMIT AVVIATO ---'); // Test 1
-    console.log('Credenziali inviate:', this.credenziali); // Test 2
-    this.messaggioErrore = ''; // Resetta l'errore
+    // Resetto l'errore ad ogni nuovo tentativo per pulire l'interfaccia
+    this.messaggioErrore = ''; 
     
     this.utenteService.login(this.credenziali).subscribe({
       next: (response) => {
         console.log('Login effettuato con successo!');
-        // Se il login va a buon fine, navighiamo verso il catalogo
+        
+        // Se il login va a buon fine, navigo verso il catalogo
         this.router.navigate(['/']);
       },
       error: (err) => {
         console.error('Errore dal server:', err);
-        // Catturiamo esplicitamente l'errore 401 o 403
+        
+        // Catturo esplicitamente l'errore 401 o 403 per dare un feedback all'utente
         if (err.status === 401 || err.status === 403) {
           this.messaggioErrore = 'Email o password errate. Riprova.';
         } else {

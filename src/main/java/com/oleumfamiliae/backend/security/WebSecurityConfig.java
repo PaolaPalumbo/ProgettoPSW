@@ -25,7 +25,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         System.out.println("===============================================");
-        System.out.println("STO CARICANDO LA NOSTRA SICUREZZA PERSONALIZZATA!");
+        System.out.println("STO CARICANDO LA SICUREZZA PERSONALIZZATA!");
         System.out.println("===============================================");
         
         http
