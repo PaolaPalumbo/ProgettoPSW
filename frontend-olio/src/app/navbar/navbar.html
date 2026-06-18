@@ -33,8 +33,9 @@
       </ul>
     </div>
 
-    <div class="d-flex">
-      <a class="btn btn-nav-carrello ms-4 d-flex align-items-center" routerLink="/carrello" 
+    <div class="d-flex align-items-center">
+      
+      <a class="btn btn-nav-carrello ms-3 d-flex align-items-center" routerLink="/carrello" 
          style="border: 1px solid #3b4d2e; color: #3b4d2e; border-radius: 20px; padding: 6px 20px; font-weight: 500; transition: all 0.3s;">
         Carrello
         <span class="badge rounded-pill ms-2" 
@@ -43,6 +44,26 @@
           {{ contatore }}
         </span>
       </a>
+
+      <ng-container *ngIf="!utenteService.isLoggedIn()">
+        <a class="btn ms-3 d-flex align-items-center" routerLink="/login"
+           style="background-color: #3b4d2e; color: #ffffff; border-radius: 20px; padding: 6px 20px; font-weight: 500; border: 1px solid #3b4d2e; transition: all 0.3s;">
+          Accedi
+        </a>
+      </ng-container>
+
+      <ng-container *ngIf="utenteService.isLoggedIn()">
+        <a class="btn ms-3 d-flex align-items-center" routerLink="/profilo"
+           style="background-color: #3b4d2e; color: #ffffff; border-radius: 20px; padding: 6px 20px; font-weight: 500; border: 1px solid #3b4d2e; transition: all 0.3s;">
+          Area Personale
+        </a>
+        
+        <button class="btn ms-3 d-flex align-items-center" (click)="logout()"
+                style="border: 1px solid #dc3545; color: #dc3545; background-color: transparent; border-radius: 20px; padding: 6px 20px; font-weight: 500; transition: all 0.3s;">
+          Esci
+        </button>
+      </ng-container>
+
     </div>
 
   </div>

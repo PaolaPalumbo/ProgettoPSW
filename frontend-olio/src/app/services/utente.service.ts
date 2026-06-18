@@ -15,18 +15,19 @@ export class UtenteService {
     // Il backend per la registrazione restituisce l'oggetto JSON dell'utente salvato
     return this.http.post(`${this.apiUrl}/registrazione`, nuovoUtente);
   }
-
   
+  // Metodo per il login
   login(credenziali: any): Observable<any> {
-    // Aggiungiamo { responseType: 'text' } per accettare la stringa pura da Spring Boot
+    // Aggiungo { responseType: 'text' } per accettare la stringa pura del JWT da Spring Boot
     return this.http.post(`${this.apiUrl}/login`, credenziali, { responseType: 'text' }).pipe(
       tap((tokenStr: any) => {
-        // Ora il backend ci restituisce direttamente la stringa, la salviamo e basta!
+        // Ora il backend mi restituisce direttamente la stringa, la salvo e basta!
         this.salvaToken(tokenStr);
       })
     );
   }
 
+  // Metodi di utility per gestire la mia sessione nel browser
   salvaToken(token: string): void {
     localStorage.setItem('jwt_token', token);
   }
@@ -35,10 +36,12 @@ export class UtenteService {
     return localStorage.getItem('jwt_token');
   }
 
+  // Questo è il metodo che uso nella Navbar per capire se mostrare "Accedi" o "Area Personale"
   isLoggedIn(): boolean {
     return this.getToken() !== null;
   }
 
+  // Metodo per uscire: cancello il token e chiudo la sessione
   logout(): void {
     localStorage.removeItem('jwt_token');
   }
