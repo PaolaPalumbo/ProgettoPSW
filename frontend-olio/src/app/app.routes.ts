@@ -6,6 +6,7 @@ import { StoriaComponent } from './storia/storia';
 import { TenuteComponent } from './tenute/tenute'; 
 import { LoginComponent } from './login/login';
 import { RegistrazioneComponent } from './registrazione/registrazione';
+import { ProfiloComponent } from './profilo/profilo'; // <-- AGGIUNTO: Importo il mio nuovo componente
 import { utenteGuard } from './interceptors/utente.guard';
 
 export const routes: Routes = [
@@ -22,6 +23,9 @@ export const routes: Routes = [
   { path: 'storia', component: StoriaComponent }, 
   { path: 'tenute', component: TenuteComponent },
   { path: 'prodotti', component: CatalogoComponent }, 
+  
+  // <-- AGGIUNTO: Ecco la rotta che fa funzionare il mio tasto "Area Personale"!
+  { path: 'profilo', component: ProfiloComponent },
   
   // Questa rotta "jolly" deve stare SEMPRE e RIGOROSAMENTE per ultima
   { path: '**', redirectTo: '' } 
