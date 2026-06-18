@@ -29,6 +29,7 @@ export class AdminDashboardComponent implements OnInit {
 
   caricaDati() {
     this.recensioneService.getRecensioniInAttesa().subscribe({
+      next: (dati: any) => this.recensioniDaApprovare = dati,
       error: (err: any) => console.error('Errore nel caricamento recensioni', err)
     });
 
