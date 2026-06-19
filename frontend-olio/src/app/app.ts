@@ -1,15 +1,26 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './navbar/navbar';
-import { CatalogoComponent } from './catalogo/catalogo';
+import { UtenteService } from './services/utente.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent], // Nota: Il componente è dentro il router, non serve qui se è nel router
+  imports: [RouterOutlet, NavbarComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
-  protected readonly title = signal('frontend-olio');
+export class App implements OnInit {
+  protected readonly title = 'frontend-olio';
+
+  constructor(private utenteService: UtenteService) {}
+
+  ngOnInit() {
+    // Controllo di sicurezza globale all'avvio dell'app:
+    // Se non c'è il token nel localStorage, assicuriamoci che il servizio sia pulito.
+    // Questo previene che l'app parta in uno stato incoerente.
+    if (!this.utenteService.isLoggedIn()) {
+      this.utenteService.logout();
+    }
+  }
 }

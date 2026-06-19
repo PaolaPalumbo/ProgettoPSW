@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router'; 
 import { CarrelloService } from '../carrello'; 
@@ -24,13 +24,18 @@ export class NavbarComponent implements OnInit {
   constructor(
     public carrelloService: CarrelloService,
     public utenteService: UtenteService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef // <-- INIETTATO: Strumento per forzare il rendering
   ) {}
 
   ngOnInit() {
-    // Sottoscrizione al cambio di stato in tempo reale
+    // 1. Lettura immediata dello stato all'avvio
+    this.isLoggedIn = this.utenteService.isLoggedIn();
+
+    // 2. Sottoscrizione al cambio di stato in tempo reale
     this.utenteService.authStatus$.subscribe(stato => {
       this.isLoggedIn = stato;
+      this.cdr.detectChanges(); // <-- FORZATURA: Diciamo ad Angular di aggiornare l'HTML all'istante
     });
   }
 
@@ -65,6 +70,7 @@ export class NavbarComponent implements OnInit {
   logout(): void {
     this.utenteService.logout();
     this.chiudiDropdown();
+    this.isLoggedIn = false;                
     this.router.navigate(['/']);
   }
 }

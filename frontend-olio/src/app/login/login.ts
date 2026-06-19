@@ -28,6 +28,14 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // --- NUOVO CONTROLLO DI COERENZA VISIVA ---
+    // Se l'utente è già loggato (es. token nel sessionStorage),
+    // lo reindirizziamo alla Home per evitare che veda di nuovo il form di login
+    if (this.utenteService.isLoggedIn()) {
+      this.router.navigate(['/']);
+      return;
+    }
+
     this.route.queryParams.subscribe(params => {
       // Se arriviamo dalla adminGuard, impostiamo l'avviso
       if (params['error'] === 'admin_only') {
@@ -41,15 +49,15 @@ export class LoginComponent implements OnInit {
     this.messaggioErrore = ''; // Puliamo solo l'errore, non l'avvisoAdmin
 
     // PULIZIA PREVENTIVA: Eliminiamo i dati vecchi prima di procedere
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
+    // <-- AGGIORNATO: Usiamo sessionStorage.clear() in coerenza con le nuove policy di sicurezza
+    sessionStorage.clear(); 
 
     this.utenteService.login(this.credenziali).subscribe({
       next: (response: any) => { // <-- Tipizzato per lo Strict Mode
         console.log('Login effettuato con successo!');
         
         // --- PASSAGGIO FONDAMENTALE: SALVATAGGIO TOKEN E RUOLO ---
-        // Se il backend invia un token e un ruolo, li salviamo subito nel localStorage
+        // Se il backend invia un token e un ruolo, li salviamo subito nel sessionStorage
         let token = typeof response === 'string' ? response : response.token;
         let ruolo = response.ruolo;
 
@@ -67,15 +75,19 @@ export class LoginComponent implements OnInit {
           console.log("Dati sessione salvati con ruolo:", ruolo);
         }
         
-        // --- NAVIGAZIONE SICURA CON RITARDO ---
-        // Attendiamo un breve ciclo per assicurarci che l'app 
-        // abbia recepito il nuovo stato di autenticazione
-        setTimeout(() => {
-          // NAVIGAZIONE INTELLIGENTE: 
-          // Utilizziamo la variabile locale 'ruolo' per garantire coerenza immediata
-          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || (ruolo === 'ADMIN' ? '/login/admin' : '/');
-          this.router.navigateByUrl(returnUrl);
-        }, 50); 
+        // --- NAVIGAZIONE SICURA CON VERIFICA ---
+        // Prima di navigare, verifichiamo che il token sia effettivamente presente
+        const checkToken = () => {
+          if (this.utenteService.isLoggedIn()) {
+             const returnUrl = this.route.snapshot.queryParams['returnUrl'] || (ruolo === 'ADMIN' ? '/login/admin' : '/');
+             this.router.navigateByUrl(returnUrl);
+          } else {
+             // Se il browser è lento, riproviamo dopo pochissimi millisecondi
+             setTimeout(checkToken, 50);
+          }
+        };
+
+        checkToken();
       },
       error: (err: any) => { // <-- Tipizzato per lo Strict Mode
         console.error('Errore dal server:', err);

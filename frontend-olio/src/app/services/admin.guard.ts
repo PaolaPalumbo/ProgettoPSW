@@ -7,7 +7,8 @@ export const adminGuard = () => {
   const router = inject(Router);
 
   // 1. Controllo se esiste almeno il token (autenticazione base) 
-  const token = localStorage.getItem('token');
+  // <-- CORREZIONE: Allineato a sessionStorage per la sicurezza
+  const token = sessionStorage.getItem('token');
 
   // 2. Se ho il token, procediamo 
   if (token) {
@@ -19,10 +20,13 @@ export const adminGuard = () => {
     // Se il token c'è ma il ruolo non è ancora stato caricato,
     // in un'app robusta devp attendere il caricamento dei dati utente.
     // Per ora, assumo che se ho il token sono autenticata.
-    return true; 
+    // <-- CORREZIONE DI SICUREZZA: Blocchiamo l'accesso a chi non è ADMIN, altrimenti la Guard è inutile.
+    console.log('Accesso negato: utente autenticato ma permessi insufficienti.');
+    router.navigate(['/']); // Redirige un utente standard alla home
+    return false; 
   }
 
-  // 3. Se non sono autenticate, rimando al login [cite: 441, 453]
+  // 3. Se non sono autenticate, rimando al login
   console.log('Accesso negato: utente non autenticato.');
   router.navigate(['/login'], { queryParams: { error: 'admin_only' } });
   return false;

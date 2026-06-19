@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, BehaviorSubject } from 'rxjs'; // <-- Importato BehaviorSubject
-import { jwtDecode } from 'jwt-decode'; // Importa la libreria
+import { Observable, tap, BehaviorSubject } from 'rxjs'; 
+import { jwtDecode } from 'jwt-decode'; 
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +9,8 @@ import { jwtDecode } from 'jwt-decode'; // Importa la libreria
 export class UtenteService {
   private apiUrl = 'http://localhost:8080/api/utenti';
 
-  // <-- Nuova logica per notificare in tempo reale il cambio di stato dell'autenticazione
-  private authSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
+  // <-- CORREZIONE: Inizializziamo il BehaviorSubject controllando se il token esiste DAVVERO
+  private authSubject = new BehaviorSubject<boolean>(!!sessionStorage.getItem('token'));
   authStatus$ = this.authSubject.asObservable();
 
   constructor(private http: HttpClient) {}
@@ -22,10 +22,8 @@ export class UtenteService {
   
   // Metodo per il login
   login(credenziali: any): Observable<any> {
-    // RIMOSSO { responseType: 'text' } per ricevere l'oggetto JSON completo
     return this.http.post(`${this.apiUrl}/login`, credenziali).pipe(
       tap((response: any) => {
-        // Ora response è l'oggetto { token: "...", ruolo: "..." }
         this.salvaSessione(response);
       })
     );
@@ -33,40 +31,47 @@ export class UtenteService {
 
   // Metodi di utility per gestire la sessione
   salvaSessione(response: any): void {
-    localStorage.setItem('token', response.token);
-    // Nota: Il ruolo è ora dentro il token, non serve più salvarlo come stringa separata,
-    // ma manteniamo la riga per compatibilità se il tuo codice lo usa ancora altrove.
-    localStorage.setItem('role', response.ruolo); 
+    sessionStorage.setItem('token', response.token);
+    sessionStorage.setItem('role', response.ruolo); 
     
-    // <-- Notifichiamo il resto dell'app che lo stato è cambiato
+    // Notifichiamo il resto dell'app che lo stato è cambiato
     this.authSubject.next(true);
   }
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    return sessionStorage.getItem('token');
   }
 
   isLoggedIn(): boolean {
-    return this.getToken() !== null;
+    const token = sessionStorage.getItem('token');
+    // Se il token è nullo, stringa vuota o "undefined", non siamo loggati
+    // MODIFICATO: Metodo ora puro, non innesca reazioni a catena
+    return token !== null && token !== undefined && token !== '' && token !== 'undefined';
   }
 
   // Logout
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role'); // Puliamo tutto
+    // <-- CORREZIONE: Pulisci TUTTO in modo drastico
+    sessionStorage.clear(); 
     
-    // <-- Notifichiamo il logout
+    // Notifichiamo il logout forzatamente a tutti i componenti in ascolto
     this.authSubject.next(false);
   }
 
-  // SISTEMATO: Ora estrae il ruolo direttamente dal token crittografico
+  // SISTEMATO: Ora controlla prima il sessionStorage, poi il token crittografico
   hasRole(role: string): boolean {
+    // 1. Controllo primario: leggiamo il ruolo che abbiamo salvato esplicitamente
+    const ruoloSalvato = sessionStorage.getItem('role');
+    if (ruoloSalvato && ruoloSalvato.toUpperCase() === role.toUpperCase()) {
+      return true;
+    }
+
+    // 2. Fallback: proviamo a estrarlo dal token (se il backend dovesse iniziare a inviarlo)
     const token = this.getToken();
     if (!token) return false;
 
     try {
       const decoded: any = jwtDecode(token);
-      // Estrae il ruolo dal token; se il backend invia 'ruolo', cambialo qui
       const ruoloNelToken = decoded.role || decoded.ruolo; 
       return ruoloNelToken === role;
     } catch (e) {

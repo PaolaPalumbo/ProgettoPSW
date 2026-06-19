@@ -45,14 +45,14 @@
         </span>
       </a>
 
-      <ng-container *ngIf="!utenteService.isLoggedIn()">
+      <ng-container *ngIf="!isLoggedIn">
         <a class="btn ms-3 d-flex align-items-center" routerLink="/login"
            style="background-color: #3b4d2e; color: #ffffff; border-radius: 20px; padding: 6px 20px; font-weight: 500; border: 1px solid #3b4d2e; transition: all 0.3s;">
           Accedi
         </a>
       </ng-container>
 
-      <ng-container *ngIf="utenteService.isLoggedIn()">
+      <ng-container *ngIf="isLoggedIn">
         
         <div class="dropdown ms-3">
           <a class="btn d-flex align-items-center dropdown-toggle" 
