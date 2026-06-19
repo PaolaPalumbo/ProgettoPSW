@@ -40,6 +40,10 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.messaggioErrore = ''; // Puliamo solo l'errore, non l'avvisoAdmin
 
+    // PULIZIA PREVENTIVA: Eliminiamo i dati vecchi prima di procedere
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+
     this.utenteService.login(this.credenziali).subscribe({
       next: (response: any) => { // <-- Tipizzato per lo Strict Mode
         console.log('Login effettuato con successo!');
@@ -58,21 +62,20 @@ export class LoginComponent implements OnInit {
         }
 
         if (token) {
-          localStorage.setItem('token', token);
-          localStorage.setItem('role', ruolo); // Salviamo il ruolo per la Guard
+          // salvaSessione ora notifica il BehaviorSubject (authStatus$)
+          this.utenteService.salvaSessione({ token, ruolo });
           console.log("Dati sessione salvati con ruolo:", ruolo);
         }
         
-        // --- NUOVO BIVIO DI NAVIGAZIONE CON RITARDO ---
-        // Usiamo setTimeout per evitare conflitti con la adminGuard
+        // --- NAVIGAZIONE SICURA CON RITARDO ---
+        // Attendiamo un breve ciclo per assicurarci che l'app 
+        // abbia recepito il nuovo stato di autenticazione
         setTimeout(() => {
-          // Controlliamo il ruolo salvato nel localStorage
-          if (localStorage.getItem('role') === 'ADMIN') {
-            this.router.navigate(['/login/admin']); // Rotta per la Dashboard Admin
-          } else {
-            this.router.navigate(['/']); // Rotta per i clienti normali (Vetrina/Home)
-          }
-        }, 100);
+          // NAVIGAZIONE INTELLIGENTE: 
+          // Utilizziamo la variabile locale 'ruolo' per garantire coerenza immediata
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || (ruolo === 'ADMIN' ? '/login/admin' : '/');
+          this.router.navigateByUrl(returnUrl);
+        }, 50); 
       },
       error: (err: any) => { // <-- Tipizzato per lo Strict Mode
         console.error('Errore dal server:', err);

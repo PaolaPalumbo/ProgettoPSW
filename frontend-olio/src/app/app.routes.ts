@@ -32,7 +32,8 @@ export const routes: Routes = [
   { path: 'tenute', component: TenuteComponent },
   { path: 'prodotti', component: CatalogoComponent }, 
   
-  { path: 'profilo', component: ProfiloComponent },
+  // <-- PROTETTO: Ora l'accesso al profilo richiede il login verificato dalla utenteGuard
+  { path: 'profilo', component: ProfiloComponent, canActivate: [utenteGuard] },
   
   // Questa rotta "jolly" deve stare SEMPRE e RIGOROSAMENTE per ultima
   { path: '**', redirectTo: '' } 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router'; 
 import { CarrelloService } from '../carrello'; 
@@ -11,12 +11,15 @@ import { UtenteService } from '../services/utente.service';
   templateUrl: './navbar.html',
   styleUrl: './navbar.css'
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   // Stato per l'hamburger menu (mobile)
   isMenuAperto: boolean = false;
   
   // Stato per la tendina Area Personale
   isDropdownAperto: boolean = false;
+
+  // Stato locale per l'autenticazione
+  isLoggedIn: boolean = false;
 
   constructor(
     public carrelloService: CarrelloService,
@@ -24,13 +27,20 @@ export class NavbarComponent {
     private router: Router
   ) {}
 
+  ngOnInit() {
+    // Sottoscrizione al cambio di stato in tempo reale
+    this.utenteService.authStatus$.subscribe(stato => {
+      this.isLoggedIn = stato;
+    });
+  }
+
   get contatore(): number {
     return this.carrelloService.getNumeroArticoli();
   }
 
-  // --- NUOVO: Controllo ruolo per la UI ---
+  // --- AGGIORNATO: Ora usa la variabile locale aggiornata dal BehaviorSubject ---
   isAdmin(): boolean {
-    return localStorage.getItem('role') === 'ADMIN';
+    return this.isLoggedIn && this.utenteService.hasRole('ADMIN');
   }
 
   // Hamburger Menu
@@ -54,6 +64,7 @@ export class NavbarComponent {
   // Logout
   logout(): void {
     this.utenteService.logout();
+    this.chiudiDropdown();
     this.router.navigate(['/']);
   }
 }

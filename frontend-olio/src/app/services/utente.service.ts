@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, BehaviorSubject } from 'rxjs'; // <-- Importato BehaviorSubject
+import { jwtDecode } from 'jwt-decode'; // Importa la libreria
 
 @Injectable({
   providedIn: 'root'
@@ -8,59 +9,68 @@ import { Observable, tap } from 'rxjs';
 export class UtenteService {
   private apiUrl = 'http://localhost:8080/api/utenti';
 
+  // <-- Nuova logica per notificare in tempo reale il cambio di stato dell'autenticazione
+  private authSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
+  authStatus$ = this.authSubject.asObservable();
+
   constructor(private http: HttpClient) {}
 
   // Metodo per la registrazione
   registrazione(nuovoUtente: any): Observable<any> {
-    // Il backend per la registrazione restituisce l'oggetto JSON dell'utente salvato
     return this.http.post(`${this.apiUrl}/registrazione`, nuovoUtente);
   }
   
   // Metodo per il login
   login(credenziali: any): Observable<any> {
-    // Aggiungo { responseType: 'text' } per accettare la stringa pura del JWT da Spring Boot
-    return this.http.post(`${this.apiUrl}/login`, credenziali, { responseType: 'text' }).pipe(
-      tap((tokenStr: any) => {
-        // Ora il backend mi restituisce direttamente la stringa, la salvo e basta!
-        this.salvaToken(tokenStr);
+    // RIMOSSO { responseType: 'text' } per ricevere l'oggetto JSON completo
+    return this.http.post(`${this.apiUrl}/login`, credenziali).pipe(
+      tap((response: any) => {
+        // Ora response è l'oggetto { token: "...", ruolo: "..." }
+        this.salvaSessione(response);
       })
     );
   }
 
-  // Metodi di utility per gestire la mia sessione nel browser
-  salvaToken(token: string): void {
-    localStorage.setItem('jwt_token', token);
+  // Metodi di utility per gestire la sessione
+  salvaSessione(response: any): void {
+    localStorage.setItem('token', response.token);
+    // Nota: Il ruolo è ora dentro il token, non serve più salvarlo come stringa separata,
+    // ma manteniamo la riga per compatibilità se il tuo codice lo usa ancora altrove.
+    localStorage.setItem('role', response.ruolo); 
+    
+    // <-- Notifichiamo il resto dell'app che lo stato è cambiato
+    this.authSubject.next(true);
   }
 
   getToken(): string | null {
-    return localStorage.getItem('jwt_token');
+    return localStorage.getItem('token');
   }
 
-  // Questo è il metodo che uso nella Navbar per capire se mostrare "Accedi" o "Area Personale"
   isLoggedIn(): boolean {
     return this.getToken() !== null;
   }
 
-  // Metodo per uscire: cancello il token e chiudo la sessione
+  // Logout
   logout(): void {
-    localStorage.removeItem('jwt_token');
+    localStorage.removeItem('token');
+    localStorage.removeItem('role'); // Puliamo tutto
+    
+    // <-- Notifichiamo il logout
+    this.authSubject.next(false);
   }
 
-  // Io controllo se il ruolo passato è presente nel token
+  // SISTEMATO: Ora estrae il ruolo direttamente dal token crittografico
   hasRole(role: string): boolean {
     const token = this.getToken();
     if (!token) return false;
 
     try {
-      // Il token JWT è composto da 3 parti divise dal punto: header.payload.signature
-      // Io prendo la parte centrale (payload) e la decodifico da Base64
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      
-      // Controllo se il payload ha una lista di ruoli (di solito chiamata 'roles' o 'authorities')
-      // E verifico se include il ruolo richiesto (es. 'ROLE_ADMIN')
-      return payload.roles && payload.roles.includes('ROLE_' + role);
+      const decoded: any = jwtDecode(token);
+      // Estrae il ruolo dal token; se il backend invia 'ruolo', cambialo qui
+      const ruoloNelToken = decoded.role || decoded.ruolo; 
+      return ruoloNelToken === role;
     } catch (e) {
-      console.error('Errore nella lettura del token:', e);
+      console.error("Errore decodifica token", e);
       return false;
     }
   }

@@ -35,18 +35,20 @@ public class UtenteService {
         return utenteRepository.save(utente);
     }
 
-    // 2. Login
+    // 2. Login (Versione con log di controllo)
     public Utente effettuaLogin(String email, String password) {
         Utente utente = utenteRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato!"));
         
-        // Verifica: confronto la password in chiaro con quella criptata nel database
         if (!passwordEncoder.matches(password, utente.getPassword())) {
             throw new RuntimeException("Password errata!");
         }
         
-        // Il backend restituisce l'utente completo (inclusi i ruoli) 
-        // così il token generato nel Controller potrà includerli
+        // DEBUG: Aggiungi questa riga per vedere in console cosa viene passato al Controller
+        System.out.println("DEBUG LOGIN: Utente trovato: " + utente.getEmail() + 
+                           " | Ruolo nel DB: " + utente.getRuolo() + 
+                           " | ID: " + utente.getId());
+                           
         return utente;
     }
 }

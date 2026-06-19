@@ -25,22 +25,23 @@ public class RecensioneController {
     @GetMapping("/miei")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<RecensioneResponseDTO>> getRecensioniMiei() {
-        // 1. Estraggo la mia email dal contesto di sicurezza (il token JWT)
+        // 1. Estraggo la mia email dal contesto di sicurezza
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         
         // 2. Chiedo al mio Service di trovare le mie recensioni
         List<Recensione> recensioni = recensioneService.trovaRecensioniPerUtente(email);
         
-        // 3. Converto le entità in DTO per il mio frontend
+        // 3. Converto le entità in DTO usando il costruttore aggiornato (4 parametri)
         List<RecensioneResponseDTO> recensioniDTO = recensioni.stream()
             .map(r -> new RecensioneResponseDTO(
                 r.getProdotto().getNome(), 
                 r.getVoto(),
-                r.getCommento()
+                r.getCommento(),
+                r.isApprovata() // Ora il dato arriva pulito al frontend come booleano
             ))
             .collect(Collectors.toList());
             
-        // 4. Restituisco la lista formattata pronta per la mia tabella Angular
+        // 4. Restituisco la lista formattata pronta per Angular
         return ResponseEntity.ok(recensioniDTO);
     }
 
@@ -48,13 +49,8 @@ public class RecensioneController {
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Recensione> invia(@RequestBody Recensione recensione) {
-        // 1. Estraggo la mia email dal contesto di sicurezza
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        
-        // 2. Chiedo al mio Service di inviare la recensione associandola alla mia email
         Recensione salvata = recensioneService.inviaRecensione(recensione, email);
-        
-        // 3. Restituisco la recensione salvata
         return ResponseEntity.ok(salvata);
     }
 
