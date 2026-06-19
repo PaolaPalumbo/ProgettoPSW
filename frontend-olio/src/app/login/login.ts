@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // <-- Aggiunto ChangeDetectorRef
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; 
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -44,20 +44,30 @@ export class LoginComponent implements OnInit {
       next: (response: any) => { // <-- Tipizzato per lo Strict Mode
         console.log('Login effettuato con successo!');
         
-        // --- PASSAGGIO FONDAMENTALE: SALVATAGGIO TOKEN ---
-        // Se il backend invia un token, lo salviamo subito nel localStorage
-        if (response && response.token) {
-          localStorage.setItem('token', response.token);
-          console.log("Token salvato nel localStorage.");
+        // --- PASSAGGIO FONDAMENTALE: SALVATAGGIO TOKEN E RUOLO ---
+        // Se il backend invia un token e un ruolo, li salviamo subito nel localStorage
+        let token = typeof response === 'string' ? response : response.token;
+        let ruolo = response.ruolo;
+
+        // FORZATURA DI SICUREZZA PER LA TESI:
+        // Determino il ruolo in base all'email se il backend non lo invia
+        if (!ruolo && this.credenziali.email.toLowerCase() === 'admin@oleumfamiliae.it') {
+            ruolo = 'ADMIN';
+        } else if (!ruolo) {
+            ruolo = 'USER';
+        }
+
+        if (token) {
+          localStorage.setItem('token', token);
+          localStorage.setItem('role', ruolo); // Salviamo il ruolo per la Guard
+          console.log("Dati sessione salvati con ruolo:", ruolo);
         }
         
         // --- NUOVO BIVIO DI NAVIGAZIONE CON RITARDO ---
         // Usiamo setTimeout per evitare conflitti con la adminGuard
         setTimeout(() => {
-          const emailInserita = this.credenziali.email.trim().toLowerCase();
-
-          // Controlliamo se l'utente che ha appena fatto login è un amministratore
-          if (this.isAdminLogin || emailInserita === 'admin@oleumfamiliae.it') {
+          // Controlliamo il ruolo salvato nel localStorage
+          if (localStorage.getItem('role') === 'ADMIN') {
             this.router.navigate(['/login/admin']); // Rotta per la Dashboard Admin
           } else {
             this.router.navigate(['/']); // Rotta per i clienti normali (Vetrina/Home)

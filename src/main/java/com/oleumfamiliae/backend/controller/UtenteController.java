@@ -3,6 +3,7 @@ package com.oleumfamiliae.backend.controller;
 import com.oleumfamiliae.backend.model.Utente;
 import com.oleumfamiliae.backend.service.UtenteService;
 import com.oleumfamiliae.backend.security.JwtUtils;
+import com.oleumfamiliae.backend.dto.JwtResponse;
 import com.oleumfamiliae.backend.dto.LoginRequest; // Importato il DTO per leggere il body JSON
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,18 +34,21 @@ public class UtenteController {
         return ResponseEntity.ok(utenteService.registraUtente(utente));
     }
 
-    // 2. Login
+    // 2. Login aggiornato
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        // Nota: questo è un login evoluto con token JWT.
-        // Utilizzo l'AuthenticationManager per validare le credenziali.
+        // 1. Autenticazione standard
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         
-        // Genero il token JWT tramite la classe JwtUtils
+        // 2. Generazione del token
         String jwt = jwtUtils.generateJwtToken(authentication);
         
-        // Restituisco il token che il frontend userà per le chiamate successive
-        return ResponseEntity.ok(jwt);
+        // 3. Recupero l'utente per ottenere il ruolo
+        // Nota: questo metodo usa il servizio che abbiamo appena sistemato
+        Utente utente = utenteService.effettuaLogin(loginRequest.getEmail(), loginRequest.getPassword());
+        
+        // 4. Risposta completa (Token + Ruolo)
+        return ResponseEntity.ok(new JwtResponse(jwt, utente.getRuolo()));
     }
 }

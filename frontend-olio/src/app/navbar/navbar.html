@@ -70,12 +70,27 @@
                 Cronologia Ordini
               </a>
             </li>
-            <li><hr class="dropdown-divider"></li>
             <li>
               <a class="dropdown-item py-2" routerLink="/profilo" [queryParams]="{ tab: 'recensioni' }" (click)="chiudiDropdown()" style="color: #3b4d2e; font-weight: 500;">
                 Le Mie Recensioni
               </a>
             </li>
+
+            <ng-container *ngIf="isAdmin()">
+              <li><hr class="dropdown-divider"></li>
+              <li><h6 class="dropdown-header text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Area Amministratore</h6></li>
+              <li>
+                <a class="dropdown-item py-2" routerLink="/login/admin" (click)="chiudiDropdown()" style="color: #dc3545; font-weight: 600;">
+                  Dashboard Admin
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item py-2" routerLink="/admin/recensioni" (click)="chiudiDropdown()" style="color: #3b4d2e; font-weight: 500;">
+                  Gestione Recensioni
+                </a>
+              </li>
+            </ng-container>
+
           </ul>
         </div>
         

@@ -28,6 +28,11 @@ export class NavbarComponent {
     return this.carrelloService.getNumeroArticoli();
   }
 
+  // --- NUOVO: Controllo ruolo per la UI ---
+  isAdmin(): boolean {
+    return localStorage.getItem('role') === 'ADMIN';
+  }
+
   // Hamburger Menu
   toggleMenu(): void {
     this.isMenuAperto = !this.isMenuAperto;

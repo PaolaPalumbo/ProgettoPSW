@@ -32,6 +32,9 @@ public class Utente {
     
     private String indirizzoSpedizione;
 
+    @Column
+    private String ruolo; // Campo aggiunto per gestire il ruolo (es. USER, ADMIN)
+
 
 
     // per accedere alle variabili private, creo i getter e setter
@@ -84,4 +87,11 @@ public class Utente {
         this.indirizzoSpedizione = indirizzoSpedizione;
     }
 
+    public String getRuolo() {
+        return ruolo;
+    }
+
+    public void setRuolo(String ruolo) {
+        this.ruolo = ruolo;
+    }
 }

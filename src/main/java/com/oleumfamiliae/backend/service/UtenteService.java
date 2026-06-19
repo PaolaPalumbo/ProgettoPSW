@@ -4,7 +4,7 @@ import com.oleumfamiliae.backend.model.Utente;
 import com.oleumfamiliae.backend.repository.UtenteRepository;
 import org.springframework.security.crypto.password.PasswordEncoder; 
 import org.springframework.stereotype.Service;
-import java.util.Optional; // Import fondamentale per gestire Optional
+import java.util.Optional; 
 
 @Service
 public class UtenteService {
@@ -27,6 +27,11 @@ public class UtenteService {
         String passwordCriptata = passwordEncoder.encode(utente.getPassword());
         utente.setPassword(passwordCriptata);
         
+        // Assicuro che l'utente abbia un ruolo di default se non specificato
+        if (utente.getRuolo() == null) {
+            utente.setRuolo("USER");
+        }
+        
         return utenteRepository.save(utente);
     }
 
@@ -40,6 +45,8 @@ public class UtenteService {
             throw new RuntimeException("Password errata!");
         }
         
+        // Il backend restituisce l'utente completo (inclusi i ruoli) 
+        // così il token generato nel Controller potrà includerli
         return utente;
     }
 }

@@ -15,7 +15,7 @@ public class DatabaseLoader implements CommandLineRunner {
     private final UtenteRepository utenteRepository; // La repository dell'utente
     private final PasswordEncoder passwordEncoder;   // Aggiungiamo l'encoder per la sicurezza
 
-    // Aggiorniamo il costruttore per iniettare le repository e l'encoder
+    // Aggiorno il costruttore per iniettare le repository e l'encoder
     public DatabaseLoader(ProdottoRepository prodottoRepository, UtenteRepository utenteRepository, PasswordEncoder passwordEncoder) {
         this.prodottoRepository = prodottoRepository;
         this.utenteRepository = utenteRepository;
@@ -32,6 +32,7 @@ public class DatabaseLoader implements CommandLineRunner {
             u.setNome("Paola"); 
             u.setCognome("Palumbo");
             u.setEmail("palumbo.paola12@gmail.com");
+            u.setRuolo("USER"); // Imposto il ruolo di default
             
             // FONDAMENTALE: Cripto la password prima di salvarla, 
             // altrimenti Spring Security la rifiuterà durante il login!
@@ -47,6 +48,7 @@ public class DatabaseLoader implements CommandLineRunner {
             // Questa email farà scattare il bivio nel frontend verso /login/admin
             admin.setEmail("admin@oleumfamiliae.it"); 
             admin.setPassword(passwordEncoder.encode("admin123")); 
+            admin.setRuolo("ADMIN"); // <--- AGGIUNTO: Questo assicura che il backend riconosca l'ADMIN
             
             utenteRepository.save(admin);
             System.out.println("--- Utente ADMIN inserito nel database con password criptata! ---");
