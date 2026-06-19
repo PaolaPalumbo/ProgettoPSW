@@ -47,11 +47,11 @@ public class WebSecurityConfig {
                 .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll() 
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 
-                // 1. REGOLA SPECIFICA: Richiediamo autenticazione per MODIFICARE la quantità
-                .requestMatchers(HttpMethod.PUT, "/api/prodotti/**/quantita").authenticated()
+                // 1. REGOLA SPECIFICA CORRETTA: Ho rimosso i doppi jolly ambigui
+                .requestMatchers(HttpMethod.PUT, "/api/prodotti/*/quantita").authenticated()
                 
                 // 2. REGOLA GENERALE: Permettiamo letture pubbliche dei prodotti
-                .requestMatchers(HttpMethod.GET, "/api/prodotti", "/api/prodotti/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/prodotti", "/api/prodotti/*").permitAll()
                 
                 .requestMatchers(
                     "/api/utenti/**",

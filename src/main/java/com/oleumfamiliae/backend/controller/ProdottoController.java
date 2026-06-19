@@ -44,8 +44,10 @@ public class ProdottoController {
         try {
             Prodotto prodottoAggiornato = prodottoService.aggiornaQuantita(id, quantita);
             return ResponseEntity.ok(prodottoAggiornato);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            // Loggo l'errore completo nel mio terminale per analizzare la causa reale
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Errore lato server: " + e.getMessage());
         }
     }
 }

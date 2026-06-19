@@ -56,17 +56,13 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   aggiornaScorte(id: number, nuovaQuantita: number) {
-    // DEBUG: Verifichiamo il token prima di inviare
-    const token = localStorage.getItem('token');
-    console.log("DEBUG - Token presente nel localStorage:", token ? "SÌ" : "NO");
-
+    // Ora il CatalogoService gestisce autonomamente il token, quindi passiamo solo 2 argomenti
     this.catalogoService.aggiornaQuantita(id, nuovaQuantita).subscribe({
       next: () => {
         console.log('Scorte aggiornate con successo!');
         alert('Quantità aggiornata a magazzino!');
       },
       error: (err: any) => { 
-        // DEBUG: Stampiamo l'errore completo per vedere il codice di stato
         console.error('DETTAGLIO ERRORE SERVER:', err);
         alert('Errore durante il salvataggio. Controlla la console (F12).');
       }
