@@ -69,6 +69,7 @@ export class NavbarComponent implements OnInit {
   // Logout
   logout(): void {
     this.utenteService.logout();
+    this.carrelloService.svuotaCarrello(); // <-- AGGIUNTO: Pulisce la memoria del carrello all'uscita
     this.chiudiDropdown();
     this.isLoggedIn = false;                
     this.router.navigate(['/']);
