@@ -12,15 +12,36 @@ export class CarrelloService {
 
   constructor(private http: HttpClient) {}
 
-  // ... (mantieni i tuoi metodi attuali: aggiungi, rimuovi, getArticoli, getNumeroArticoli, ecc.) ...
+  // --- METODI DI GESTIONE CARRELLO ---
+
+  aggiungi(prodotto: any) {
+    this.articoli.push(prodotto);
+    console.log('Prodotto aggiunto al carrello:', prodotto);
+  }
+
+  getArticoli(): any[] {
+    return this.articoli;
+  }
+
+  getNumeroArticoli(): number {
+    return this.articoli.length;
+  }
+
+  rimuovi(prodotto: any) {
+    const index = this.articoli.findIndex(a => a.id === prodotto.id);
+    if (index > -1) {
+      this.articoli.splice(index, 1);
+    }
+  }
 
   // --- NUOVI METODI PER IL CHECKOUT ---
 
   // 1. Chiamata API per processare l'ordine
   // --- MODIFICATO: Ora accetta un array di CheckoutDTO[] ---
-  effettuaCheckout(carrelloDTO: CheckoutDTO[]): Observable<any> {
-    return this.http.post(`${this.apiUrl}/checkout`, carrelloDTO);
-    }
+  effettuaCheckout(payload: any): Observable<any> {
+    // L'URL rimane /checkout, ma ora invii l'oggetto con tutti i dati
+    return this.http.post(`${this.apiUrl}/checkout`, payload);
+  }
 
   // 2. State Reset: Svuota la memoria locale dopo un acquisto con successo
   svuotaCarrello(): void {

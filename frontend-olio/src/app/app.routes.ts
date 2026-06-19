@@ -11,6 +11,7 @@ import { RegistrazioneComponent } from './registrazione/registrazione';
 import { ProfiloComponent } from './profilo/profilo'; 
 import { utenteGuard } from './interceptors/utente.guard';
 import { adminGuard } from './services/admin.guard';
+import { CheckoutComponent } from './checkout/checkout';
 
 export const routes: Routes = [
   { 
@@ -21,6 +22,9 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'registrazione', component: RegistrazioneComponent },
   { path: 'carrello', component: CarrelloComponent },
+  
+  // <-- AGGIUNTO: Rotta per il Checkout protetta da utenteGuard
+  { path: 'checkout', component: CheckoutComponent, canActivate: [utenteGuard] },
   
   // Vecchio componente recensioni (puoi lasciarlo per non rompere vecchi link se serve)
   { path: 'admin/recensioni', component: AdminRecensioniComponent },

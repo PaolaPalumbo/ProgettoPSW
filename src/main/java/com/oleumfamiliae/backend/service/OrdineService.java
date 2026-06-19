@@ -1,6 +1,7 @@
 package com.oleumfamiliae.backend.service;
 
 import com.oleumfamiliae.backend.dto.CheckoutDTO;
+import com.oleumfamiliae.backend.dto.ItemDTO; // Import necessario per la lista prodotti
 import com.oleumfamiliae.backend.model.Ordine;
 import com.oleumfamiliae.backend.model.Prodotto;
 import com.oleumfamiliae.backend.model.Utente;
@@ -26,9 +27,9 @@ public class OrdineService {
         this.utenteRepository = utenteRepository;
     }
 
-    // --- MODIFICATO: Ora riceve l'intera lista del carrello e l'email sicura dal token ---
+    // --- MODIFICATO: Ora riceve l'intero CheckoutDTO e l'email sicura dal token ---
     @Transactional 
-    public Ordine effettuaCheckout(List<CheckoutDTO> carrelloData, String email) {
+    public Ordine effettuaCheckout(CheckoutDTO checkoutData, String email) {
         
         // 1. Identifico l'utente che sta acquistando in modo sicuro tramite l'email del token
         Utente utente = utenteRepository.findByEmail(email)
@@ -37,7 +38,7 @@ public class OrdineService {
         Double totaleCalcolato = 0.0;
 
         // 2. Itero su tutti gli articoli presenti nella "busta" (il carrello)
-        for (CheckoutDTO item : carrelloData) {
+        for (ItemDTO item : checkoutData.getProdotti()) {
             
             // Identifico il singolo prodotto per controllare il magazzino e il prezzo
             Prodotto prodotto = prodottoRepository.findById(item.getIdProdotto())
@@ -48,7 +49,7 @@ public class OrdineService {
                 throw new RuntimeException("Errore critico: il prezzo del prodotto " + prodotto.getNome() + " non è definito.");
             }
 
-            // 3. Controllo se c'è abbastanza olio in magazzino per questo specifico prodotto
+            // 3. Controllo se c'è abbastanza olio in magazzino per questo specifico prodotto (LOGICA IMPORTANTE)
             if (prodotto.getQuantitaDisponibile() < item.getQuantita()) {
                 throw new RuntimeException("Quantità non sufficiente in magazzino per: " + prodotto.getNome());
             }
@@ -70,6 +71,11 @@ public class OrdineService {
         nuovoOrdine.setTotale(totaleCalcolato);
         
         nuovoOrdine.setStato("ricevuto"); 
+
+        // Salvataggio dati di spedizione ricevuti dal DTO
+        nuovoOrdine.setIndirizzoSpedizione(checkoutData.getIndirizzoSpedizione());
+        nuovoOrdine.setCitta(checkoutData.getCitta());
+        nuovoOrdine.setCap(checkoutData.getCap());
         
         return ordineRepository.save(nuovoOrdine);
     }

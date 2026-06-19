@@ -25,14 +25,14 @@ public class OrdineController {
 
     @PostMapping("/checkout")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')") // <-- AGGIUNTO: Proteggo la rotta come per getOrdiniMiei
-    public ResponseEntity<?> effettuaCheckout(@RequestBody List<CheckoutDTO> checkoutData) { // <-- MODIFICATO: Ora riceve una List dal frontend
+    public ResponseEntity<?> effettuaCheckout(@RequestBody CheckoutDTO checkoutData) { // <-- MODIFICATO: Ora riceve l'oggetto singolo dal frontend
         try {
             // <-- AGGIUNTO: Estraggo l'email dal token per evitare frodi sull'idUtente
             String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
             // Passo semplicemente la "busta" (DTO) al mio Service.
             // Sarà il Service a recuperare le entità e applicare la logica in totale isolamento.
-            Ordine ordineSalvato = ordineService.effettuaCheckout(checkoutData, email); // <-- MODIFICATO: Passo sia la lista che l'email
+            Ordine ordineSalvato = ordineService.effettuaCheckout(checkoutData, email); // <-- MODIFICATO: Passo l'oggetto singolo e l'email
             
             return ResponseEntity.ok(ordineSalvato);
         } catch (Exception e) {
