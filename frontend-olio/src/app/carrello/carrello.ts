@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router'; //  Necessario per far funzionare i link di navigazione
-import { CarrelloService, CheckoutDTO } from '../carrello'; // <-- NOTA: aggiunto CheckoutDTO
+import { CarrelloService } from '../services/carrello.service';
 import { Prodotto } from '../catalogo/catalogo';
 
 @Component({

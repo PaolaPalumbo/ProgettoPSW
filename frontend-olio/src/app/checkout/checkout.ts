@@ -30,14 +30,12 @@ export class CheckoutComponent implements OnInit {
   confermaOrdine() {
     if (this.checkoutForm.valid) {
       // Recupero i prodotti dal servizio (il Singleton che mantiene lo stato)
+      // 1. Mappa correttamente i prodotti in un array di oggetti
       const prodotti = this.carrelloService.getArticoli().map((p: any) => ({
         idProdotto: p.id,
         quantita: 1
-      }));
-
-      // Assemblo il payload. 
-      // NOTA: Assicurati che questi nomi (prodotti, indirizzoSpedizione, citta, cap)
-      // corrispondano ESATTAMENTE ai nomi delle variabili nel tuo CheckoutDTO.java nel backend.
+        }));
+        // 2. Il payload DEVE corrispondere ai campi del nuovo CheckoutDTO.java
       const payload = {
         prodotti: prodotti,
         indirizzoSpedizione: this.checkoutForm.value.indirizzoSpedizione,
@@ -53,10 +51,10 @@ export class CheckoutComponent implements OnInit {
           this.router.navigate(['/']);
         },
         error: (err) => {
-          console.error("Dettaglio errore:", err); // Utile per il debug nella console (F12)
-          alert("Errore durante l'ordine: " + (err.error?.message || err.message));
+          console.error("Dettaglio errore 400:", err.error);
+          alert("Errore durante l'ordine: " + (err.error?.message || err.message || 'Errore sconosciuto'));
         }
       });
     }
   }
-}  
+}

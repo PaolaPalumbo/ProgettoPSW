@@ -1,16 +1,26 @@
 package com.oleumfamiliae.backend.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class CheckoutDTO {
     
-    // Mantieni SOLO quello che invii dal frontend
+    // Costruttore vuoto obbligatorio per Spring Boot
+    public CheckoutDTO() {}
+
+    @JsonProperty("prodotti")
     private List<ItemDTO> prodotti; 
+    
+    @JsonProperty("indirizzoSpedizione")
     private String indirizzoSpedizione;
+    
+    @JsonProperty("citta")
     private String citta;
+    
+    @JsonProperty("cap")
     private String cap;
 
-    // Getter e Setter SOLO per questi campi
+    // Getter e Setter
     public List<ItemDTO> getProdotti() { return prodotti; }
     public void setProdotti(List<ItemDTO> prodotti) { this.prodotti = prodotti; }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router'; 
-import { CarrelloService } from '../carrello'; 
+import { CarrelloService } from '../services/carrello.service';
 import { UtenteService } from '../services/utente.service'; 
 
 @Component({

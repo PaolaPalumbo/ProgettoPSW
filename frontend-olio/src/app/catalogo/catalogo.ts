@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms'; // AGGIUNTO: Necessario per il form delle recensioni
 import { Router, NavigationEnd } from '@angular/router'; // AGGIUNTO: Per gestire la navigazione
 import { filter } from 'rxjs/operators'; // AGGIUNTO: Per filtrare gli eventi del router
-import { CarrelloService } from '../carrello';
+import { CarrelloService } from '../services/carrello.service';
 import { RecensioneService } from '../services/recensione.service'; // AGGIUNTO: Importa il nuovo servizio
 import { CatalogoService } from '../services/catalogo.service'; // AGGIUNTO: Importa il CatalogoService
 import { Recensione } from '../models/recensione.model'; // AGGIUNTO: Importa il modello

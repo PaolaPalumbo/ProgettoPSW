@@ -35,7 +35,7 @@ public class OrdineService {
         Utente utente = utenteRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato!"));
 
-        Double totaleCalcolato = 0.0;
+        Double totaleCalcolato =0.0;
 
         // 2. Itero su tutti gli articoli presenti nella "busta" (il carrello)
         for (ItemDTO item : checkoutData.getProdotti()) {
@@ -43,7 +43,11 @@ public class OrdineService {
             // Identifico il singolo prodotto per controllare il magazzino e il prezzo
             Prodotto prodotto = prodottoRepository.findById(item.getIdProdotto())
                     .orElseThrow(() -> new RuntimeException("Prodotto non trovato!"));
-
+            
+            //debugging: Stampo informazioni utili per capire cosa sta succedendo durante il checkout        
+            System.out.println("DEBUG - Prodotto: " + prodotto.getNome());
+            System.out.println("DEBUG - Prezzo Unitario: " + prodotto.getPrezzo());
+            System.out.println("DEBUG - Quantità richiesta: " + item.getQuantita());
             // CONTROLLO DI SICUREZZA: Prevenzione NullPointerException se il prezzo è mancante
             if (prodotto.getPrezzo() == null) {
                 throw new RuntimeException("Errore critico: il prezzo del prodotto " + prodotto.getNome() + " non è definito.");
@@ -60,6 +64,9 @@ public class OrdineService {
 
             // Sommo il costo di questo prodotto al totale complessivo dell'ordine
             totaleCalcolato += (prodotto.getPrezzo() * item.getQuantita());
+           
+            // --- AGGIUNTA DI DEBUG: Stampa il totale parziale ---
+            System.out.println("DEBUG - Totale parziale accumulato: " + totaleCalcolato);
         }
 
         // 5. Assemblo l'ordine finale con i campi esatti del tuo Model
@@ -77,14 +84,17 @@ public class OrdineService {
         nuovoOrdine.setCitta(checkoutData.getCitta());
         nuovoOrdine.setCap(checkoutData.getCap());
         
-        return ordineRepository.save(nuovoOrdine);
+        Ordine salvato = ordineRepository.save(nuovoOrdine);
+        System.out.println("DEBUG - Ordine salvato con ID: " + salvato.getId() + " e Totale: " + salvato.getTotale());
+        
+        return salvato;
     }
 
     // Questo metodo NON necessita di @Transactional perché esegue una sola operazione di lettura (SELECT)
     @Transactional(readOnly = true) 
     public List<Ordine> trovaOrdiniPerUtente(String email) {
         // Chiamo il nuovo metodo che mi restituisce gli ordini già ordinati cronologicamente
-        return ordineRepository.findByUtenteEmailOrderByDataOrdineDesc(email);     
+        return ordineRepository.findByUtenteEmailOrderByDataOrdineDesc(email);    
     }
 
     // --- NUOVI METODI PER LA DASHBOARD ADMIN ---
