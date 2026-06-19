@@ -26,33 +26,47 @@ public class OrdineService {
         this.utenteRepository = utenteRepository;
     }
 
+    // --- MODIFICATO: Ora riceve l'intera lista del carrello e l'email sicura dal token ---
     @Transactional 
-    public Ordine effettuaCheckout(CheckoutDTO checkoutDTO) {
+    public Ordine effettuaCheckout(List<CheckoutDTO> carrelloData, String email) {
         
-        // 1. Identifico l'utente che sta acquistando
-        Utente utente = utenteRepository.findById(checkoutDTO.getIdUtente())
+        // 1. Identifico l'utente che sta acquistando in modo sicuro tramite l'email del token
+        Utente utente = utenteRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato!"));
 
-        // 2. Identifico il prodotto per controllare il magazzino e il prezzo
-        Prodotto prodotto = prodottoRepository.findById(checkoutDTO.getIdProdotto())
-                .orElseThrow(() -> new RuntimeException("Prodotto non trovato!"));
+        Double totaleCalcolato = 0.0;
 
-        // 3. Controllo se c'è abbastanza olio in magazzino
-        if (prodotto.getQuantitaDisponibile() < checkoutDTO.getQuantita()) {
-            throw new RuntimeException("Quantità non sufficiente in magazzino!");
+        // 2. Itero su tutti gli articoli presenti nella "busta" (il carrello)
+        for (CheckoutDTO item : carrelloData) {
+            
+            // Identifico il singolo prodotto per controllare il magazzino e il prezzo
+            Prodotto prodotto = prodottoRepository.findById(item.getIdProdotto())
+                    .orElseThrow(() -> new RuntimeException("Prodotto non trovato!"));
+
+            // CONTROLLO DI SICUREZZA: Prevenzione NullPointerException se il prezzo è mancante
+            if (prodotto.getPrezzo() == null) {
+                throw new RuntimeException("Errore critico: il prezzo del prodotto " + prodotto.getNome() + " non è definito.");
+            }
+
+            // 3. Controllo se c'è abbastanza olio in magazzino per questo specifico prodotto
+            if (prodotto.getQuantitaDisponibile() < item.getQuantita()) {
+                throw new RuntimeException("Quantità non sufficiente in magazzino per: " + prodotto.getNome());
+            }
+
+            // 4. Scalo la quantità venduta e aggiorno l'inventario
+            prodotto.setQuantitaDisponibile(prodotto.getQuantitaDisponibile() - item.getQuantita());
+            prodottoRepository.save(prodotto); 
+
+            // Sommo il costo di questo prodotto al totale complessivo dell'ordine
+            totaleCalcolato += (prodotto.getPrezzo() * item.getQuantita());
         }
-
-        // 4. Scalo la quantità venduta e aggiorno l'inventario
-        prodotto.setQuantitaDisponibile(prodotto.getQuantitaDisponibile() - checkoutDTO.getQuantita());
-        prodottoRepository.save(prodotto); 
 
         // 5. Assemblo l'ordine finale con i campi esatti del tuo Model
         Ordine nuovoOrdine = new Ordine();
         nuovoOrdine.setUtente(utente);
         nuovoOrdine.setDataOrdine(LocalDateTime.now()); // Imposta la data e l'ora attuali
         
-        // Calcolo il totale: prezzo singolo * quantità richiesta
-        Double totaleCalcolato = prodotto.getPrezzo() * checkoutDTO.getQuantita();
+        // Imposto il totale ricalcolato dinamicamente su tutti i prodotti
         nuovoOrdine.setTotale(totaleCalcolato);
         
         nuovoOrdine.setStato("ricevuto"); 

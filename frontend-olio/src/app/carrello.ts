@@ -14,6 +14,7 @@ export interface CheckoutDTO {
 })
 export class CarrelloService {
   private articoli: any[] = [];
+  private apiUrl = 'http://localhost:8080/api/ordini'; // Definito per pulizia
 
   // Iniettiamo il client HTTP per abilitare le transazioni
   constructor(private http: HttpClient) { }
@@ -47,8 +48,8 @@ export class CarrelloService {
     this.articoli = [];
   }
 
-  // Metodo che spedisce materialmente i dati a Spring Boot
-  effettuaCheckout(checkoutData: CheckoutDTO): Observable<any> {
-    return this.http.post('http://localhost:8080/api/ordini/checkout', checkoutData);
+  // --- SISTEMATO: Ora accetta un array (CheckoutDTO[]) per processare l'intero carrello ---
+  effettuaCheckout(carrelloDTO: CheckoutDTO[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}/checkout`, carrelloDTO);
   }
 }
