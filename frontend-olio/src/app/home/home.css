@@ -1,0 +1,180 @@
+/* Stile coerente con il brand Oleum Familiae */
+:host {
+  font-family: 'Georgia', serif;
+  color: #3b4d2e;
+}
+
+/* Hero Section */
+.hero-section {
+  height: 80vh;
+  background: url('../../assets/images/olive_cucchiaio.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-box {
+  /* Trasparenza portata al 40% per un effetto di massima eleganza */
+  background: rgba(245, 235, 210, 0.40); 
+  
+  /* Aumentiamo leggermente il blur per mantenere il contrasto con il testo */
+  backdrop-filter: blur(20px); 
+  -webkit-backdrop-filter: blur(20px);
+  
+  padding: 60px;
+  border-radius: 0px; 
+  text-align: center;
+  max-width: 700px;
+  
+  /* Bordo quasi impercettibile per un look minimalista */
+  border: 1px solid rgba(255, 255, 255, 0.3); 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.hero-box h1, .hero-box p {
+  color: #3b4d2e !important;
+}
+
+/* Tipografia */
+h1, h2, h3, h4, h5 {
+  font-family: 'Georgia', serif;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #3b4d2e;
+}
+
+p {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  letter-spacing: 0.5px;
+  color: #555;
+}
+
+/* Bottoni */
+.btn-outline-dark {
+  border: 2px solid #3b4d2e !important;
+  color: #3b4d2e !important;
+  background-color: transparent;
+  font-weight: 600;
+  transition: all 0.4s ease;
+}
+
+.btn-outline-dark:hover {
+  background-color: #3b4d2e;
+  color: #ffffff !important;
+}
+
+/* Trilogia */
+.bi {
+  color: #c2a878 !important;
+  transition: transform 0.3s ease;
+}
+
+.col-md-4:hover .bi {
+  transform: scale(1.1);
+}
+
+/* Effetto scorrimento */
+.reveal-section {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease-out;
+}
+
+.reveal-section.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- SEZIONE STORYTELLING (ALLINEATA) --- */
+/* Assicurati che la riga forzi l'altezza massima dei figli */
+.equal-height-row {
+  display: flex;
+  align-items: stretch;
+}
+
+/* Forza il box di testo a riempire lo spazio verticale */
+.elegant-text-box {
+  background: rgba(245, 235, 210, 0.5);
+  padding: 60px;
+  border: none;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%; /* Forza l'altezza al genitore (la row) */
+  flex: 1;      /* Permette al box di espandersi */
+}
+
+/* Assicura che l'immagine sia un blocco pieno senza spazi bianchi sotto */
+.img-fill {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.img-fill {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* --- GALLERIA SENZA SPAZI --- */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0px;
+  width: 100%;
+}
+
+.gallery-card {
+  overflow: hidden;
+  height: 350px;
+}
+
+.gallery-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.gallery-card:hover img {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .gallery-grid { grid-template-columns: 1fr; }
+}
+
+.elegant-title {
+  font-family: 'Georgia', serif;
+  font-size: 3.2rem;
+  font-weight: 300;           /* Ancora più sottile e delicato */
+  text-transform: none;
+  letter-spacing: 0.15em;     /* Spaziatura molto ampia, tipica dell'alta moda/food */
+  color: #3b4d2e;
+  font-variant-caps: small-caps; /* Le maiuscole sono leggermente più grandi delle minuscole */
+  line-height: 1.1;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.05); /* Ombra impercettibile per dare profondità */
+}
+
+/* Applichiamo lo stile al sottotitolo per renderlo un complemento */
+.hero-box p.lead {
+  font-size: 1.1rem;
+  letter-spacing: 0.3em;      /* Spaziatura ampia anche per il sottotitolo */
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin-top: 15px;
+}
+
+.process-section-custom {
+  background-color: #f5ebd2; /* Lo stesso colore giallino/crema usato nel hero-box */
+  padding-top: 80px;
+  padding-bottom: 80px;
+}

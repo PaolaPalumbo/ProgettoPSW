@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { HomeComponent } from './home/home'; // <-- AGGIUNTO: Import della tua nuova Home
 import { CatalogoComponent } from './catalogo/catalogo';
 import { AdminRecensioniComponent } from './admin-recensioni/admin-recensioni';
 // <-- IMPORTATO: Il tuo nuovo componente AdminDashboard (sostituisce il vecchio AdminComponent)
@@ -17,7 +18,7 @@ import { ContattiComponent } from './contatti/contatti'; // <-- AGGIUNTO: Import
 export const routes: Routes = [
   { 
     path: '', 
-    component: CatalogoComponent,
+    component: HomeComponent, // <-- MODIFICATO: Ora la Home è il punto di ingresso
     runGuardsAndResolvers: 'always' 
   },
   { path: 'login', component: LoginComponent },
