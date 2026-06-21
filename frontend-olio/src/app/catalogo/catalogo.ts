@@ -32,6 +32,11 @@ export class CatalogoComponent implements OnInit {
   // 2. Qui salvo l'olio in arrivo dal database
   prodotti: Prodotto[] = []; 
 
+  // AGGIUNTO: Variabili per i filtri di ricerca
+  searchTerm: string = '';
+  filtroFormato: string = '';
+  filtroPrezzo: number = 0;
+
   // AGGIUNTO: Variabili per raccogliere l'input dell'utente dal form
   nuovoVoto: number = 5;
   nuovoCommento: string = '';
@@ -54,6 +59,30 @@ export class CatalogoComponent implements OnInit {
     ).subscribe(() => {
       this.aggiornaTutto();
     });
+  }
+
+  // AGGIUNTO: Getter ottimizzato con pulizia stringhe per evitare errori di match
+  get prodottiFiltrati(): Prodotto[] {
+    return this.prodotti.filter(p => {
+      // 1. Ricerca testuale
+      const matchNome = p.nome.toLowerCase().includes(this.searchTerm.toLowerCase());
+      
+      // 2. Filtro Formato: ELASTICO
+      // Se selezioni '3L', questo trova 'Latta 3L', 'Bottiglia 3L', '3L' ecc.
+      const matchFormato = this.filtroFormato 
+        ? p.formato.toLowerCase().includes(this.filtroFormato.toLowerCase()) 
+        : true;
+
+      // 3. Filtro Prezzo (MODIFICATO: ora è prezzo massimo)
+      const matchPrezzo = this.filtroPrezzo > 0 ? p.prezzo <= this.filtroPrezzo : true;
+      
+      return matchNome && matchFormato && matchPrezzo;
+    });
+  }
+
+  // AGGIUNTO: Genera automaticamente i formati unici dal DB per il menu a tendina
+  get formatiUnici(): string[] {
+    return [...new Set(this.prodotti.map(p => p.formato))].sort();
   }
 
   // 3. Questo metodo scatta in automatico appena si apre la pagina
@@ -122,7 +151,6 @@ export class CatalogoComponent implements OnInit {
   }
 
   // Metodo per recuperare le recensioni approvate
-  // Metodo per recuperare le recensioni approvate
   caricaRecensioni(idProdotto: number) {
     // Inizializzo sempre come array vuoto per evitare "undefined"
     if (!this.recensioniPerProdotto[idProdotto]) {
@@ -132,38 +160,23 @@ export class CatalogoComponent implements OnInit {
     this.recensioneService.getRecensioniProdotto(idProdotto).subscribe({
       next: (dati) => {
         this.recensioniPerProdotto[idProdotto] = dati;
-        
-        // FORZO ANGULAR A RIFARSI IL TRUCCO: 
-        // Aggiorniamo la vista per mostrare le recensioni appena arrivate
         this.cdRef.detectChanges();
       },
       error: (errore) => {
         console.error(`Errore recensioni per ${idProdotto}:`, errore);
-        // Anche in caso di errore, garantisco che sia un array vuoto
         this.recensioniPerProdotto[idProdotto] = [];
-        
-        // Anche in caso di errore, rinfreschiamo la vista per gestire lo stato vuoto
         this.cdRef.detectChanges();
       }
     });
   }
 
-  // Quando il sistema mi avvisa che l'utente sta tornando su questa pagina,
-  // colgo l'occasione per ricaricare tutti i dati e assicurarmi che siano freschi.
   ionViewWillEnter() {
     this.aggiornaTutto();
   }
 
-  // Qui prendo in mano la situazione: contatto direttamente il backend per avere 
-  // la lista aggiornata di tutti i prodotti. Appena mi rispondono, sovrascrivo la mia 
-  // vecchia lista di prodotti con quella nuova e, per ognuno di essi, chiedo 
-  // nuovamente al server le recensioni (incluse quelle appena approvate nel pannello admin).
   aggiornaTutto() {
-    // MODIFICATO: Uso il CatalogoService invece di this.http.get diretto
     this.catalogoService.getProdotti().subscribe(dati => {
       this.prodotti = dati;
-      // Per ogni prodotto, rigenero la richiesta delle recensioni per mostrare 
-      // i cambiamenti avvenuti nel frattempo
       this.prodotti.forEach(p => this.caricaRecensioni(p.id));
     });
   }

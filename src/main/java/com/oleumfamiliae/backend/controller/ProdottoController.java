@@ -28,6 +28,15 @@ public class ProdottoController {
     public List<Prodotto> getCatalogo() {
         return prodottoService.ottieniCatalogo();
     }
+    
+    // NUOVO: Endpoint per ricerca e filtraggio dei prodotti
+    @GetMapping("/cerca")
+    public List<Prodotto> cercaProdotti(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String formato,
+            @RequestParam(required = false) Double prezzoMin) {
+        return prodottoService.cercaProdotti(nome, formato, prezzoMin);
+    }
 
     // Applico la stessa protezione anche alla POST
     @PostMapping({"", "/"})

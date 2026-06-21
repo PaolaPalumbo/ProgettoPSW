@@ -5,6 +5,7 @@ import com.oleumfamiliae.backend.repository.ProdottoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProdottoService {
@@ -36,6 +37,15 @@ public class ProdottoService {
         
         // Salviamo le modifiche nel database
         return prodottoRepository.save(prodotto);
+    }
+
+    // 3. Metodo per ricerca e filtraggio dei prodotti
+    public List<Prodotto> cercaProdotti(String nome, String formato, Double prezzoMin) {
+        return prodottoRepository.findAll().stream()
+            .filter(p -> (nome == null || nome.isEmpty() || p.getNome().toLowerCase().contains(nome.toLowerCase())))
+            .filter(p -> (formato == null || formato.isEmpty() || p.getFormato().equalsIgnoreCase(formato)))
+            .filter(p -> (prezzoMin == null || p.getPrezzo() >= prezzoMin))
+            .collect(Collectors.toList());
     }
 }
 

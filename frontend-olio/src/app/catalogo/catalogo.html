@@ -5,9 +5,33 @@
   <p class="sottotitolo">Tradizione e passione in ogni goccia</p>
 </div>
 
+<div class="container mt-4">
+  <div class="row mb-4 shadow-sm p-3 bg-light rounded align-items-center">
+    <div class="col-md-4">
+      <input type="text" [(ngModel)]="searchTerm" class="form-control" placeholder="🔍 Cerca olio...">
+    </div>
+    
+    <div class="col-md-3">
+      <select [(ngModel)]="filtroFormato" class="form-select">
+        <option value="">Tutti i formati</option>
+        <option *ngFor="let formato of formatiUnici" [value]="formato">{{ formato }}</option>
+      </select>
+    </div>
+    
+    <div class="col-md-5">
+      <label class="form-label small mb-0">Prezzo massimo: €{{ filtroPrezzo }}</label>
+      <input type="range" class="form-range" min="0" max="60" step="5" [(ngModel)]="filtroPrezzo">
+    </div>
+  </div>
+</div>
+
 <div class="container mt-4 mb-5">
+  <div *ngIf="prodottiFiltrati.length === 0" class="text-center py-5">
+    <h4 class="text-muted">Nessun prodotto corrisponde ai criteri di ricerca.</h4>
+  </div>
+
   <div class="row g-4">
-    <div class="col-md-4" *ngFor="let prodotto of prodotti">
+    <div class="col-md-4" *ngFor="let prodotto of prodottiFiltrati">
       <div class="card premium-card h-100">
         
         <img [src]="prodotto.immagineUrl" class="card-img-top" [alt]="prodotto.nome" style="height: 250px; object-fit: cover;">
