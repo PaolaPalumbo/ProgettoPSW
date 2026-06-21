@@ -89,8 +89,16 @@
 
         <div class="card-body pt-2" *ngIf="recensioniPerProdotto[prodotto.id] && recensioniPerProdotto[prodotto.id].length > 0">
           <h6 class="small fw-bold border-bottom">Recensioni:</h6>
-          <div *ngFor="let rec of recensioniPerProdotto[prodotto.id]" class="small mb-2">
-            <strong>{{ rec.utente?.nome || 'Cliente' }}:</strong> {{ rec.voto }}★ - <em>{{ rec.commento }}</em>
+          <div *ngFor="let rec of recensioniPerProdotto[prodotto.id]" class="small mb-2 d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{{ rec.utente?.nome || 'Cliente' }}:</strong> {{ rec.voto }}★ - <em>{{ rec.commento }}</em>
+            </div>
+            <button *ngIf="rec.utente?.email === emailCorrente" 
+                    class="btn btn-sm btn-link text-danger p-0 ms-2" 
+                    (click)="eliminaRecensione(rec.id!)"
+                    title="Elimina la tua recensione">
+              <i class="bi bi-trash"></i>
+            </button>
           </div>
         </div>
         

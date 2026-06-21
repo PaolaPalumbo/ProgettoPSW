@@ -45,7 +45,6 @@
               {{ ordine.stato || 'In elaborazione' }}
             </span>
           </td>
-          
         </tr>
       </tbody>
     </table>
@@ -60,10 +59,16 @@
 
     <div *ngIf="recensioni.length > 0">
       <div class="card mb-3" *ngFor="let recensione of recensioni">
-        <div class="card-body">
-          <h5 class="card-title">{{ recensione.nomeProdotto }}</h5>
-          <h6 class="card-subtitle mb-2 text-muted">Voto: {{ recensione.voto }}/5</h6>
-          <p class="card-text">{{ recensione.commento }}</p>
+        <div class="card-body d-flex justify-content-between align-items-center">
+          <div>
+            <h5 class="card-title">{{ recensione.nomeProdotto }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Voto: {{ recensione.voto }}/5</h6>
+            <p class="card-text">{{ recensione.commento }}</p>
+          </div>
+          
+          <button class="btn btn-outline-danger btn-sm" (click)="eliminaRecensione(recensione.id)">
+            <i class="bi bi-trash"></i> Elimina
+          </button>
         </div>
       </div>
     </div>

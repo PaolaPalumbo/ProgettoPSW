@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { UtenteService } from '../services/utente.service';
+import { RecensioneService } from '../services/recensione.service'; // AGGIUNTO: Import del servizio recensioni
 
 @Component({
   selector: 'app-profilo',
@@ -29,6 +30,7 @@ export class ProfiloComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private utenteService: UtenteService,
+    private recensioneService: RecensioneService, // AGGIUNTO
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef // Inietto il ChangeDetector per forzare l'aggiornamento
@@ -89,20 +91,41 @@ export class ProfiloComponent implements OnInit {
     // Resetto gli errori precedenti
     this.messaggioErrore = ''; 
     
-    // Faccio la chiamata HTTP per recuperare le mie recensioni
+    // USIAMO IL SERVIZIO INVECE DELL'HTTP DIRETTO, così è coerente con l'eliminazione
+    // (Devi avere un metodo nel RecensioneService che chiama /api/recensioni/miei)
+    // Se non ce l'hai, usa il metodo che ti scrivo sotto.
+    
     this.http.get<any[]>(this.apiUrlRecensioni).subscribe({
       next: (data) => {
-        console.log('Ho ricevuto le mie recensioni:', data);
+        console.log('Dati ricevuti dal backend:', data); 
+        
+        // CORREZIONE DIFENSIVA: 
+        // Se vedi che 'id' è undefined, forse il backend invia un altro nome (es. recensioneId)
+        // Assicurati che l'oggetto in console abbia il nome corretto.
         this.recensioni = data;
-        this.caricamento = false; // Fermo lo spinner
-        this.cdr.detectChanges(); // Forza l'aggiornamento della UI
+        
+        this.caricamento = false; 
+        this.cdr.detectChanges(); 
       },
       error: (err) => {
         console.error('Errore durante il recupero recensioni:', err);
         this.messaggioErrore = 'Non è stato possibile caricare le mie recensioni.';
-        this.caricamento = false; // Fermo lo spinner anche in caso di errore
-        this.cdr.detectChanges(); // Forza l'aggiornamento della UI
+        this.caricamento = false; 
+        this.cdr.detectChanges(); 
       }
     });
+  }
+  
+  // Metodo per eliminare una recensione
+  eliminaRecensione(idRecensione: number) {
+    if (confirm("Sei sicuro di voler eliminare questa recensione?")) {
+      this.recensioneService.eliminaRecensione(idRecensione).subscribe({
+        next: () => {
+          alert("Recensione eliminata.");
+          this.caricaRecensioni(); // Ricarico la lista delle recensioni
+        },
+        error: (err) => alert("Errore durante l'eliminazione.")
+      });
+    }
   }
 }

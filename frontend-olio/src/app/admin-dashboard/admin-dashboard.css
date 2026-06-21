@@ -53,6 +53,12 @@
   background-color: rgba(194, 168, 120, 0.08); /* Effetto hover dorato leggerissimo */
 }
 
+/* AGGIUNTO: Classe per forzare il colore nero del testo "ricevuto" */
+.stato-ricevuto {
+  color: #000000 !important;
+  font-weight: bold;
+}
+
 /* Bottoni di Azione */
 .btn-approva {
   background-color: #3b4d2e;

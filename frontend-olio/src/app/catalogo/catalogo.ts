@@ -36,6 +36,9 @@ export class CatalogoComponent implements OnInit {
   searchTerm: string = '';
   filtroFormato: string = '';
   filtroPrezzo: number = 0;
+  
+  // Aggiunta per gestire l'eliminazione
+  emailCorrente: string = 'test@test.com'; // In un'app reale, la recuperi dal Token/AuthService
 
   // AGGIUNTO: Variabili per raccogliere l'input dell'utente dal form
   nuovoVoto: number = 5;
@@ -148,6 +151,19 @@ export class CatalogoComponent implements OnInit {
         alert("Ops! Qualcosa è andato storto nell'invio della recensione.");
       }
     });
+  }
+
+  // Metodo per eliminare una recensione
+  eliminaRecensione(idRecensione: number) {
+    if (confirm("Sei sicuro di voler eliminare questa recensione?")) {
+      this.recensioneService.eliminaRecensione(idRecensione).subscribe({
+        next: () => {
+          alert("Recensione eliminata.");
+          this.aggiornaTutto();
+        },
+        error: (err) => alert("Errore durante l'eliminazione.")
+      });
+    }
   }
 
   // Metodo per recuperare le recensioni approvate

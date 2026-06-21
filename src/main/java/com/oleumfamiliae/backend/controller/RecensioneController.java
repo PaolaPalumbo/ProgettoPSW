@@ -31,9 +31,10 @@ public class RecensioneController {
         // 2. Chiedo al mio Service di trovare le mie recensioni
         List<Recensione> recensioni = recensioneService.trovaRecensioniPerUtente(email);
         
-        // 3. Converto le entità in DTO usando il costruttore aggiornato (4 parametri)
+        // 3. Converto le entità in DTO usando il costruttore aggiornato (ora include l'ID)
         List<RecensioneResponseDTO> recensioniDTO = recensioni.stream()
             .map(r -> new RecensioneResponseDTO(
+                r.getId(), // Passiamo l'ID al DTO
                 r.getProdotto().getNome(), 
                 r.getVoto(),
                 r.getCommento(),
@@ -47,7 +48,7 @@ public class RecensioneController {
 
     // Invio una nuova recensione al database associandola al mio account
     @PostMapping
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')") // Permesso ampliato per sicurezza
     public ResponseEntity<Recensione> invia(@RequestBody Recensione recensione) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Recensione salvata = recensioneService.inviaRecensione(recensione, email);
@@ -56,6 +57,7 @@ public class RecensioneController {
 
     // Approvo la recensione indicata dal mio ID
     @PostMapping("/approva/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void approva(@PathVariable Long id) {
         recensioneService.approvaRecensione(id);
     }
@@ -68,7 +70,20 @@ public class RecensioneController {
     
     // Recupero le recensioni in attesa di moderazione
     @GetMapping("/da-approvare")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Recensione> getDaApprovare() {
         return recensioneService.getRecensioniDaApprovare();
+    }
+
+    // Elimino la recensione indicata dal suo ID
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<?> eliminaRecensione(@PathVariable Long id) {
+        try {
+            recensioneService.eliminaRecensione(id);
+            return ResponseEntity.ok("Recensione eliminata con successo.");
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body("Errore: " + e.getMessage());
+        }
     }
 }

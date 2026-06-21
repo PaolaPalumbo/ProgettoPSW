@@ -50,6 +50,14 @@ public class RecensioneService {
         }
     }
 
+    // Metodo per eliminare una recensione
+    public void eliminaRecensione(Long id) {
+        if (!recensioneRepository.existsById(id)) {
+            throw new RuntimeException("Recensione non trovata.");
+        }
+        recensioneRepository.deleteById(id);
+    }
+
     public List<Recensione> getRecensioniByProdotto(Long prodottoId) {
         return recensioneRepository.findByProdotto_IdAndApprovataTrue(prodottoId);
     }

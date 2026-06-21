@@ -15,7 +15,12 @@ export class RecensioneService {
 
   // 1. Invia una nuova recensione al database
   inviaRecensione(recensione: Recensione): Observable<Recensione> {
-    return this.http.post<Recensione>(this.apiUrl, recensione);
+    // AGGIUNTO: Token per autorizzare la POST
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post<Recensione>(this.apiUrl, recensione, { headers: headers });
   }
 
   // 2. Recupera le recensioni approvate per un determinato prodotto
@@ -46,5 +51,16 @@ export class RecensioneService {
 
     // Se sul backend hai mappato l'approvazione come PUT, sostituisci .post con .put
     return this.http.post(`${this.apiUrl}/approva/${id}`, {}, { headers: headers });
+  }
+
+  // Metodo per eliminare una recensione
+  eliminaRecensione(id: number): Observable<any> {
+    // AGGIUNTO: Token per autorizzare la DELETE
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    // Chiamata all'endpoint DELETE creato nel Controller
+    return this.http.delete(`${this.apiUrl}/delete/${id}`, { headers: headers, responseType: 'text' });
   }
 }
