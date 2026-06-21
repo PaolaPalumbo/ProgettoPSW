@@ -1,7 +1,10 @@
-/* Sfondo generale leggermente panna, non bianco ottico */
+/* Sfondo generale a tutto schermo */
 .catalogo-container { 
     padding: 3rem 1rem; 
-    background-color: #fdfcf9; 
+    /* Applicazione dello sfondo a tutto schermo */
+    background: url('/assets/images/olive.jpg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
 }
 
 /* Tipografia elegante per i titoli */
@@ -109,29 +112,38 @@
 
 /* 1. Preparo il contenitore dell'immagine */
 .card {
-  /* Toglio overflow: hidden perché altrimenti l'immagine non può 'uscire' */
-  overflow: visible; 
-  transition: transform 0.3s ease;
+    overflow: visible; 
+    transition: transform 0.3s ease;
 }
 
 /* 2. L'immagine deve poter uscire dai bordi */
 .card-img-top {
-  position: relative;
-  transition: top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Effetto 'elastico' */
-  top: 0;
+    position: relative;
+    transition: top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
+    top: 0;
 }
 
 /* 3. Quando passo col mouse, l'immagine scivola in alto */
 .card:hover .card-img-top {
-  top: -30px; /* Esce verso l'alto di 30 pixel */
-  box-shadow: 0 15px 25px rgba(0,0,0,0.2); /* Aggiunge profondità */
-}
-
-.card {
-  transition: transform 0.3s ease;
+    top: -30px; 
+    box-shadow: 0 15px 25px rgba(0,0,0,0.2); 
 }
 
 .card:hover {
-  transform: translateY(-10px); /* La card si solleva leggermente */
-  box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+    transform: translateY(-10px); 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+}
+
+.titolo-box {
+  background-color: rgba(245, 235, 210, 0.7); /* Crema semi-trasparente */
+  backdrop-filter: blur(5px);
+  padding: 20px 40px;
+  display: inline-block;
+  margin-bottom: 20px;
+  border-left: 4px solid #3b4d2e; /* Dettaglio stile oliva */
+}
+
+/* Assicurati che il contenitore che ospita il titolo sia flessibile */
+.hero-text-container {
+  padding: 60px 20px;
 }

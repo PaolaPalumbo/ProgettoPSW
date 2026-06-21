@@ -12,3 +12,4 @@ import { RouterLink } from '@angular/router';
 export class StoriaComponent {
   // Il componente è pronto e pulito
 }
+

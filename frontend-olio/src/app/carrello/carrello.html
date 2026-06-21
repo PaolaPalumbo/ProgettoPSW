@@ -1,56 +1,64 @@
-<div class="container mt-5 mb-5">
-  <div class="row border-bottom pb-3 mb-4">
-    <div class="col">
-      <h2 style="color: #3b4d2e; font-family: 'Georgia', serif;">Il Tuo Carrello</h2>
-    </div>
-  </div>
+<div class="contatti-overlay">
+  <div class="contatti-contenuto shadow-lg">
 
-  <div class="text-center py-5" *ngIf="!elementiCarrello || elementiCarrello.length === 0">
-    <h4 class="text-muted">Il tuo carrello è attualmente vuoto.</h4>
-    <p>Scopri il nostro olio extravergine nel catalogo.</p>
-    <a routerLink="/" class="btn btn-outline-success mt-3" style="border-color: #3b4d2e; color: #3b4d2e;">
-      Torna agli acquisti
-    </a>
-  </div>
+    <button class="btn-chiudi" routerLink="/" title="Torna alla Home">×</button>
 
-  <div class="table-responsive" *ngIf="elementiCarrello && elementiCarrello.length > 0">
-    <table class="table align-middle">
-      <thead class="table-light">
-        <tr>
-          <th scope="col">Prodotto</th>
-          <th scope="col">Formato</th>
-          <th scope="col" class="text-end">Prezzo</th>
-          <th scope="col" class="text-center">Azioni</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let prodotto of elementiCarrello">
-          <td class="fw-bold" style="color: #3b4d2e;">{{ prodotto.nome }}</td>
-          <td>{{ prodotto.formato }}</td>
-          <td class="text-end fw-bold">€ {{ prodotto.prezzo | number:'1.2-2' }}</td>
-          <td class="text-center">
-            <button class="btn btn-sm btn-outline-danger" (click)="rimuoviDalCarrello(prodotto)" title="Rimuovi">
-              <i class="bi bi-trash"></i> Rimuovi
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <div class="container-fluid">
+      <div class="row border-bottom pb-3 mb-4">
+        <div class="col">
+          <h2 style="color: #3b4d2e; font-family: 'Georgia', serif;">Il Tuo Carrello</h2>
+        </div>
+      </div>
 
-  <div class="row mt-4" *ngIf="elementiCarrello && elementiCarrello.length > 0">
-    <div class="col-md-6 offset-md-6">
-      <div class="card bg-light border-0 shadow-sm">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="mb-0">Totale Ordine:</h5>
-            <h4 class="mb-0 fw-bold" style="color: #3b4d2e;">€ {{ (totale || 0) | number:'1.2-2' }}</h4>
+      <div class="text-center py-5" *ngIf="!elementiCarrello || elementiCarrello.length === 0">
+        <h4 class="text-muted">Il tuo carrello è attualmente vuoto.</h4>
+        <p>Scopri il nostro olio extravergine nel catalogo.</p>
+        <a routerLink="/prodotti" class="btn btn-outline-success mt-3" style="border-color: #3b4d2e; color: #3b4d2e; border-radius: 30px; padding: 8px 25px;">
+          Torna agli acquisti
+        </a>
+      </div>
+
+      <div class="table-responsive" *ngIf="elementiCarrello && elementiCarrello.length > 0">
+        <table class="table align-middle">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">Prodotto</th>
+              <th scope="col">Formato</th>
+              <th scope="col" class="text-end">Prezzo</th>
+              <th scope="col" class="text-center">Azioni</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let prodotto of elementiCarrello">
+              <td class="fw-bold" style="color: #3b4d2e;">{{ prodotto.nome }}</td>
+              <td>{{ prodotto.formato }}</td>
+              <td class="text-end fw-bold">€ {{ prodotto.prezzo | number:'1.2-2' }}</td>
+              <td class="text-center">
+                <button class="btn btn-sm btn-outline-danger" (click)="rimuoviDalCarrello(prodotto)" title="Rimuovi">
+                  <i class="bi bi-trash"></i> Rimuovi
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="row mt-4" *ngIf="elementiCarrello && elementiCarrello.length > 0">
+        <div class="col-md-12">
+          <div class="card bg-transparent border-0">
+            <div class="card-body px-0">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0">Totale Ordine:</h5>
+                <h4 class="mb-0 fw-bold" style="color: #3b4d2e;">€ {{ (totale || 0) | number:'1.2-2' }}</h4>
+              </div>
+              <button class="btn btn-success w-100 py-2 fs-5" (click)="procediAlCheckout()" style="background-color: #3b4d2e; border: none; border-radius: 30px;">
+                Procedi al Checkout
+              </button>
+            </div>
           </div>
-          <button class="btn btn-success w-100 py-2 fs-5" (click)="procediAlCheckout()" style="background-color: #3b4d2e; border: none;">
-            Procedi al Checkout
-          </button>
         </div>
       </div>
     </div>
+
   </div>
 </div>

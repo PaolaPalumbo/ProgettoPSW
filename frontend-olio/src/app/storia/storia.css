@@ -11,22 +11,43 @@
 }
 
 .finestra-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  /* background-position: 70% 50% sposta l'immagine verso sinistra, 
+     mettendo la nonna più in vista */
+  background: url('/assets/images/nonnina.jpg') no-repeat 70% 50% fixed; 
+  background-size: cover;
+  
+  /* Manteniamo il testo centrale come volevi */
   display: flex;
-  justify-content: center;
+  justify-content: center; 
   align-items: center;
-  min-height: 80vh; /* Centra la finestra verticalmente sotto la navbar */
-  padding: 2rem;
-  background-color: #fafafa;
+  z-index: 999;
 }
 
 .finestra-contenuto {
-  background-color: #ffffff;
-  border-radius: 12px;
+  /* Sfondo con opacità e texture come richiesto */
+  background-color: rgba(245, 235, 210, 0.6); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  
+  /* Rimosso l'arrotondamento per mantenere gli spigoli vivi */
+  border-radius: 0px; 
+  
   padding: 4rem 3rem;
   max-width: 800px;
   position: relative;
-  border-top: 4px solid #c2a878; /* Il tuo oro antico */
-  /* Qui applichiamo l'animazione creata sopra */
+  
+  /* Bordo elegante superiore */
+  border-top: 4px solid #c2a878;
+  border-left: 1px solid rgba(180, 160, 110, 0.2);
+  border-right: 1px solid rgba(180, 160, 110, 0.2);
+  border-bottom: 1px solid rgba(180, 160, 110, 0.2);
+  
   animation: fadeInScale 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
@@ -38,7 +59,7 @@
   background: none;
   border: none;
   font-size: 2.5rem;
-  color: #3b4d2e; /* Il tuo verde oliva */
+  color: #3b4d2e;
   cursor: pointer;
   transition: color 0.3s ease, transform 0.3s ease;
   line-height: 1;
@@ -46,7 +67,7 @@
 
 .btn-chiudi:hover {
   color: #c2a878;
-  transform: rotate(90deg); /* Ruota leggermente per un tocco chic */
+  transform: rotate(90deg);
 }
 
 /* Tipografia elegante */
@@ -64,7 +85,7 @@
 }
 
 .paragrafo-elegante {
-  color: #555;
+  color: #444; /* Leggermente più scuro per leggibilità su sfondo trasparente */
   line-height: 1.9;
   font-size: 1.15rem;
   text-align: justify;
@@ -79,6 +100,7 @@
   font-weight: 500;
   transition: all 0.4s ease;
   text-decoration: none;
+  display: inline-block;
 }
 
 .btn-esplora:hover {
