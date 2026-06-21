@@ -122,7 +122,8 @@
                     [ngClass]="{
                       'bg-warning text-dark': ordine.stato === 'In elaborazione',
                       'bg-info text-dark': ordine.stato === 'Spedito',
-                      'bg-success': ordine.stato === 'Consegnato'
+                      'bg-success text-white': ordine.stato === 'Consegnato',
+                      'bg-light text-dark': ordine.stato === 'ricevuto'
                     }">
                 {{ ordine.stato || 'In elaborazione' }}
               </span>
