@@ -1,5 +1,6 @@
 package com.oleumfamiliae.backend.model;
 
+import jakarta.persistence.Column; // <-- Aggiunta l'importazione necessaria
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,7 +19,9 @@ public class Ordine {
     
     private Double totale;
     
-    private String stato; // "ricevuto", "spedito" o "consegnato"
+    // Imposto un valore di default per garantire che ogni nuovo ordine parta da qui
+    @Column(nullable = false)
+    private String stato = "In elaborazione"; // "In elaborazione", "Spedito" o "Consegnato"
 
     private String indirizzoSpedizione;
     
@@ -50,7 +53,6 @@ public class Ordine {
         this.cap = cap;
     }
 
-    
     @ManyToOne // Questa è una Relazione: Significa che "Molti ordini appartengono a un solo Utente"
     private Utente utente;
 
@@ -93,6 +95,4 @@ public class Ordine {
     public void setUtente(Utente utente) {
         this.utente = utente;
     }
-
-   
 }

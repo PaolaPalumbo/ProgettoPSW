@@ -26,6 +26,7 @@
           <th>ID Ordine</th>
           <th>Data</th>
           <th>Totale</th>
+          <th>Stato</th> 
         </tr>
       </thead>
       <tbody>
@@ -33,6 +34,18 @@
           <td>#{{ ordine.id }}</td>
           <td>{{ ordine.data | date:'shortDate' }}</td>
           <td class="fw-bold">€{{ ordine.totale | number:'1.2-2' }}</td>
+          
+          <td>
+            <span class="badge text-dark" 
+                  [ngClass]="{
+                    'bg-warning': ordine.stato === 'In elaborazione' || ordine.stato === 'ricevuto',
+                    'bg-info': ordine.stato === 'Spedito',
+                    'bg-success': ordine.stato === 'Consegnato'
+                  }">
+              {{ ordine.stato || 'In elaborazione' }}
+            </span>
+          </td>
+          
         </tr>
       </tbody>
     </table>

@@ -18,6 +18,14 @@
         Gestione Inventario
       </button>
     </li>
+    <li class="nav-item">
+      <button 
+        class="nav-link" 
+        [class.active]="sezioneAttiva === 'spedizioni'"
+        (click)="cambiaSezione('spedizioni')">
+        Gestione Spedizioni
+      </button>
+    </li>
   </ul>
 
   <div *ngIf="sezioneAttiva === 'recensioni'" class="fade-in">
@@ -86,4 +94,55 @@
       </table>
     </div>
   </div>
+
+  <div *ngIf="sezioneAttiva === 'spedizioni'" class="fade-in">
+    <div *ngIf="ordiniClienti.length === 0" class="alert alert-secondary text-center shadow-sm">
+      Caricamento ordini in corso o nessun ordine presente...
+    </div>
+
+    <div class="table-responsive shadow-sm rounded" *ngIf="ordiniClienti.length > 0">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-dark-custom">
+          <tr>
+            <th>ID Ordine</th>
+            <th>Data e Totale</th>
+            <th>Stato Attuale</th>
+            <th class="text-center">Azione</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ordine of ordiniClienti">
+            <td>#{{ ordine.id }}</td>
+            <td>
+              <small class="text-muted">{{ ordine.dataOrdine | date:'short' }}</small><br>
+              <strong>€ {{ ordine.totale | number:'1.2-2' }}</strong>
+            </td>
+            <td>
+              <span class="badge" 
+                    [ngClass]="{
+                      'bg-warning text-dark': ordine.stato === 'In elaborazione',
+                      'bg-info text-dark': ordine.stato === 'Spedito',
+                      'bg-success': ordine.stato === 'Consegnato'
+                    }">
+                {{ ordine.stato || 'In elaborazione' }}
+              </span>
+            </td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-outline-primary me-2" 
+                      [disabled]="ordine.stato === 'Spedito' || ordine.stato === 'Consegnato'"
+                      (click)="impostaStato(ordine.id, 'Spedito')">
+                Segna Spedito
+              </button>
+              <button class="btn btn-sm btn-outline-success" 
+                      [disabled]="ordine.stato === 'Consegnato'"
+                      (click)="impostaStato(ordine.id, 'Consegnato')">
+                Segna Consegnato
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>

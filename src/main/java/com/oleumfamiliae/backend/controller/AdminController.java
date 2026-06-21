@@ -22,13 +22,13 @@ public class AdminController {
     // Io recupero tutti gli ordini per la dashboard
     @GetMapping
     public ResponseEntity<List<Ordine>> getTuttiGliOrdini() {
-        return ResponseEntity.ok(ordineService.findAll());
+        return ResponseEntity.ok(ordineService.getTuttiGliOrdini()); // <-- Aggiornato qui
     }
 
     // Io aggiorno lo stato dell'ordine
     @PostMapping("/aggiorna-stato/{id}")
     public ResponseEntity<Void> aggiornaStato(@PathVariable Long id, @RequestBody String nuovoStato) {
-        ordineService.aggiornaStato(id, nuovoStato);
+        ordineService.aggiornaStatoOrdine(id, nuovoStato); // <-- Aggiornato qui
         return ResponseEntity.ok().build();
     }
 }

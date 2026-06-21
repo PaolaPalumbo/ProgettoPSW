@@ -24,15 +24,15 @@ public class OrdineController {
     }
 
     @PostMapping("/checkout")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')") // <-- AGGIUNTO: Proteggo la rotta come per getOrdiniMiei
-    public ResponseEntity<?> effettuaCheckout(@RequestBody CheckoutDTO checkoutData) { // <-- MODIFICATO: Ora riceve l'oggetto singolo dal frontend
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')") // Proteggo la rotta per evitare acquisti anonimi
+    public ResponseEntity<?> effettuaCheckout(@RequestBody CheckoutDTO checkoutData) { 
         try {
-            // <-- AGGIUNTO: Estraggo l'email dal token per evitare frodi sull'idUtente
+            // Estraggo l'email dal token per evitare frodi sull'idUtente
             String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
             // Passo semplicemente la "busta" (DTO) al mio Service.
             // Sarà il Service a recuperare le entità e applicare la logica in totale isolamento.
-            Ordine ordineSalvato = ordineService.effettuaCheckout(checkoutData, email); // <-- MODIFICATO: Passo l'oggetto singolo e l'email
+            Ordine ordineSalvato = ordineService.effettuaCheckout(checkoutData, email); 
             
             return ResponseEntity.ok(ordineSalvato);
         } catch (Exception e) {
@@ -59,11 +59,36 @@ public class OrdineController {
             .map(ordine -> new OrdineResponseDTO(
                 ordine.getId(),
                 ordine.getDataOrdine(),
-                ordine.getTotale()
+                ordine.getTotale(),
+                ordine.getStato() // <-- AGGIUNTO: Trasporto lo stato nel DTO per il frontend!
             ))
             .collect(Collectors.toList());
             
         // 4. Restituisco la lista pronta per la mia tabella Angular
         return ResponseEntity.ok(ordiniDTO);
+    }
+
+    // --- NUOVI ENDPOINT PER LA GESTIONE SPEDIZIONI (AREA ADMIN) ---
+
+    // Espongo un endpoint riservato all'amministratore per recuperare l'intera lista degli ordini
+    @GetMapping("/tutti")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Ordine>> getAllOrdini() {
+        // Chiedo al mio Service di estrarre tutti i record presenti nel database
+        return ResponseEntity.ok(ordineService.getTuttiGliOrdini());
+    }
+
+    // Espongo un endpoint per aggiornare lo stato di un ordine specifico, sempre protetto per l'admin
+    @PutMapping("/{id}/stato")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> aggiornaStato(@PathVariable Long id, @RequestParam String stato) {
+        try {
+            // Delego al Service l'aggiornamento dell'entità
+            Ordine aggiornato = ordineService.aggiornaStatoOrdine(id, stato);
+            return ResponseEntity.ok(aggiornato);
+        } catch (Exception e) {
+            // In caso di errore (es. ordine non trovato o errore server), restituisco un 500 con il dettaglio
+            return ResponseEntity.internalServerError().body("Errore durante l'aggiornamento dello stato: " + e.getMessage());
+        }
     }
 }

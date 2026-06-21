@@ -7,15 +7,17 @@ public class OrdineResponseDTO {
     private Long id;
     private LocalDateTime data;
     private Double totale;
+    private String stato; // <-- AGGIUNTO: Trasporta lo stato dell'ordine
 
     // Costruttore vuoto
     public OrdineResponseDTO() {}
 
     // Costruttore con parametri
-    public OrdineResponseDTO(Long id, LocalDateTime data, Double totale) {
+    public OrdineResponseDTO(Long id, LocalDateTime data, Double totale, String stato) {
         this.id = id;
         this.data = data;
         this.totale = totale;
+        this.stato = stato; // <-- AGGIUNTO
     }
 
     // Getter e Setter
@@ -27,4 +29,8 @@ public class OrdineResponseDTO {
 
     public Double getTotale() { return totale; }
     public void setTotale(Double totale) { this.totale = totale; }
+
+    // <-- AGGIUNTI: Getter e Setter per lo stato
+    public String getStato() { return stato; }
+    public void setStato(String stato) { this.stato = stato; }
 }

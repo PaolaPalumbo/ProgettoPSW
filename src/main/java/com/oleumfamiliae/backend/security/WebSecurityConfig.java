@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod; 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity; // <-- AGGIUNTO: Necessario per @PreAuthorize
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy; 
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity // <-- FONDAMENTALE: Attiva i controlli @PreAuthorize presenti nei miei Controller!
 public class WebSecurityConfig {
 
     @Bean
@@ -52,6 +54,11 @@ public class WebSecurityConfig {
                 
                 // 2. REGOLA GENERALE: Permettiamo letture pubbliche dei prodotti
                 .requestMatchers(HttpMethod.GET, "/api/prodotti", "/api/prodotti/*").permitAll()
+
+                // --- AGGIUNTO: Proteggo esplicitamente le mie nuove rotte per gli ordini ---
+                // Il filtro si assicura che ci sia un token. Poi il @PreAuthorize nel Controller controllerà che sia un ADMIN.
+                .requestMatchers(HttpMethod.GET, "/api/ordini/tutti").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/ordini/*/stato").authenticated()
                 
                 .requestMatchers(
                     "/api/utenti/**",
