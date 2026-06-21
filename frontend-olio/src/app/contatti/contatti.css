@@ -1,0 +1,38 @@
+/* =========================================
+   Stili specifici per la pagina Contatti
+   ========================================= */
+
+/* Aggiunge un effetto di transizione morbida alle colonne */
+.col-md-4 {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 15px;
+  padding: 30px 15px;
+}
+
+/* Effetto sollevamento (hover) per le 3 sezioni */
+.col-md-4:hover {
+  transform: translateY(-8px);
+  background-color: #fcfbf9; /* Un leggerissimo grigio/crema per far staccare la colonna */
+  box-shadow: 0 10px 20px rgba(59, 77, 46, 0.05); /* Ombra verde oliva molto delicata */
+}
+
+/* Transizione per le icone */
+.bi {
+  display: inline-block;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+/* Al passaggio del mouse sulla colonna, l'icona si ingrandisce e diventa verde oliva */
+.col-md-4:hover .bi {
+  transform: scale(1.15);
+  color: #3b4d2e !important; /* Forza il colore primario del brand */
+}
+
+/* Effetto hover specifico per il link dell'email */
+a.text-muted {
+  transition: color 0.3s ease;
+}
+
+a.text-muted:hover {
+  color: #c2a878 !important; /* Oro antico al passaggio del mouse */
+}

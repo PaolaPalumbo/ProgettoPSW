@@ -1,0 +1,39 @@
+.navbar-nav {
+  /* Passiamo a un font Serif, più raffinato e storico */
+  font-family: 'Georgia', 'Times New Roman', serif !important;
+  font-size: 1rem !important; /* Leggermente più grande per leggibilità */
+  font-weight: 500;
+  
+  /* Aumentiamo lo spazio tra le lettere per un effetto "luxury" */
+  letter-spacing: 1.5px !important;
+  
+  /* Manteniamo il maiuscolo per coerenza */
+  text-transform: uppercase;
+}
+
+/* Aggiungiamo un effetto al passaggio del mouse (hover) */
+.nav-link {
+  color: #3b4d2e !important; /* Colore verde oliva del brand */
+  transition: all 0.3s ease !important;
+  position: relative;
+}
+
+/* Sottolineatura elegante al passaggio del mouse */
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: 5px;
+  left: 0;
+  background-color: #c2a878; /* Oro antico */
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.nav-link:hover {
+  color: #c2a878 !important; /* Il colore vira verso l'oro */
+}
