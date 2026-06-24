@@ -27,7 +27,7 @@ public class OrdineService {
         this.utenteRepository = utenteRepository;
     }
 
-    // --- MODIFICATO: Ora ricevo l'intero CheckoutDTO e l'email sicura dal token ---
+    //ricevo l'intero CheckoutDTO e l'email sicura dal token ---
     @Transactional 
     public Ordine effettuaCheckout(CheckoutDTO checkoutData, String email) {
         
@@ -37,7 +37,7 @@ public class OrdineService {
 
         Double totaleCalcolato = 0.0;
 
-        // 2. Itero su tutti gli articoli presenti nella "busta" (il mio carrello)
+        // 2. Itero su tutti gli articoli presenti nel carrello
         for (ItemDTO item : checkoutData.getProdotti()) {
             
             // Identifico il singolo prodotto per controllare il mio magazzino e il prezzo
@@ -92,6 +92,7 @@ public class OrdineService {
         return salvato;
     }
 
+    //Vedo gli ordini
     // Questo metodo NON necessita di @Transactional perché eseguo una sola operazione di lettura (SELECT)
     @Transactional(readOnly = true) 
     public List<Ordine> trovaOrdiniPerUtente(String email) {

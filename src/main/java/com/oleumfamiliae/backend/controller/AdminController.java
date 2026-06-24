@@ -7,8 +7,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/admin/ordini")
+@RestController //scambio di dati in JSON tramite DTO
+@RequestMapping("/api/admin/ordini")//rotta
 @CrossOrigin(origins = "http://localhost:4200")
 @PreAuthorize("hasRole('ADMIN')") // Solo l'admin passa da qui!
 public class AdminController {

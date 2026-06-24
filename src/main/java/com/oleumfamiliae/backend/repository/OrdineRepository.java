@@ -14,5 +14,5 @@ public interface OrdineRepository extends JpaRepository<Ordine, Long> {
     // AGGIORNAMENTO: Ho aggiunto "OrderByDataDesc" così il database mi restituisce 
     // la cronologia già ordinata, dal mio acquisto più recente a quello più vecchio.
     List<Ordine> findByUtenteEmailOrderByDataOrdineDesc(String email);
-    
+    //nomenclatura standardizzata FINDBY
 }

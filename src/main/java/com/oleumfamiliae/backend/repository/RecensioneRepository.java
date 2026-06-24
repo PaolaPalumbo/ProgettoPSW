@@ -20,5 +20,11 @@ public interface RecensioneRepository extends JpaRepository<Recensione, Long> {
     List<Recensione> findByProdottoId(Long prodottoId);
 
     // Io cerco le recensioni associate all'email dell'utente
-List<Recensione> findByUtenteEmail(String email);
+    List<Recensione> findByUtenteEmail(String email);
 }
+//rafforza incaspulamento
+//Si elimina il rischio di esporre accidentalmente dati sensibili o non validati tramite le API pubbliche
+
+
+//findBy è la firma del metodo che consente a JPA di trasformare 
+//il metodo in query SQL

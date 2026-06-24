@@ -8,6 +8,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder; // Aggiunto import per l'encoder
 import org.springframework.stereotype.Component;
 
+
+
+ //implemento CommandLineRunner per popolare, oltre ai Prodotti, l’intero albero delle dipendenze 
+ //azionali, inclusi gli Utenti.
 @Component
 public class DatabaseLoader implements CommandLineRunner {
 

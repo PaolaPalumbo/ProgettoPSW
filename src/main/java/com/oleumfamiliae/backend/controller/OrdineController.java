@@ -12,28 +12,34 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/ordini")
-@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/api/ordini")//definisce la rotta
+@CrossOrigin(origins = "http://localhost:4200")//app Angular dialoga con il backend
 public class OrdineController {
 
     private final OrdineService ordineService;
 
-    // Ho rimosso l'UtenteRepository: il mio Controller non deve più interrogare direttamente il DB!
+    
     public OrdineController(OrdineService ordineService) {
         this.ordineService = ordineService;
     }
 
-    @PostMapping("/checkout")
+    @PostMapping("/checkout")//client invia blocco di dati
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')") // Proteggo la rotta per evitare acquisti anonimi
     public ResponseEntity<?> effettuaCheckout(@RequestBody CheckoutDTO checkoutData) { 
         try {
             // Estraggo l'email dal token per evitare frodi sull'idUtente
             String email = SecurityContextHolder.getContext().getAuthentication().getName();
+            //SECURITYCONTEXHOLDER agisce come repositort globale:
+            //identifica l'utente risalendo alla sua identità 
+            //mediante il token JWT neutralizzando i tentativi di frode sull'identità
+
 
             // Passo semplicemente la "busta" (DTO) al mio Service.
             // Sarà il Service a recuperare le entità e applicare la logica in totale isolamento.
             Ordine ordineSalvato = ordineService.effettuaCheckout(checkoutData, email); 
             
+            //RESPONSENTITY mi permette di incapsulare l'ordine per dare al frontend
+            //info relative al suo successo o al suo fallimento
             return ResponseEntity.ok(ordineSalvato);
         } catch (Exception e) {
             // Se il mio Service lancia un'eccezione (es. "Quantità non sufficiente"), 
@@ -45,7 +51,7 @@ public class OrdineController {
     // Espongo l'endpoint per la mia cronologia ordini protetto da autorizzazione.
     // Utilizzo il SecurityContextHolder per estrarre la mia identità dal token JWT,
     // garantendo un approccio stateless e sicuro che evita l'esposizione di parametri manipolabili.
-    @GetMapping("/miei")
+    @GetMapping("/miei")//fornisce il blocco di dati
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<OrdineResponseDTO>> getOrdiniMiei() {
         // 1. Estraggo la mia email dal contesto di sicurezza (il token JWT)
@@ -71,7 +77,7 @@ public class OrdineController {
     // --- NUOVI ENDPOINT PER LA GESTIONE SPEDIZIONI (AREA ADMIN) ---
 
     // Espongo un endpoint riservato all'amministratore per recuperare l'intera lista degli ordini
-    @GetMapping("/tutti")
+    @GetMapping("/tutti") //tutti gli ordini
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Ordine>> getAllOrdini() {
         // Chiedo al mio Service di estrarre tutti i record presenti nel database
@@ -79,9 +85,9 @@ public class OrdineController {
     }
 
     // Espongo un endpoint per aggiornare lo stato di un ordine specifico, sempre protetto per l'admin
-    @PutMapping("/{id}/stato")
+    @PutMapping("/{id}/stato")//aggiorna i dati
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> aggiornaStato(@PathVariable Long id, @RequestParam String stato) {
+    public ResponseEntity<?> aggiornaStato(@PathVariable Long id, @RequestParam String stato) {//i due tag estraggono i parametri dinamici direttamente dall'URL
         try {
             // Delego al Service l'aggiornamento dell'entità
             Ordine aggiornato = ordineService.aggiornaStatoOrdine(id, stato);

@@ -34,6 +34,12 @@ public class UtenteService {
         
         return utenteRepository.save(utente);
     }
+    //E' importante notare che ogni utente di default è uno USER,
+    //  e solo l'amministratore può promuovere un utente a ADMIN.
+
+
+
+    
 
     // 2. Login (Versione con log di controllo)
     public Utente effettuaLogin(String email, String password) {
@@ -44,7 +50,7 @@ public class UtenteService {
             throw new RuntimeException("Password errata!");
         }
         
-        // DEBUG: Aggiungi questa riga per vedere in console cosa viene passato al Controller
+        // DEBUG: riga per vedere in console cosa viene passato al Controller
         System.out.println("DEBUG LOGIN: Utente trovato: " + utente.getEmail() + 
                            " | Ruolo nel DB: " + utente.getRuolo() + 
                            " | ID: " + utente.getId());

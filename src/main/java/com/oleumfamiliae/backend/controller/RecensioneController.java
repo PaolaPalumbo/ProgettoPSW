@@ -47,7 +47,7 @@ public class RecensioneController {
     }
 
     // Invio una nuova recensione al database associandola al mio account
-    @PostMapping
+    @PostMapping //endpoint per user
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')") // Permesso ampliato per sicurezza
     public ResponseEntity<Recensione> invia(@RequestBody Recensione recensione) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -56,14 +56,14 @@ public class RecensioneController {
     }
 
     // Approvo la recensione indicata dal mio ID
-    @PostMapping("/approva/{id}")
+    @PostMapping("/approva/{id}")//endpoint per admin
     @PreAuthorize("hasRole('ADMIN')")
     public void approva(@PathVariable Long id) {
         recensioneService.approvaRecensione(id);
     }
     
     // Recupero tutte le recensioni già approvate per un determinato prodotto
-    @GetMapping("/prodotto/{id}")
+    @GetMapping("/prodotto/{id}")//riceve il percoso identificativo del prodotto
     public List<Recensione> getRecensioniPerProdotto(@PathVariable Long id) {
         return recensioneService.getRecensioniByProdotto(id);
     }

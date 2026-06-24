@@ -58,10 +58,12 @@ public class RecensioneService {
         recensioneRepository.deleteById(id);
     }
 
+    // Metodo per ottenere tutte le recensioni approvate di un prodotto specifico
     public List<Recensione> getRecensioniByProdotto(Long prodottoId) {
         return recensioneRepository.findByProdotto_IdAndApprovataTrue(prodottoId);
     }
 
+    // Metodo per ottenere tutte le recensioni in attesa di approvazione (per l'amministratore)
     public List<Recensione> getRecensioniDaApprovare() {
         return recensioneRepository.findByApprovataFalse();
     }

@@ -12,6 +12,7 @@ public class ProdottoService {
 
     private final ProdottoRepository prodottoRepository;
 
+    // Costruttore per l'iniezione delle dipendenze
     public ProdottoService(ProdottoRepository prodottoRepository) {
         this.prodottoRepository = prodottoRepository;
     }
@@ -42,13 +43,20 @@ public class ProdottoService {
     // 3. Metodo per ricerca e filtraggio dei prodotti
     public List<Prodotto> cercaProdotti(String nome, String formato, Double prezzoMin) {
         return prodottoRepository.findAll().stream()
+            //filtro per nome, se il nome è null o vuoto, non filtriamo
             .filter(p -> (nome == null || nome.isEmpty() || p.getNome().toLowerCase().contains(nome.toLowerCase())))
+            
+            //filtro per formato, se il formato è null o vuoto, non filtriamo
             .filter(p -> (formato == null || formato.isEmpty() || p.getFormato().equalsIgnoreCase(formato)))
+            
+            //filtro per prezzo minimo, se il prezzoMin è null, non filtriamo
             .filter(p -> (prezzoMin == null || p.getPrezzo() >= prezzoMin))
+            
+            //colleziono i risultati filtrati in una lista
             .collect(Collectors.toList());
     }
 }
 
-/*Cosa fa: Usa i metodi automatici del Repository (findAll e save) 
+/*Usa i metodi automatici del Repository (findAll e save) 
 per recuperare la lista di tutto l'olio disponibile da mostrare 
-nel frontend in Angular e per permetterti di inserire nuovi formati. */
+nel frontend in Angular e per permettere di inserire nuovi formati. */
