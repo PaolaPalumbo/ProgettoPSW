@@ -5,11 +5,13 @@ import com.oleumfamiliae.backend.service.UtenteService;
 import com.oleumfamiliae.backend.security.JwtUtils;
 import com.oleumfamiliae.backend.dto.JwtResponse;
 import com.oleumfamiliae.backend.dto.LoginRequest; // Importato il DTO per leggere il body JSON
+import org.springframework.http.HttpStatus; // Aggiunto per la gestione degli status di errore
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import java.security.Principal; // Aggiunto per identificare l'utente autenticato tramite il token JWT
 
 @RestController
 @RequestMapping("/api/utenti")
@@ -50,5 +52,21 @@ public class UtenteController {
         
         // 4. Risposta completa (Token + Ruolo)
         return ResponseEntity.ok(new JwtResponse(jwt, utente.getRuolo()));
+    }
+
+    // 3. Eliminazione account utente loggato
+    @DeleteMapping("/elimina-account")
+    public ResponseEntity<?> eliminaAccount(Principal principal) {
+        // Il Principal viene inserito automaticamente da Spring Security recuperando
+        // l'identità (email) impostata nel SecurityContext dal filtro del token JWT.
+        String email = principal.getName();
+        
+        try {
+            utenteService.eliminaUtentePerEmail(email);
+            return ResponseEntity.ok().body("{\"message\": \"Account eliminato con successo\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"Impossibile eliminare l'account al momento\"}");
+        }
     }
 }

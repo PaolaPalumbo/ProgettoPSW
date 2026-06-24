@@ -4,6 +4,7 @@ import com.oleumfamiliae.backend.model.Utente;
 import com.oleumfamiliae.backend.repository.UtenteRepository;
 import org.springframework.security.crypto.password.PasswordEncoder; 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional; // <-- AGGIUNTO: Import per garantire l'integrità durante la cancellazione
 import java.util.Optional; 
 
 @Service
@@ -56,5 +57,16 @@ public class UtenteService {
                            " | ID: " + utente.getId());
                            
         return utente;
+    }
+
+    // 3. Eliminazione account utente
+    @Transactional
+    public void eliminaUtentePerEmail(String email) {
+        Utente utente = utenteRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+        
+        // Se l'utente ha relazioni (es. recensioni o ordini), assicurati che nel model 
+        // sia impostato il CascadeType.REMOVE o gestisci la disassociazione qui
+        utenteRepository.delete(utente);
     }
 }

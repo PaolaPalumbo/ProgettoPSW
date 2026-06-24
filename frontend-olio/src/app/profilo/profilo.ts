@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { UtenteService } from '../services/utente.service';
 import { RecensioneService } from '../services/recensione.service'; // AGGIUNTO: Import del servizio recensioni
+import { CarrelloService } from '../services/carrello.service'; // <-- AGGIUNTO: Import del servizio carrello per la cancellazione
 
 @Component({
   selector: 'app-profilo',
@@ -31,6 +32,7 @@ export class ProfiloComponent implements OnInit {
     private http: HttpClient,
     private utenteService: UtenteService,
     private recensioneService: RecensioneService, // AGGIUNTO
+    private carrelloService: CarrelloService, // <-- AGGIUNTO: Iniezione del CarrelloService
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef // Inietto il ChangeDetector per forzare l'aggiornamento
@@ -125,6 +127,35 @@ export class ProfiloComponent implements OnInit {
           this.caricaRecensioni(); // Ricarico la lista delle recensioni
         },
         error: (err) => alert("Errore durante l'eliminazione.")
+      });
+    }
+  }
+
+  // --- NUOVO METODO: Eliminazione account ---
+  onEliminaAccount(): void {
+    // Mostriamo un messaggio di conferma per evitare click accidentali
+    const conferma = confirm("Sei assolutamente sicuro di voler eliminare il tuo account? L'operazione è irreversibile e perderai la cronologia dei tuoi ordini.");
+    
+    if (conferma) {
+      this.utenteService.eliminaAccount().subscribe({
+        next: (risposta) => {
+          console.log(risposta.message);
+          
+          // 1. Svuota la sessione di autenticazione locale
+          this.utenteService.logout(); 
+          
+          // 2. Svuota il carrello e pulisci il localStorage
+          this.carrelloService.svuotaCarrello(); 
+          
+          // 3. Reindirizza l'utente alla Home del sito
+          this.router.navigate(['/']);
+          
+          alert("Il tuo account è stato eliminato definitivamente.");
+        },
+        error: (errore) => {
+          console.error("Errore durante l'eliminazione dell'account", errore);
+          alert("Si è verificato un errore. Impossibile eliminare l'account al momento.");
+        }
       });
     }
   }
