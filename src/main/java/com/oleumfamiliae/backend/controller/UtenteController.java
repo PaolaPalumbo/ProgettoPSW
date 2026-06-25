@@ -15,7 +15,6 @@ import java.security.Principal; // Aggiunto per identificare l'utente autenticat
 
 @RestController
 @RequestMapping("/api/utenti")
-//@CrossOrigin(origins = "http://localhost:4200")
 public class UtenteController {
 
     private final UtenteService utenteService;
