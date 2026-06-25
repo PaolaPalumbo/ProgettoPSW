@@ -8,9 +8,9 @@ import { CarrelloService } from '../services/carrello.service';
 import { RecensioneService } from '../services/recensione.service'; // AGGIUNTO: Importa il nuovo servizio
 import { CatalogoService } from '../services/catalogo.service'; // AGGIUNTO: Importa il CatalogoService
 import { Recensione } from '../models/recensione.model'; // AGGIUNTO: Importa il modello
-import { ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef } from '@angular/core';//gestione operazioni asincrone lato frontend--->BehaviouralSubject nel backend
 
-// 1. Definisco la struttura del Prodotto (lo "specchio" della classe Java)
+// 1. Definisco la struttura del Prodotto (lo "specchio" della classe Java)--->DTO
 export interface Prodotto {
   id: number;
   nome: string;
@@ -24,7 +24,7 @@ export interface Prodotto {
 @Component({
   selector: 'app-catalogo',
   standalone: true,
-  imports: [CommonModule, FormsModule], // MODIFICATO: Aggiunto FormsModule
+  imports: [CommonModule, FormsModule], 
   templateUrl: './catalogo.html', 
   styleUrl: './catalogo.css'       
 })
@@ -51,12 +51,12 @@ export class CatalogoComponent implements OnInit {
   constructor(
     private http: HttpClient, 
     private carrelloService: CarrelloService,
-    private recensioneService: RecensioneService, // AGGIUNTO
-    private catalogoService: CatalogoService, // AGGIUNTO: Inietto il servizio del catalogo
-    private cdRef: ChangeDetectorRef, // AGGIUNTO
-    private router: Router // AGGIUNTO: Iniettato per ascoltare il cambio rotta
+    private recensioneService: RecensioneService,
+    private catalogoService: CatalogoService, //  Inietto il servizio del catalogo
+    private cdRef: ChangeDetectorRef, 
+    private router: Router // Iniettato per ascoltare il cambio rotta
   ) {
-    // AGGIUNTO: Questo ascolta ogni volta che la navigazione finisce e aggiorna i dati
+    //  Questo ascolta ogni volta che la navigazione finisce e aggiorna i dati
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
@@ -64,7 +64,7 @@ export class CatalogoComponent implements OnInit {
     });
   }
 
-  // AGGIUNTO: Getter ottimizzato con pulizia stringhe per evitare errori di match
+  // Getter ottimizzato con pulizia stringhe per evitare errori di match
   get prodottiFiltrati(): Prodotto[] {
     return this.prodotti.filter(p => {
       // 1. Ricerca testuale
@@ -83,26 +83,34 @@ export class CatalogoComponent implements OnInit {
     });
   }
 
-  // AGGIUNTO: Genera automaticamente i formati unici dal DB per il menu a tendina
+  //Genera automaticamente i formati unici dal DB per il menu a tendina
   get formatiUnici(): string[] {
     return [...new Set(this.prodotti.map(p => p.formato))].sort();
   }
 
+  //INVOCAZIONE DELL'API REST
   // 3. Questo metodo scatta in automatico appena si apre la pagina
   ngOnInit(): void {
-    // Inizializzazione esplicita: resettiamo gli array per evitare conflitti tra rotte
+    // Inizializzazione esplicita: resettiamo gli array-dizionari per evitare conflitti tra rotte:
+    //In questo modo sei sicura che l'utente vedrà solo ed esclusivamente i dati freschi 
+    // appena scaricati dal server, offrendo un'esperienza fluida e senza "sfarfallii" 
+    // di vecchi contenuti.-->AGGIORNO I DATI PER VEDERE SEMPRE QUELLI ATTUALI
     this.prodotti = [];
     this.recensioniPerProdotto = {};
     this.nuoveRecensioni = {};
 
-    // MODIFICATO: Uso il CatalogoService invece di this.http.get diretto
+    //PERCHE I DIZIONARI? In questo modo associo l’ID univoco di ogni prodotto 
+    // alla sua specifica lista di recensioni o allo stato del form di inserimento
+
+    // Uso il CatalogoService invece di this.http.get diretto
+    //CARICO I DATI
     this.catalogoService.getProdotti()
       .subscribe({
         next: (dati) => {
           this.prodotti = dati;
           console.log("Prodotti caricati con successo dal Backend:", this.prodotti);
           
-          // FORZO ANGULAR A RIFARSI IL TRUCCO
+          // FORZO ANGULAR A RIFARSI IL TRUCCO:AGGIORNA IMMEDIATAMENTE L'INTERFACCIA HTML
           this.cdRef.detectChanges();
           //Per ogni prodotto caricato, chiediamo al backend le sue recensioni
           this.prodotti.forEach(p => this.caricaRecensioni(p.id));
@@ -112,13 +120,13 @@ export class CatalogoComponent implements OnInit {
         }
       });
   }
-
+  //AGGIUNTA AL CARRELLO
   mettiNelCarrello(prodotto: Prodotto): void {
     this.carrelloService.aggiungi(prodotto);
     console.log('Prodotto aggiunto:', prodotto.nome);
   }
 
-  // --- NUOVI METODI PER LA GESTIONE DEL FORM VISIVO ---
+  // ----METODI PER LA GESTIONE DEL FORM VISIVO ---
   
   // Mostra il modulo di recensione per un prodotto specifico
   apriFormRecensione(idProdotto: number) {
@@ -132,15 +140,15 @@ export class CatalogoComponent implements OnInit {
 
   // AGGIUNTO: Metodo che scatta quando l'utente clicca "Invia Recensione"
   inviaRecensione(prodottoCorrente: Prodotto) {
-    const recensioneDaInviare: Recensione = {
-      // MODIFICA APPLICATA QUI: estraggo i dati dal dizionario usando l'ID del prodotto
+    const recensioneDaInviare: Recensione = {//contruisco la recensione
+      // estraggo i dati dal dizionario usando l'ID del prodotto
       voto: Number(this.nuoveRecensioni[prodottoCorrente.id].voto),
       commento: this.nuoveRecensioni[prodottoCorrente.id].commento,
-      utente: { id: 1, nome: 'Mario', cognome: 'Rossi', email: 'test@test.com' },
+      utente: { id: 1, nome: 'User', cognome: '', email: 'test@test.com' },
       prodotto: prodottoCorrente
     };
 
-    this.recensioneService.inviaRecensione(recensioneDaInviare).subscribe({
+    this.recensioneService.inviaRecensione(recensioneDaInviare).subscribe({//la invio al backend
       next: (risposta) => {
         alert('Grazie! La tua recensione è stata inviata ed è in attesa di moderazione.');
         // Chiude il form in automatico dopo l'invio corretto
@@ -175,8 +183,8 @@ export class CatalogoComponent implements OnInit {
     
     this.recensioneService.getRecensioniProdotto(idProdotto).subscribe({
       next: (dati) => {
-        this.recensioniPerProdotto[idProdotto] = dati;
-        this.cdRef.detectChanges();
+        this.recensioniPerProdotto[idProdotto] = dati; //arrivano i dati
+        this.cdRef.detectChanges();//forzo l'HTML ad aggiornarsi
       },
       error: (errore) => {
         console.error(`Errore recensioni per ${idProdotto}:`, errore);
@@ -191,9 +199,10 @@ export class CatalogoComponent implements OnInit {
   }
 
   aggiornaTutto() {
-    this.catalogoService.getProdotti().subscribe(dati => {
-      this.prodotti = dati;
+    this.catalogoService.getProdotti().subscribe(dati => { //chiedo al backend il catalogo
+      this.prodotti = dati; //il server mi ha mandato i dati e li salvo nella variabile
       this.prodotti.forEach(p => this.caricaRecensioni(p.id));
+      //per ogni prodotto carico le recensioni
     });
   }
 }
