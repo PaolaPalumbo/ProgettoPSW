@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
     }
 
     this.route.queryParams.subscribe(params => {
-      // Se arriviamo dalla adminGuard, impostiamo l'avviso
+      // Se arrivo dalla adminGuard, imposto l'avviso
       if (params['error'] === 'admin_only') {
         this.isAdminLogin = true;
         this.avvisoAdmin = 'Area riservata agli amministratori. Effettua il login per procedere.';
@@ -46,10 +46,10 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    this.messaggioErrore = ''; // Puliamo solo l'errore, non l'avvisoAdmin
+    this.messaggioErrore = ''; // Pulisco solo l'errore, non l'avvisoAdmin
 
-    // PULIZIA PREVENTIVA: Eliminiamo i dati vecchi prima di procedere
-    // <-- AGGIORNATO: Usiamo sessionStorage.clear() in coerenza con le nuove policy di sicurezza
+    // PULIZIA PREVENTIVA: Elimino i dati vecchi prima di procedere
+    // <Uso sessionStorage.clear() in coerenza con le policy di sicurezza
     sessionStorage.clear(); 
 
     this.utenteService.login(this.credenziali).subscribe({
@@ -57,11 +57,11 @@ export class LoginComponent implements OnInit {
         console.log('Login effettuato con successo!');
         
         // --- PASSAGGIO FONDAMENTALE: SALVATAGGIO TOKEN E RUOLO ---
-        // Se il backend invia un token e un ruolo, li salviamo subito nel sessionStorage
+        // Se il backend invia un token e un ruolo, li salvo subito nel sessionStorage
         let token = typeof response === 'string' ? response : response.token;
         let ruolo = response.ruolo;
 
-        // FORZATURA DI SICUREZZA PER LA TESI:
+        // FORZATURA DI SICUREZZA:
         // Determino il ruolo in base all'email se il backend non lo invia
         if (!ruolo && this.credenziali.email.toLowerCase() === 'admin@oleumfamiliae.it') {
             ruolo = 'ADMIN';
@@ -100,7 +100,7 @@ export class LoginComponent implements OnInit {
           this.messaggioErrore = 'Impossibile connettersi al server. Riprova più tardi.';
         }
         
-        // <-- Aggiunto per forzare l'aggiornamento dell'HTML
+        // per forzare l'aggiornamento dell'HTML
         this.cdr.detectChanges(); 
       }
     });

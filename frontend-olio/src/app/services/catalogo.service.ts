@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class CatalogoService {
-  // Questo è l'indirizzo esatto del tuo backend
+  // Questo è l'indirizzo esatto del backend
   private apiUrl = 'http://localhost:8080/api/prodotti';
 
   constructor(private http: HttpClient) { }

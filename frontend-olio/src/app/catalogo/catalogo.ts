@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { FormsModule } from '@angular/forms'; // AGGIUNTO: Necessario per il form delle recensioni
-import { Router, NavigationEnd } from '@angular/router'; // AGGIUNTO: Per gestire la navigazione
-import { filter } from 'rxjs/operators'; // AGGIUNTO: Per filtrare gli eventi del router
+import { FormsModule } from '@angular/forms'; // Necessario per il form delle recensioni STANDALONE COMPONENT
+import { Router, NavigationEnd } from '@angular/router'; // Per gestire la navigazione
+import { filter } from 'rxjs/operators'; // Per filtrare gli eventi del router
 import { CarrelloService } from '../services/carrello.service';
-import { RecensioneService } from '../services/recensione.service'; // AGGIUNTO: Importa il nuovo servizio
-import { CatalogoService } from '../services/catalogo.service'; // AGGIUNTO: Importa il CatalogoService
-import { Recensione } from '../models/recensione.model'; // AGGIUNTO: Importa il modello
+import { RecensioneService } from '../services/recensione.service'; // Importa il nuovo servizio
+import { CatalogoService } from '../services/catalogo.service'; //Importa il CatalogoService
+import { Recensione } from '../models/recensione.model'; //  Importa il modello
 import { ChangeDetectorRef } from '@angular/core';//gestione operazioni asincrone lato frontend--->BehaviouralSubject nel backend
 
 // 1. Definisco la struttura del Prodotto (lo "specchio" della classe Java)--->DTO
@@ -32,7 +32,7 @@ export class CatalogoComponent implements OnInit {
   // 2. Qui salvo l'olio in arrivo dal database
   prodotti: Prodotto[] = []; 
 
-  // AGGIUNTO: Variabili per i filtri di ricerca
+  // Variabili per i filtri di ricerca
   searchTerm: string = '';
   filtroFormato: string = '';
   filtroPrezzo: number = 0;
@@ -40,15 +40,15 @@ export class CatalogoComponent implements OnInit {
   // Aggiunta per gestire l'eliminazione
   emailCorrente: string = 'test@test.com'; // In un'app reale, la recuperi dal Token/AuthService
 
-  // AGGIUNTO: Variabili per raccogliere l'input dell'utente dal form
+  // Variabili per raccogliere l'input dell'utente dal form
   nuovoVoto: number = 5;
   nuovoCommento: string = '';
   // Dizionario per associare l'ID del prodotto alla sua lista di recensioni
   recensioniPerProdotto: { [idProdotto: number]: Recensione[] } = {};
   nuoveRecensioni: { [id: number]: { voto: number, commento: string } } = {};
   
-  // MODIFICATO: Iniezione del nuovo RecensioneService nel costruttore
-  constructor(
+  // Iniezione del nuovo RecensioneService nel costruttore
+  constructor(//Dependency Injection
     private http: HttpClient, 
     private carrelloService: CarrelloService,
     private recensioneService: RecensioneService,
@@ -83,7 +83,9 @@ export class CatalogoComponent implements OnInit {
     });
   }
 
-  //Genera automaticamente i formati unici dal DB per il menu a tendina
+  //Genera automaticamente i formati unici dal DB per il menu a tendina:
+  //se voglio aggiungere nuovi formati nei DB, Angular si aggiornerà automaticamente
+  //senza modificare il codice
   get formatiUnici(): string[] {
     return [...new Set(this.prodotti.map(p => p.formato))].sort();
   }
@@ -91,18 +93,19 @@ export class CatalogoComponent implements OnInit {
   //INVOCAZIONE DELL'API REST
   // 3. Questo metodo scatta in automatico appena si apre la pagina
   ngOnInit(): void {
-    // Inizializzazione esplicita: resettiamo gli array-dizionari per evitare conflitti tra rotte:
-    //In questo modo sei sicura che l'utente vedrà solo ed esclusivamente i dati freschi 
+    // Inizializzazione esplicita: resettiamo gli array/dizionari per evitare conflitti tra rotte:
+    //In questo modo sono sicura che l'utente vedrà solo ed esclusivamente i dati freschi 
     // appena scaricati dal server, offrendo un'esperienza fluida e senza "sfarfallii" 
     // di vecchi contenuti.-->AGGIORNO I DATI PER VEDERE SEMPRE QUELLI ATTUALI
     this.prodotti = [];
-    this.recensioniPerProdotto = {};
+    this.recensioniPerProdotto = {};//dizionario-->associo l'ID univoco di ogni prodotto alla propria recensione
     this.nuoveRecensioni = {};
 
     //PERCHE I DIZIONARI? In questo modo associo l’ID univoco di ogni prodotto 
     // alla sua specifica lista di recensioni o allo stato del form di inserimento
 
-    // Uso il CatalogoService invece di this.http.get diretto
+
+    
     //CARICO I DATI
     this.catalogoService.getProdotti()
       .subscribe({
@@ -148,7 +151,7 @@ export class CatalogoComponent implements OnInit {
       prodotto: prodottoCorrente
     };
 
-    this.recensioneService.inviaRecensione(recensioneDaInviare).subscribe({//la invio al backend
+    this.recensioneService.inviaRecensione(recensioneDaInviare).subscribe({//la invio al backend e mi iscrivo a Obsarvable per "rimanere al passo"
       next: (risposta) => {
         alert('Grazie! La tua recensione è stata inviata ed è in attesa di moderazione.');
         // Chiude il form in automatico dopo l'invio corretto
@@ -194,6 +197,9 @@ export class CatalogoComponent implements OnInit {
     });
   }
 
+  //garantisce che i dati mostrati a schermo siano sempre aggiornati all'ultimo secondo,
+  //forzando un refresh a ogni singola visualizzazione della pagina.
+  //praticamente, spolvera la vetrina ogni volta che viene caricata la pagina
   ionViewWillEnter() {
     this.aggiornaTutto();
   }

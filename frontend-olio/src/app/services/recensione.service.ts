@@ -43,19 +43,18 @@ export class RecensioneService {
 
   // Metodo per l'amministratore: approva una recensione specifica
   approva(id: number): Observable<any> {
-    // AGGIUNTO: Recupero il token dal localStorage per la chiamata protetta da ROLE_ADMIN
+    //Recupero il token dal localStorage per la chiamata protetta da ROLE_ADMIN
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-
-    // Se sul backend hai mappato l'approvazione come PUT, sostituisci .post con .put
+  
     return this.http.post(`${this.apiUrl}/approva/${id}`, {}, { headers: headers });
   }
 
   // Metodo per eliminare una recensione
   eliminaRecensione(id: number): Observable<any> {
-    // AGGIUNTO: Token per autorizzare la DELETE
+    // Token per autorizzare la DELETE
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`

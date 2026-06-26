@@ -7,10 +7,10 @@ export const adminGuard = () => {
   const router = inject(Router);
 
   // 1. Controllo se esiste almeno il token (autenticazione base) 
-  // <-- CORREZIONE: Allineato a sessionStorage per la sicurezza
+  // Allineato a sessionStorage per la sicurezza
   const token = sessionStorage.getItem('token');
 
-  // 2. Se ho il token, procediamo 
+  // 2. Se ho il token, procedo
   if (token) {
     // Se il servizio è già pronto, controlliamo il ruolo
     if (utenteService.hasRole('ADMIN')) {

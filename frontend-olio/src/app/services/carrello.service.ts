@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs'; // <-- IMPORTANTE: Aggiunto BehaviorSubject
 import { CheckoutDTO } from '../models/checkout.dto'; 
 
-@Injectable({
-  providedIn: 'root'
+@Injectable({// permette alla classa di partecipare al sistema di Dependency Injection
+  providedIn: 'root' //creo il Singleton: Crea una sola identica copia di questo CarrelloService e usala per tutti
 })
 export class CarrelloService {
   private articoli: any[] = []; 
@@ -12,14 +12,15 @@ export class CarrelloService {
   private readonly STORAGE_KEY = 'oleum_carrello'; 
 
   // --- IL CUORE DELLA REATTIVITÀ ---
-  private contatoreSubject = new BehaviorSubject<number>(0);
-  contatore$ = this.contatoreSubject.asObservable();
+  private contatoreSubject = new BehaviorSubject<number>(0); //inizilizzo il BeahviorSubject
+  contatore$ = this.contatoreSubject.asObservable();//il componente Carrello si mette in ascolto nel canale
 
   constructor(private http: HttpClient) {
     // ALL'AVVIO: Recupera i dati salvati, se esistono
     const salvati = localStorage.getItem(this.STORAGE_KEY);
     if (salvati) {
-      this.articoli = JSON.parse(salvati);
+      //prende il testo JSON e lo ritrasforma nel vero e proprio array di oggetti TypeScript originale:
+      this.articoli = JSON.parse(salvati);//DESERIALIZZAZIONE
       // Sincronizza il contatore all'avvio con i dati appena recuperati dal localStorage
       this.contatoreSubject.next(this.articoli.length); 
     }
@@ -30,7 +31,7 @@ export class CarrelloService {
   aggiungi(prodotto: any) {
     this.articoli.push(prodotto);
     this.salvaSuLocalStorage(); 
-    this.contatoreSubject.next(this.articoli.length); // <-- Avvisa la Navbar!
+    this.contatoreSubject.next(this.articoli.length); // <-- Avvisa la Navbar
     console.log('Prodotto aggiunto al carrello:', prodotto);
   }
 
@@ -47,11 +48,11 @@ export class CarrelloService {
     if (index > -1) {
       this.articoli.splice(index, 1);
       this.salvaSuLocalStorage(); 
-      this.contatoreSubject.next(this.articoli.length); // <-- Avvisa la Navbar!
+      this.contatoreSubject.next(this.articoli.length); // <-- Avvisa la Navbar
     }
   }
 
-  // --- NUOVI METODI PER IL CHECKOUT ---
+  // ---  METODI PER IL CHECKOUT ---
 
   // 1. Chiamata API per processare l'ordine
   effettuaCheckout(payload: any): Observable<any> {

@@ -14,7 +14,7 @@ export class AdminRecensioniComponent implements OnInit {
   
   recensioniInSospeso: Recensione[] = [];
 
-  constructor(
+  constructor(//Dependency Injection
     private recensioneService: RecensioneService,
     private cdRef: ChangeDetectorRef
   ) {}

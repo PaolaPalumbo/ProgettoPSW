@@ -25,7 +25,7 @@ export class OrdineService {
   }
 
 
-  // --- NUOVI METODI PER LA DASHBOARD ADMIN ---
+  // --- METODI PER LA DASHBOARD ADMIN ---
 
   // Recupera l'elenco completo di tutti gli ordini del sistema
   getTuttiGliOrdini(): Observable<any[]> {

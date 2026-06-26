@@ -80,7 +80,7 @@ export class UtenteService {
     }
   }
 
-  // --- NUOVO: Metodo per eliminare l'account ---
+  // ---Metodo per eliminare l'account ---
   eliminaAccount(): Observable<any> {
     // La chiamata passerà automaticamente il token JWT grazie al tuo interceptor
     return this.http.delete(`${this.apiUrl}/elimina-account`);
