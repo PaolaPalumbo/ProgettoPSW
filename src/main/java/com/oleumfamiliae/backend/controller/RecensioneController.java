@@ -10,9 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize; 
 import org.springframework.security.core.context.SecurityContextHolder; 
 
-@RestController
+@RestController //scambio di dati JSON mediante DTO
 @RequestMapping("/api/recensioni")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200")//evita CORS
 public class RecensioneController {
 
     private final RecensioneService recensioneService;

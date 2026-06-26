@@ -1,6 +1,6 @@
 package com.oleumfamiliae.backend.dto;
 
-public class JwtResponse {
+public class JwtResponse {//isola la logica di autentificazione, separando le credenziali dai dati business
     private String token;
     private String ruolo;
 

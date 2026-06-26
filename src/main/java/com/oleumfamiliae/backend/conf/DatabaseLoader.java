@@ -5,7 +5,7 @@ import com.oleumfamiliae.backend.model.Utente;
 import com.oleumfamiliae.backend.repository.ProdottoRepository;
 import com.oleumfamiliae.backend.repository.UtenteRepository;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder; // Aggiunto import per l'encoder
+import org.springframework.security.crypto.password.PasswordEncoder; //per l'encoder
 import org.springframework.stereotype.Component;
 
 

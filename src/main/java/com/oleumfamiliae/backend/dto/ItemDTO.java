@@ -1,6 +1,6 @@
 package com.oleumfamiliae.backend.dto;
 
-public class ItemDTO {
+public class ItemDTO {//prodotti nel carrello
     private Long idProdotto;
     private int quantita;
     public Long getIdProdotto() {

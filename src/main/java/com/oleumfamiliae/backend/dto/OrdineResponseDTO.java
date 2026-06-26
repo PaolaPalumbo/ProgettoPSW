@@ -3,11 +3,11 @@ package com.oleumfamiliae.backend.dto;
 import java.time.LocalDateTime; // o LocalDateTime in base a cosa usi nella tua entità
 import java.math.BigDecimal; // o Double
 
-public class OrdineResponseDTO {
+public class OrdineResponseDTO {//trasporta per il backend e mostra per il frontend la cronologia degli ordini
     private Long id;
     private LocalDateTime data;
     private Double totale;
-    private String stato; // <-- AGGIUNTO: Trasporta lo stato dell'ordine
+    private String stato; // Trasporta lo stato dell'ordine
 
     // Costruttore vuoto
     public OrdineResponseDTO() {}
@@ -17,7 +17,7 @@ public class OrdineResponseDTO {
         this.id = id;
         this.data = data;
         this.totale = totale;
-        this.stato = stato; // <-- AGGIUNTO
+        this.stato = stato; 
     }
 
     // Getter e Setter

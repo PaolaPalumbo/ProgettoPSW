@@ -11,9 +11,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@RestController //scambio di dati JSON mediante DTO
 @RequestMapping("/api/ordini")//definisce la rotta
-@CrossOrigin(origins = "http://localhost:4200")//app Angular dialoga con il backend
+@CrossOrigin(origins = "http://localhost:4200")//app Angular dialoga con il backend evitando CORS
 public class OrdineController {
 
     private final OrdineService ordineService;
@@ -25,11 +25,11 @@ public class OrdineController {
 
     @PostMapping("/checkout")//client invia blocco di dati
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')") // Proteggo la rotta per evitare acquisti anonimi
-    public ResponseEntity<?> effettuaCheckout(@RequestBody CheckoutDTO checkoutData) { 
+    public ResponseEntity<?> effettuaCheckout(@RequestBody CheckoutDTO checkoutData) { //REQUESTBODY mappa i playload alla richiesta http, nel DTO
         try {
             // Estraggo l'email dal token per evitare frodi sull'idUtente
             String email = SecurityContextHolder.getContext().getAuthentication().getName();
-            //SECURITYCONTEXHOLDER agisce come repositort globale:
+            //SECURITYCONTEXHOLDER agisce come repository globale:
             //identifica l'utente risalendo alla sua identità 
             //mediante il token JWT neutralizzando i tentativi di frode sull'identità
 

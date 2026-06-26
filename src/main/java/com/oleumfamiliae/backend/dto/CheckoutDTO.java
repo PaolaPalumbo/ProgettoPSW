@@ -3,12 +3,12 @@ package com.oleumfamiliae.backend.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
-public class CheckoutDTO {//garantisce l'indegrità delle entità JPA
+public class CheckoutDTO {//contenitore che per l'inoltro dell'ordine
     
     // Costruttore vuoto obbligatorio per Spring Boot
     public CheckoutDTO() {}
 
-    @JsonProperty("prodotti")
+    @JsonProperty("prodotti")//mi da il controllo totale sulla forma del messaggio
     private List<ItemDTO> prodotti; 
     
     @JsonProperty("indirizzoSpedizione")

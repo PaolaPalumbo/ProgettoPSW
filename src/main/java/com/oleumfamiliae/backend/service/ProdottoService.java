@@ -57,6 +57,6 @@ public class ProdottoService {
     }
 }
 
-/*Usa i metodi automatici del Repository (findAll e save) 
+/*Uso i metodi automatici del Repository (findAll e save) 
 per recuperare la lista di tutto l'olio disponibile da mostrare 
 nel frontend in Angular e per permettere di inserire nuovi formati. */
