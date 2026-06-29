@@ -21,7 +21,7 @@ export class NavbarComponent implements OnInit {
   // Stato locale per l'autenticazione
   isLoggedIn: boolean = false;
 
-  // <-- AGGIUNTO: Variabile reattiva per il contatore del carrello
+  //Variabile reattiva per il contatore del carrello
   numeroArticoli: number = 0;
 
   constructor(
@@ -41,7 +41,7 @@ export class NavbarComponent implements OnInit {
       this.cdr.detectChanges(); 
     });
 
-    // 3. <-- AGGIUNTO: Sottoscrizione al contatore del carrello in tempo reale
+    //Sottoscrizione al contatore del carrello in tempo reale
     this.carrelloService.contatore$.subscribe(numero => {
       this.numeroArticoli = numero;
       this.cdr.detectChanges(); // <-- Aggiorna istantaneamente il badge

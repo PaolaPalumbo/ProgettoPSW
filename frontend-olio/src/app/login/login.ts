@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
     password: ''
   };
   messaggioErrore = '';
-  avvisoAdmin = ''; // <-- Nuova variabile per l'avviso persistente
+  avvisoAdmin = ''; //variabile per l'avviso persistente
   isAdminLogin = false; 
 
   constructor(
@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     // --- NUOVO CONTROLLO DI COERENZA VISIVA ---
     // Se l'utente è già loggato (es. token nel sessionStorage),
-    // lo reindirizziamo alla Home per evitare che veda di nuovo il form di login
+    // lo reindirizzo alla Home per evitare che veda di nuovo il form di login
     if (this.utenteService.isLoggedIn()) {
       this.router.navigate(['/']);
       return;
@@ -70,19 +70,19 @@ export class LoginComponent implements OnInit {
         }
 
         if (token) {
-          // salvaSessione ora notifica il BehaviorSubject (authStatus$)
+          // salvaSessione notifica il BehaviorSubject 
           this.utenteService.salvaSessione({ token, ruolo });
           console.log("Dati sessione salvati con ruolo:", ruolo);
         }
         
         // --- NAVIGAZIONE SICURA CON VERIFICA ---
-        // Prima di navigare, verifichiamo che il token sia effettivamente presente
+        // Prima di navigare, verifico che il token sia effettivamente presente
         const checkToken = () => {
           if (this.utenteService.isLoggedIn()) {
              const returnUrl = this.route.snapshot.queryParams['returnUrl'] || (ruolo === 'ADMIN' ? '/login/admin' : '/');
              this.router.navigateByUrl(returnUrl);
           } else {
-             // Se il browser è lento, riproviamo dopo pochissimi millisecondi
+             // Se il browser è lento, riprovo dopo pochissimi millisecondi
              setTimeout(checkToken, 50);
           }
         };
@@ -95,7 +95,7 @@ export class LoginComponent implements OnInit {
         if (err.status === 401 || err.status === 403 || err.status === 404) {
           this.messaggioErrore = this.isAdminLogin
             ? 'Credenziali non valide o permessi insufficienti per l\'area Admin.'
-            : 'Credenziali inesistenti. Verifica la tua email o registrati.'; // <-- Modificato come richiesto
+            : 'Credenziali inesistenti. Verifica la tua email o registrati.'; 
         } else {
           this.messaggioErrore = 'Impossibile connettersi al server. Riprova più tardi.';
         }

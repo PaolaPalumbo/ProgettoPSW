@@ -37,7 +37,7 @@ export class CatalogoComponent implements OnInit {
   filtroFormato: string = '';
   filtroPrezzo: number = 0;
   
-  // Aggiunta per gestire l'eliminazione
+  //per gestire l'eliminazione
   emailCorrente: string = 'test@test.com'; // In un'app reale, la recuperi dal Token/AuthService
 
   // Variabili per raccogliere l'input dell'utente dal form
@@ -93,7 +93,7 @@ export class CatalogoComponent implements OnInit {
   //INVOCAZIONE DELL'API REST
   // 3. Questo metodo scatta in automatico appena si apre la pagina
   ngOnInit(): void {
-    // Inizializzazione esplicita: resettiamo gli array/dizionari per evitare conflitti tra rotte:
+    // Inizializzazione esplicita: resetto gli array/dizionari per evitare conflitti tra rotte:
     //In questo modo sono sicura che l'utente vedrà solo ed esclusivamente i dati freschi 
     // appena scaricati dal server, offrendo un'esperienza fluida e senza "sfarfallii" 
     // di vecchi contenuti.-->AGGIORNO I DATI PER VEDERE SEMPRE QUELLI ATTUALI

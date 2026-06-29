@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: 'checkout.html',
-  styleUrl: './checkout.css' // Assicurati che questo file esista, altrimenti rimuovi la riga
+  styleUrl: './checkout.css' 
 })
 export class CheckoutComponent implements OnInit {
   checkoutForm: FormGroup;

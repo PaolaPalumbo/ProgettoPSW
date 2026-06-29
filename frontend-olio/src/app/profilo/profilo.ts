@@ -93,17 +93,12 @@ export class ProfiloComponent implements OnInit {
     // Resetto gli errori precedenti
     this.messaggioErrore = ''; 
     
-    // USIAMO IL SERVIZIO INVECE DELL'HTTP DIRETTO, così è coerente con l'eliminazione
-    // (Devi avere un metodo nel RecensioneService che chiama /api/recensioni/miei)
-    // Se non ce l'hai, usa il metodo che ti scrivo sotto.
+    // USO IL SERVIZIO INVECE DELL'HTTP DIRETTO, così è coerente con l'eliminazione
     
     this.http.get<any[]>(this.apiUrlRecensioni).subscribe({
       next: (data) => {
         console.log('Dati ricevuti dal backend:', data); 
         
-        // CORREZIONE DIFENSIVA: 
-        // Se vedi che 'id' è undefined, forse il backend invia un altro nome (es. recensioneId)
-        // Assicurati che l'oggetto in console abbia il nome corretto.
         this.recensioni = data;
         
         this.caricamento = false; 
@@ -131,9 +126,9 @@ export class ProfiloComponent implements OnInit {
     }
   }
 
-  // --- NUOVO METODO: Eliminazione account ---
+  // --- Eliminazione account ---
   onEliminaAccount(): void {
-    // Mostriamo un messaggio di conferma per evitare click accidentali
+    // Mostro un messaggio di conferma per evitare click accidentali
     const conferma = confirm("Sei assolutamente sicuro di voler eliminare il tuo account? L'operazione è irreversibile e perderai la cronologia dei tuoi ordini.");
     
     if (conferma) {

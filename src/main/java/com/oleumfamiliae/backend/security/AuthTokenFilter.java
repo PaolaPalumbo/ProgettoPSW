@@ -15,13 +15,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class AuthTokenFilter extends OncePerRequestFilter {
+public class AuthTokenFilter extends OncePerRequestFilter {//il filtro viene applicato una sola volta per ogni richiesta HTTP
     
-    private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);//logger nella console
 
-    @Autowired private JwtUtils jwtUtils;
+    @Autowired //dependency injection--->collego automaticamente istanze dei componenti con la classe corrente
+    private JwtUtils jwtUtils;
 
-    // AGGIUNTO: Inietto il servizio che recupera i dati e i ruoli dell'utente dal database
+    //Inietto il servizio che recupera i dati e i ruoli dell'utente dal database
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -31,46 +32,49 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) 
                                     throws ServletException, IOException {
         
-        // CORREZIONE 403: Se la richiesta è per il login, saltiamo il filtro JWT
-        // altrimenti il sistema cercherebbe un token che non esiste ancora!
+        // Se la richiesta è per il login, salto il filtro JWT
+        // altrimenti il sistema cercherebbe un token che non esiste ancora----> errore 403
         if (request.getRequestURI().contains("/api/utenti/login")) {
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);//passa comunque il "pacco vuoto e le info user"
             return;
         }
 
         try {
-            String jwt = parseJwt(request);
-            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String username = jwtUtils.getUserNameFromJwtToken(jwt);
+            String jwt = parseJwt(request);//estrae la stringa del token dell'header authentication
+            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {//se è tutto ok
+                String username = jwtUtils.getUserNameFromJwtToken(jwt);//estrae lo username
                 // Per ora il filtro verifica solo il token. 
-                // L'impostazione dell'autenticazione avverrà quando integrerai lo UserDetailsService
+                // L'impostazione dell'autenticazione avverrà nella UserDetailsService
                 
-                // IL PEZZO MANCANTE: Recupero l'utente e lo inserisco nel contesto di sicurezza
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                //Recupero l'utente e lo inserisco nel contesto di sicurezza
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);//preleva le info dell'utente dal DB
                 
-                UsernamePasswordAuthenticationToken authentication = 
+                UsernamePasswordAuthenticationToken authentication = //contiene le info di autentificazione complete
                     new UsernamePasswordAuthenticationToken(
                         userDetails, 
-                        null, 
-                        userDetails.getAuthorities()); // Qui dentro c'è il ROLE_ADMIN!
+                        null, //sono già stata autentificata, non è sicuro tenere la password in memoria
+                        userDetails.getAuthorities()); // Qui dentro c'è il ROLE_ADMIN
                         
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                //estrae informazioni "di contorno" dalla richiesta HTTP, come: L'indirizzo IP del client e Il Session ID
 
-                // Ora Spring Security sa ufficialmente chi sei e che poteri hai
+                // Ora Spring Security sa ufficialmente chi sono e che poteri ho
+                //tutto il framework mi ha autentificato
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
             logger.error("Impossibile impostare l'autenticazione utente: {}", e);
         }
-        
+        //se il filtro non mi ha bloccato, proseguo
         filterChain.doFilter(request, response);
     }
 
-    private String parseJwt(HttpServletRequest request) {
+    private String parseJwt(HttpServletRequest request) {//estrae il token dalla richiesta
         String headerAuth = request.getHeader("Authorization");
-        if (headerAuth != null && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7);
+        if (headerAuth != null && headerAuth.startsWith("Bearer ")) {//Authorization: Bearer <mio-token-lungo-e-complesso>
+            return headerAuth.substring(7);//ottengo la striga del token
         }
         return null;
     }
 }
+//token Bearer: "chiunque porti questo token ha diritto di accesso"

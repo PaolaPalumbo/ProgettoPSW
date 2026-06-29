@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       threshold: 0.2 // L'effetto scatta quando il 20% della sezione è visibile
     });
 
-    // Osserviamo tutti gli elementi che hanno la classe .reveal-section
+    // Osservo tutti gli elementi che hanno la classe .reveal-section
     document.querySelectorAll('.reveal-section').forEach(section => {
       observer.observe(section);
     });
