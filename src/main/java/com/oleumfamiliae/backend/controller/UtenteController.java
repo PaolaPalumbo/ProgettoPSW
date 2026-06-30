@@ -1,6 +1,7 @@
 package com.oleumfamiliae.backend.controller;
 
 import com.oleumfamiliae.backend.model.Utente;
+import com.oleumfamiliae.backend.model.IndirizzoSpedizione; // Importato per gestire il payload dell'indirizzo
 import com.oleumfamiliae.backend.service.UtenteService;
 import com.oleumfamiliae.backend.security.JwtUtils;
 import com.oleumfamiliae.backend.dto.JwtResponse;
@@ -11,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 import java.security.Principal; // Aggiunto per identificare l'utente autenticato tramite il token JWT
 
 @RestController
@@ -49,8 +51,8 @@ public class UtenteController {
         // Nota: questo metodo usa il servizio che abbiamo appena sistemato
         Utente utente = utenteService.effettuaLogin(loginRequest.getEmail(), loginRequest.getPassword());
         
-        // 4. Risposta completa (Token + Ruolo)
-        return ResponseEntity.ok(new JwtResponse(jwt, utente.getRuolo()));
+        // 4. Risposta completa (Token + Ruolo + ID) <-- AGGIUNTO: utente.getId() passato al DTO
+        return ResponseEntity.ok(new JwtResponse(jwt, utente.getRuolo(), utente.getId()));
     }
 
     // 3. Eliminazione account utente loggato
@@ -68,4 +70,42 @@ public class UtenteController {
                     .body("{\"error\": \"Impossibile eliminare l'account al momento\"}");
         }
     }
+
+    // 4. Aggiunta di un nuovo indirizzo alla rubrica dell'utente
+    @PostMapping("/{utenteId}/indirizzi")
+    public ResponseEntity<IndirizzoSpedizione> aggiungiIndirizzo(
+            @PathVariable Long utenteId, 
+            @RequestBody IndirizzoSpedizione nuovoIndirizzo) {
+        
+        try {
+            IndirizzoSpedizione indirizzoSalvato = utenteService.aggiungiIndirizzoUtente(utenteId, nuovoIndirizzo);
+            return ResponseEntity.ok(indirizzoSalvato);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // Endpoint 
+    // 5. Recuperare tutti gli indirizzi salvati dall'utente
+    @GetMapping("/{utenteId}/indirizzi")
+    public ResponseEntity<java.util.List<IndirizzoSpedizione>> getIndirizziUtente(@PathVariable Long utenteId) {
+        try {
+            java.util.List<IndirizzoSpedizione> indirizzi = utenteService.getIndirizziPerUtente(utenteId);
+            return ResponseEntity.ok(indirizzi);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // 6. Elimino l'indirizzo salvato
+    @DeleteMapping("/indirizzi/{id}")
+    public ResponseEntity<?> eliminaIndirizzo(@PathVariable Long id) {
+        try {
+            utenteService.eliminaIndirizzo(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }

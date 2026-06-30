@@ -51,6 +51,7 @@ export class LoginComponent implements OnInit {
     // PULIZIA PREVENTIVA: Elimino i dati vecchi prima di procedere
     // <Uso sessionStorage.clear() in coerenza con le policy di sicurezza
     sessionStorage.clear(); 
+    localStorage.removeItem('utente'); // Pulisco preventivamente anche il riferimento locale per il checkout
 
     this.utenteService.login(this.credenziali).subscribe({
       next: (response: any) => { // <-- Tipizzato per lo Strict Mode
@@ -60,6 +61,7 @@ export class LoginComponent implements OnInit {
         // Se il backend invia un token e un ruolo, li salvo subito nel sessionStorage
         let token = typeof response === 'string' ? response : response.token;
         let ruolo = response.ruolo;
+        let idUtente = response.id || (response.utente ? response.utente.id : null);
 
         // FORZATURA DI SICUREZZA:
         // Determino il ruolo in base all'email se il backend non lo invia
@@ -73,6 +75,11 @@ export class LoginComponent implements OnInit {
           // salvaSessione notifica il BehaviorSubject 
           this.utenteService.salvaSessione({ token, ruolo });
           console.log("Dati sessione salvati con ruolo:", ruolo);
+          
+          // Sincronizzo l'oggetto utente atteso dal Checkout sia in localStorage che sessionStorage
+          const utenteSessione = { id: idUtente, email: this.credenziali.email, ruolo: ruolo };
+          localStorage.setItem('utente', JSON.stringify(utenteSessione));
+          sessionStorage.setItem('utente', JSON.stringify(utenteSessione));
         }
         
         // --- NAVIGAZIONE SICURA CON VERIFICA ---

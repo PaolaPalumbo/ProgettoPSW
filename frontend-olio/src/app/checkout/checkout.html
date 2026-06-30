@@ -3,6 +3,16 @@
   
   <form [formGroup]="checkoutForm" (ngSubmit)="confermaOrdine()" class="checkout-form">
     
+    <div class="form-group" *ngIf="listaIndirizzi && listaIndirizzi.length > 0">
+      <label for="indirizzoSelezionato" style="font-weight: bold; color: #2e7d32;">Usa un indirizzo salvato</label>
+      <select id="indirizzoSelezionato" formControlName="indirizzoSelezionato" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff; margin-bottom: 5px;">
+        <option value="">-- Inserisci un nuovo indirizzo di spedizione --</option>
+        <option *ngFor="let ind of listaIndirizzi" [value]="ind.id">
+          {{ ind.nomeIndirizzo }} ({{ ind.indirizzoSpedizione }}, {{ ind.citta }})
+        </option>
+      </select>
+    </div>
+
     <div class="form-group">
       <label for="indirizzo">Indirizzo di spedizione</label>
       <input id="indirizzo" formControlName="indirizzoSpedizione" placeholder="Via/Piazza, numero civico">

@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router'; // <-- Aggiunto per leggere l'URL
 import { RecensioneService } from '../services/recensione.service';
 import { Recensione } from '../models/recensione.model'; 
 
@@ -16,10 +17,12 @@ export class AdminRecensioniComponent implements OnInit {
 
   constructor(//Dependency Injection
     private recensioneService: RecensioneService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private route: ActivatedRoute // <-- Aggiunto nel costruttore
   ) {}
 
   ngOnInit(): void {
+    // Richiama direttamente il caricamento al primo avvio del componente
     this.caricaRecensioni();
   }
 
@@ -36,7 +39,7 @@ export class AdminRecensioniComponent implements OnInit {
     });
   }
 
-  // CORRETTO: Adattato per ricevere l'intero oggetto come richiede il tuo HTML
+  // CORRETTO: Adattato per ricevere l'intero oggetto come richiede HTML
   approva(recensione: Recensione) {
     // CORRETTO: Il metodo corretto nel service si chiama "approva"
     this.recensioneService.approva(recensione.id!).subscribe({

@@ -1,0 +1,11 @@
+package com.oleumfamiliae.backend.repository;
+
+import com.oleumfamiliae.backend.model.IndirizzoSpedizione;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import java.util.List;
+
+@Repository
+public interface IndirizzoSpedizioneRepository extends JpaRepository<IndirizzoSpedizione, Long> {
+    List<IndirizzoSpedizione> findByUtenteId(Long utenteId);
+}

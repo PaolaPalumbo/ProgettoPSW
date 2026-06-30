@@ -2,6 +2,7 @@ package com.oleumfamiliae.backend.repository;
 
 import com.oleumfamiliae.backend.model.Recensione;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,7 +15,8 @@ public interface RecensioneRepository extends JpaRepository<Recensione, Long> {
     List<Recensione> findByProdotto_IdAndApprovataTrue(Long prodottoId);
 
     // 2. Per il Pannello di Amministrazione (Frontend lato Admin):
-    // Estrae tutte le recensioni che sono ancora in attesa di moderazione (approvata = false)
+    // Ottimizzato con JOIN FETCH per prevenire il problema N+1 e caricare tutto in una singola query
+    @Query("SELECT r FROM Recensione r JOIN FETCH r.prodotto JOIN FETCH r.utente WHERE r.approvata = false")
     List<Recensione> findByApprovataFalse();
 
     List<Recensione> findByProdottoId(Long prodottoId);
@@ -22,9 +24,3 @@ public interface RecensioneRepository extends JpaRepository<Recensione, Long> {
     // Io cerco le recensioni associate all'email dell'utente
     List<Recensione> findByUtenteEmail(String email);
 }
-//rafforza incaspulamento
-//Si elimina il rischio di esporre accidentalmente dati sensibili o non validati tramite le API pubbliche
-
-
-//findBy è la firma del metodo che consente a JPA di trasformare 
-//il metodo in query SQL

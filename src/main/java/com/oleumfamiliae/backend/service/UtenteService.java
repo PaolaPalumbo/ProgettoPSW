@@ -1,6 +1,8 @@
 package com.oleumfamiliae.backend.service;
 
+import com.oleumfamiliae.backend.model.IndirizzoSpedizione;
 import com.oleumfamiliae.backend.model.Utente;
+import com.oleumfamiliae.backend.repository.IndirizzoSpedizioneRepository;
 import com.oleumfamiliae.backend.repository.UtenteRepository;
 import org.springframework.security.crypto.password.PasswordEncoder; 
 import org.springframework.stereotype.Service;
@@ -12,10 +14,12 @@ public class UtenteService {
 
     private final UtenteRepository utenteRepository;
     private final PasswordEncoder passwordEncoder; 
+    private final IndirizzoSpedizioneRepository indirizzoSpedizioneRepository;
 
-    public UtenteService(UtenteRepository utenteRepository, PasswordEncoder passwordEncoder) {
+    public UtenteService(UtenteRepository utenteRepository, PasswordEncoder passwordEncoder, IndirizzoSpedizioneRepository indirizzoSpedizioneRepository) {
         this.utenteRepository = utenteRepository;
         this.passwordEncoder = passwordEncoder;
+        this.indirizzoSpedizioneRepository = indirizzoSpedizioneRepository;
     }
 
     // 1. Registrazione nuovo cliente
@@ -69,4 +73,32 @@ public class UtenteService {
         // sia impostato il CascadeType.REMOVE o gestisci la disassociazione qui
         utenteRepository.delete(utente);
     }
+
+   // 4. Aggiungo un nuovo indirizzo di spedizione alla rubrica dell'utente
+    @Transactional
+    public IndirizzoSpedizione aggiungiIndirizzoUtente(Long utenteId, IndirizzoSpedizione nuovoIndirizzo) {
+        Utente utente = utenteRepository.findById(utenteId)
+                .orElseThrow(() -> new RuntimeException("Utente non trovato con id: " + utenteId));
+        
+        // Collego l'indirizzo all'utente trovato
+        nuovoIndirizzo.setUtente(utente);
+        return indirizzoSpedizioneRepository.save(nuovoIndirizzo);
+    }
+
+    // 5. Recupera tutti gli indirizzi salvati da un singolo utente
+    public java.util.List<IndirizzoSpedizione> getIndirizziPerUtente(Long utenteId) {
+        if (!utenteRepository.existsById(utenteId)) {
+            throw new RuntimeException("Utente non trovato con id: " + utenteId);
+        }
+        return indirizzoSpedizioneRepository.findByUtenteId(utenteId);
+    }
+
+    public void eliminaIndirizzo(Long id) {
+        if (indirizzoSpedizioneRepository.existsById(id)) {
+            indirizzoSpedizioneRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Indirizzo non trovato con ID: " + id);
+        }
+    }
+
 }

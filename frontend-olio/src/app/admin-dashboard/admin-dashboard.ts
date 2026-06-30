@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CatalogoService } from '../services/catalogo.service';
 import { RecensioneService } from '../services/recensione.service';
@@ -14,44 +14,55 @@ import { FormsModule } from '@angular/forms';
 })
 export class AdminDashboardComponent implements OnInit {
   
-  // <-- MODIFICATO: Aggiunto 'spedizioni' ai tipi consentiti per le tab
   sezioneAttiva: 'recensioni' | 'inventario' | 'spedizioni' = 'recensioni'; 
   
   recensioniDaApprovare: any[] = [];
   catalogoProdotti: any[] = [];
   
-  // <-- AGGIUNTO: Array per contenere la lista degli ordini dei clienti
+  //Array per contenere la lista degli ordini dei clienti
   ordiniClienti: any[] = []; 
 
   constructor(
     private catalogoService: CatalogoService, 
     private recensioneService: RecensioneService,
-    private ordineService: OrdineService // <-- AGGIUNTO: Iniezione del nuovo servizio
+    private ordineService: OrdineService,
+    private cdr: ChangeDetectorRef // <-- AGGIUNTO: Iniezione del ChangeDetector per forzare il render
   ) {}
 
   ngOnInit() {
-    this.caricaDati();
+    // Ritardo strategico di 150ms per dare tempo al token JWT di essere iniettato nel browser
+    setTimeout(() => {
+      this.caricaDati();
+    }, 150);
   }
 
   caricaDati() {
     this.recensioneService.getRecensioniInAttesa().subscribe({
-      next: (dati: any) => this.recensioniDaApprovare = dati,
+      next: (dati: any) => {
+        this.recensioniDaApprovare = dati;
+        this.cdr.detectChanges(); // <-- Forza l'aggiornamento visivo della tabella
+      },
       error: (err: any) => console.error('Errore nel caricamento recensioni', err)
     });
 
     this.catalogoService.getProdotti().subscribe({
-      next: (dati: any) => this.catalogoProdotti = dati,
+      next: (dati: any) => {
+        this.catalogoProdotti = dati;
+        this.cdr.detectChanges(); // <-- Forza l'aggiornamento visivo della tabella
+      },
       error: (err: any) => console.error('Errore nel caricamento prodotti', err)
     });
 
-    // <-- AGGIUNTO: Caricamento massivo di tutti gli ordini per la dashboard
+    //Caricamento massivo di tutti gli ordini per la dashboard
     this.ordineService.getTuttiGliOrdini().subscribe({
-      next: (dati: any) => this.ordiniClienti = dati,
+      next: (dati: any) => {
+        this.ordiniClienti = dati;
+        this.cdr.detectChanges(); // <-- Forza l'aggiornamento visivo della tabella
+      },
       error: (err: any) => console.error('Errore nel caricamento ordini', err)
     });
   }
 
-  // <-- MODIFICATO: Ora la funzione accetta anche la stringa 'spedizioni'
   cambiaSezione(sezione: 'recensioni' | 'inventario' | 'spedizioni') {
     this.sezioneAttiva = sezione;
   }
@@ -82,9 +93,9 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  // --- NUOVA FUNZIONE: GESTIONE SPEDIZIONI ---
+  // --- GESTIONE SPEDIZIONI ---
   
-  // <-- AGGIUNTO: Metodo per aggiornare lo stato di elaborazione/spedizione dell'ordine
+  // Metodo per aggiornare lo stato di elaborazione/spedizione dell'ordine
   impostaStato(id: number, nuovoStato: string) {
     this.ordineService.aggiornaStatoOrdine(id, nuovoStato).subscribe({
       next: () => {

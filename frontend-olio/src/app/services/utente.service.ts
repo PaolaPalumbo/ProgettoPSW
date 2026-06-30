@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, BehaviorSubject } from 'rxjs'; 
 import { jwtDecode } from 'jwt-decode'; 
+import { IndirizzoSpedizione } from '../models/indirizzo.spedizione';
 
 @Injectable({
   providedIn: 'root'
@@ -85,4 +86,28 @@ export class UtenteService {
     // La chiamata passerà automaticamente il token JWT grazie al tuo interceptor
     return this.http.delete(`${this.apiUrl}/elimina-account`);
   }
+
+  /**
+   * Salva un nuovo indirizzo di spedizione nella rubrica dell'utente
+   * @param utenteId ID dell'utente loggato
+   * @param nuovoIndirizzo Oggetto contenente i dati dell'indirizzo
+   */
+  aggiungiIndirizzoUtente(utenteId: number, nuovoIndirizzo: IndirizzoSpedizione): Observable<IndirizzoSpedizione> {
+    return this.http.post<IndirizzoSpedizione>(`${this.apiUrl}/${utenteId}/indirizzi`, nuovoIndirizzo);
+  }
+
+  /**
+   * Recupera la lista di tutti gli indirizzi salvati nella rubrica dell'utente
+   * @param utenteId ID dell'utente loggato
+   */
+  getIndirizziUtente(utenteId: number): Observable<IndirizzoSpedizione[]> {
+    return this.http.get<IndirizzoSpedizione[]>(`${this.apiUrl}/${utenteId}/indirizzi`);
+  }
+
+  // Aggiungi questo metodo nel tuo UtenteService
+  eliminaIndirizzoUtente(idIndirizzo: number) {
+    // Inseriamo la rotta speculare a come Spring Boot l'ha generata a causa del doppio "utenti"
+    return this.http.delete(`http://localhost:8080/api/utenti/utenti/indirizzi/${idIndirizzo}`);
+  }
+
 }

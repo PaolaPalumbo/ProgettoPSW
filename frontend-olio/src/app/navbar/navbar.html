@@ -78,6 +78,11 @@
                 Le Mie Recensioni
               </a>
             </li>
+            <li>
+              <a class="dropdown-item py-2" routerLink="/profilo" [queryParams]="{ tab: 'indirizzi' }" (click)="chiudiDropdown()" style="color: #3b4d2e; font-weight: 500;">
+                Le Mie Spedizioni
+              </a>
+            </li>
 
             <ng-container *ngIf="isAdmin()">
               <li><hr class="dropdown-divider"></li>
