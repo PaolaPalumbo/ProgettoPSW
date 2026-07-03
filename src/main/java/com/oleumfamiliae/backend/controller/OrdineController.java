@@ -26,6 +26,8 @@ public class OrdineController {
     @PostMapping("/checkout")//client invia blocco di dati
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')") // Proteggo la rotta per evitare acquisti anonimi
     public ResponseEntity<?> effettuaCheckout(@RequestBody CheckoutDTO checkoutData) { //REQUESTBODY mappa i playload alla richiesta http, nel DTO
+        //RICORDA: HTTP è il mezzo di trasporto, il protocollo RESTFUL definisce le regole di comunicazione, 
+        // il DTO è la "busta" che trasporta i dati tra frontend e backend.
         try {
             // Estraggo l'email dal token per evitare frodi sull'idUtente
             String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -51,7 +53,8 @@ public class OrdineController {
     // Espongo l'endpoint per la mia cronologia ordini protetto da autorizzazione.
     // Utilizzo il SecurityContextHolder per estrarre la mia identità dal token JWT,
     // garantendo un approccio stateless e sicuro che evita l'esposizione di parametri manipolabili.
-    @GetMapping("/miei")//fornisce il blocco di dati
+
+    @GetMapping("/miei")// il DB fornisce il blocco di dati al frontend
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<OrdineResponseDTO>> getOrdiniMiei() {
         // 1. Estraggo la mia email dal contesto di sicurezza (il token JWT)
@@ -66,7 +69,7 @@ public class OrdineController {
                 ordine.getId(),
                 ordine.getDataOrdine(),
                 ordine.getTotale(),
-                ordine.getStato() // <-- AGGIUNTO: Trasporto lo stato nel DTO per il frontend!
+                ordine.getStato() //Trasporto lo stato nel DTO per il frontend!
             ))
             .collect(Collectors.toList());
             
@@ -74,7 +77,7 @@ public class OrdineController {
         return ResponseEntity.ok(ordiniDTO);
     }
 
-    // --- NUOVI ENDPOINT PER LA GESTIONE SPEDIZIONI (AREA ADMIN) ---
+    // ---ENDPOINT PER LA GESTIONE SPEDIZIONI (AREA ADMIN) ---
 
     // Espongo un endpoint riservato all'amministratore per recuperare l'intera lista degli ordini
     @GetMapping("/tutti") //tutti gli ordini
@@ -85,7 +88,7 @@ public class OrdineController {
     }
 
     // Espongo un endpoint per aggiornare lo stato di un ordine specifico, sempre protetto per l'admin
-    @PutMapping("/{id}/stato")//aggiorna i dati
+    @PutMapping("/{id}/stato")//aggiorna i dati nel DB: il frontend invia dei dati al beckend
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> aggiornaStato(@PathVariable Long id, @RequestParam String stato) {//i due tag estraggono i parametri dinamici direttamente dall'URL
         try {

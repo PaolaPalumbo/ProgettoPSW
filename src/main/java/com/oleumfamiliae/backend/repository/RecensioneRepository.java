@@ -24,3 +24,10 @@ public interface RecensioneRepository extends JpaRepository<Recensione, Long> {
     // Io cerco le recensioni associate all'email dell'utente
     List<Recensione> findByUtenteEmail(String email);
 }
+
+
+
+//PUNTO 2.
+/*Se non ci fosse la JOIN FETCH, Hybernate genererebbe il problema N+1, ossia, per ogni recensione trovata, verrebbe eseguita una query
+ separata per caricare i dati associati. Questo porterebbe a un notevole calo di prestazioni, soprattutto con grandi quantità di dati dovuto
+ dal numero di query fatte nel DB. Con JOIN FETCH, invece, tutte le entità correlate vengono caricate in una singola query.*/

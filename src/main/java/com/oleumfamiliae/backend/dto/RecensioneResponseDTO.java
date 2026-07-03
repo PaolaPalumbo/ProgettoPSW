@@ -1,7 +1,7 @@
 package com.oleumfamiliae.backend.dto;
 
-public class RecensioneResponseDTO {
-    private Long id; // AGGIUNTO: Campo per identificare la recensione
+public class RecensioneResponseDTO {//CRONOLOGIA RECENSIONI
+    private Long id; // ACampo per identificare la recensione
     private String nomeProdotto;
     private int voto;
     private String commento;

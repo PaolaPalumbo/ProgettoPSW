@@ -3,7 +3,7 @@ package com.oleumfamiliae.backend.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
-public class CheckoutDTO {//contenitore che per l'inoltro dell'ordine
+public class CheckoutDTO {//contenitore cper l'inoltro dell'ordine
     
     // Costruttore vuoto obbligatorio per Spring Boot
     public CheckoutDTO() {}

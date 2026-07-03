@@ -17,27 +17,27 @@ export class LoginComponent implements OnInit {
     password: ''
   };
   messaggioErrore = '';
-  avvisoAdmin = ''; //variabile per l'avviso persistente
+  avvisoAdmin = ''; // Variabile che uso per il mio avviso persistente
   isAdminLogin = false; 
 
   constructor(
     private utenteService: UtenteService, 
     private router: Router, 
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef // <-- Iniettato nel costruttore
+    private cdr: ChangeDetectorRef // <-- Inietto il ChangeDetector nel mio costruttore
   ) {}
 
   ngOnInit() {
-    // --- NUOVO CONTROLLO DI COERENZA VISIVA ---
-    // Se l'utente è già loggato (es. token nel sessionStorage),
-    // lo reindirizzo alla Home per evitare che veda di nuovo il form di login
+    // --- IL MIO NUOVO CONTROLLO DI COERENZA VISIVA ---
+    // Se sono già loggato (es. ho il token nel sessionStorage),
+    // mi reindirizzo alla Home per evitare di vedere di nuovo il mio form di login
     if (this.utenteService.isLoggedIn()) {
       this.router.navigate(['/']);
       return;
     }
 
     this.route.queryParams.subscribe(params => {
-      // Se arrivo dalla adminGuard, imposto l'avviso
+      // Se arrivo dalla adminGuard, imposto il mio avviso
       if (params['error'] === 'admin_only') {
         this.isAdminLogin = true;
         this.avvisoAdmin = 'Area riservata agli amministratori. Effettua il login per procedere.';
@@ -46,25 +46,25 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    this.messaggioErrore = ''; // Pulisco solo l'errore, non l'avvisoAdmin
+    this.messaggioErrore = ''; // Pulisco solo il mio errore, non l'avvisoAdmin
 
-    // PULIZIA PREVENTIVA: Elimino i dati vecchi prima di procedere
-    // <Uso sessionStorage.clear() in coerenza con le policy di sicurezza
+    // LA MIA PULIZIA PREVENTIVA: Elimino i miei dati vecchi prima di procedere
+    // Uso sessionStorage.clear() in coerenza con le mie policy di sicurezza
     sessionStorage.clear(); 
-    localStorage.removeItem('utente'); // Pulisco preventivamente anche il riferimento locale per il checkout
+    localStorage.removeItem('utente'); // Pulisco preventivamente anche il mio riferimento locale per il checkout
 
     this.utenteService.login(this.credenziali).subscribe({
-      next: (response: any) => { // <-- Tipizzato per lo Strict Mode
+      next: (response: any) => { // <-- Tipizzo la response per il mio Strict Mode
         console.log('Login effettuato con successo!');
         
-        // --- PASSAGGIO FONDAMENTALE: SALVATAGGIO TOKEN E RUOLO ---
-        // Se il backend invia un token e un ruolo, li salvo subito nel sessionStorage
+        // --- PASSAGGIO FONDAMENTALE: SALVO IL MIO TOKEN E RUOLO ---
+        // Se il backend mi invia un token e un ruolo, li salvo subito nel mio sessionStorage
         let token = typeof response === 'string' ? response : response.token;
         let ruolo = response.ruolo;
         let idUtente = response.id || (response.utente ? response.utente.id : null);
 
-        // FORZATURA DI SICUREZZA:
-        // Determino il ruolo in base all'email se il backend non lo invia
+        // LA MIA FORZATURA DI SICUREZZA:
+        // Determino il mio ruolo in base all'email se il backend non me lo invia
         if (!ruolo && this.credenziali.email.toLowerCase() === 'admin@oleumfamiliae.it') {
             ruolo = 'ADMIN';
         } else if (!ruolo) {
@@ -72,31 +72,31 @@ export class LoginComponent implements OnInit {
         }
 
         if (token) {
-          // salvaSessione notifica il BehaviorSubject 
+          // Uso salvaSessione per notificare il BehaviorSubject 
           this.utenteService.salvaSessione({ token, ruolo });
           console.log("Dati sessione salvati con ruolo:", ruolo);
           
-          // Sincronizzo l'oggetto utente atteso dal Checkout sia in localStorage che sessionStorage
+          // Sincronizzo il mio oggetto utente atteso dal Checkout sia in localStorage che sessionStorage
           const utenteSessione = { id: idUtente, email: this.credenziali.email, ruolo: ruolo };
           localStorage.setItem('utente', JSON.stringify(utenteSessione));
           sessionStorage.setItem('utente', JSON.stringify(utenteSessione));
         }
         
-        // --- NAVIGAZIONE SICURA CON VERIFICA ---
-        // Prima di navigare, verifico che il token sia effettivamente presente
+        // --- LA MIA NAVIGAZIONE SICURA CON VERIFICA ---
+        // Prima di navigare, verifico che il mio token sia effettivamente presente
         const checkToken = () => {
           if (this.utenteService.isLoggedIn()) {
              const returnUrl = this.route.snapshot.queryParams['returnUrl'] || (ruolo === 'ADMIN' ? '/login/admin' : '/');
              this.router.navigateByUrl(returnUrl);
           } else {
-             // Se il browser è lento, riprovo dopo pochissimi millisecondi
+             // Se il mio browser è lento, riprovo dopo pochissimi millisecondi
              setTimeout(checkToken, 50);
           }
         };
 
         checkToken();
       },
-      error: (err: any) => { // <-- Tipizzato per lo Strict Mode
+      error: (err: any) => { // <-- Tipizzo l'errore per il mio Strict Mode
         console.error('Errore dal server:', err);
 
         if (err.status === 401 || err.status === 403 || err.status === 404) {
@@ -107,7 +107,7 @@ export class LoginComponent implements OnInit {
           this.messaggioErrore = 'Impossibile connettersi al server. Riprova più tardi.';
         }
         
-        // per forzare l'aggiornamento dell'HTML
+        // Forzo l'aggiornamento del mio HTML
         this.cdr.detectChanges(); 
       }
     });

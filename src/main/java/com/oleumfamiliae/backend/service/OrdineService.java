@@ -100,10 +100,10 @@ public class OrdineService {
         return ordineRepository.findByUtenteEmailOrderByDataOrdineDesc(email);    
     }
 
-    // --- NUOVI METODI PER LA DASHBOARD ADMIN ---
+    // --- METODI PER LA DASHBOARD ADMIN ---
 
     // Io recupero tutti gli ordini presenti nel database per popolare la mia dashboard
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true)// Solo operazioni di SELECT, leggo e basta
     public List<Ordine> getTuttiGliOrdini() {
         return ordineRepository.findAll();
     }
@@ -119,3 +119,9 @@ public class OrdineService {
         return ordineRepository.save(ordine);
     }
 }
+/*DIFFERENZA TRA @Transactional(readOnly = true) E @Transactional
+@ Transactional applica il meccanismo di Dirty Checking: Hybernate effettua una snapshot degli oggetti in memoria
+prima che questi vengano modificati. Poi procede controllando l'oggetto in un secondo momento confrontandolo con lo
+snapshot iniziale, se sono state apportate modifiche genera automaticamente le query di aggiornamento UPDATE.
+@Transactional(readOnly = true) è utilizzato per operazioni di sola lettura e non attiva il Dirty Checking, risparmiando, 
+così memoria RAM.*/

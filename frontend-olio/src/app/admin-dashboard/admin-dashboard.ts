@@ -22,18 +22,17 @@ export class AdminDashboardComponent implements OnInit {
   //Array per contenere la lista degli ordini dei clienti
   ordiniClienti: any[] = []; 
 
-  constructor(
+  constructor( //DEPENDENCY INJECTION
     private catalogoService: CatalogoService, 
     private recensioneService: RecensioneService,
     private ordineService: OrdineService,
-    private cdr: ChangeDetectorRef // <-- AGGIUNTO: Iniezione del ChangeDetector per forzare il render
+    private cdr: ChangeDetectorRef // Iniezione del ChangeDetector per forzare il render
   ) {}
 
   ngOnInit() {
-    // Ritardo strategico di 150ms per dare tempo al token JWT di essere iniettato nel browser
-    setTimeout(() => {
+   
       this.caricaDati();
-    }, 150);
+   
   }
 
   caricaDati() {
