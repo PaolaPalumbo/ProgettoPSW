@@ -29,8 +29,7 @@ export class RecensioneService {
     return this.http.get<Recensione[]>(`${this.apiUrl}/prodotto/${prodottoId}`);
   }
 
-  // Metodo per l'amministratore: recupera tutte le recensioni in attesa
-  // <-- MODIFICATO: Rinominato per farlo combaciare con admin-dashboard.ts
+  // Metodo per l'amministratore: recupera tutte le recensioni in attesa di approvazione
   getRecensioniInAttesa(): Observable<Recensione[]> {
     // AGGIUNTO: Recupero il token per superare la sicurezza del backend
     const token = localStorage.getItem('token');

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs'; // <-- IMPORTANTE: Aggiunto BehaviorSubject
+import { Observable, BehaviorSubject } from 'rxjs'; // <-- Aggiunto BehaviorSubject
 import { CheckoutDTO } from '../models/checkout.dto'; 
 
 @Injectable({// permette alla classa di partecipare al sistema di Dependency Injection

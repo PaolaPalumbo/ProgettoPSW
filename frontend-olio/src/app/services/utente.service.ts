@@ -10,9 +10,9 @@ import { IndirizzoSpedizione } from '../models/indirizzo.spedizione';
 export class UtenteService {
   private apiUrl = 'http://localhost:8080/api/utenti';
 
-  // <-- CORREZIONE: Inizializziamo il BehaviorSubject controllando se il token esiste DAVVERO
+  //Inizializziamo il BehaviorSubject controllando se il token esiste DAVVERO
   private authSubject = new BehaviorSubject<boolean>(!!sessionStorage.getItem('token'));
-  authStatus$ = this.authSubject.asObservable();
+  authStatus$ = this.authSubject.asObservable();//espongo il BehaviorSubject come Observable per permettere ai componenti di iscriversi e reagire ai cambiamenti dello stato di autenticazione
 
   constructor(private http: HttpClient) {}
 
@@ -52,32 +52,33 @@ export class UtenteService {
 
   // Logout
   logout(): void {
-    // <-- CORREZIONE: Pulisci TUTTO in modo drastico
+    // Pulisco TUTTO in modo drastico
     sessionStorage.clear(); 
     
     // Notifichiamo il logout forzatamente a tutti i componenti in ascolto
     this.authSubject.next(false);
   }
 
-  // SISTEMATO: Ora controlla prima il sessionStorage, poi il token crittografico
+  //Ora controlla prima il sessionStorage, poi il token crittografico
   hasRole(role: string): boolean {
-    // 1. Controllo primario: leggiamo il ruolo che abbiamo salvato esplicitamente
+    // 1. Controllo primario: leggo il ruolo che ho salvato esplicitamente
     const ruoloSalvato = sessionStorage.getItem('role');
     if (ruoloSalvato && ruoloSalvato.toUpperCase() === role.toUpperCase()) {
       return true;
     }
 
+    //se nel sessionStorage del browser per qualche motivo non c'è traccia del ruolo dell'utente:
     // 2. Fallback: proviamo a estrarlo dal token (se il backend dovesse iniziare a inviarlo)
-    const token = this.getToken();
+    const token = this.getToken();//recupero il token JWT dal sessionStorage
     if (!token) return false;
 
     try {
-      const decoded: any = jwtDecode(token);
-      const ruoloNelToken = decoded.role || decoded.ruolo; 
-      return ruoloNelToken === role;
+      const decoded: any = jwtDecode(token);//decodifico il token per leggere il ruolo
+      const ruoloNelToken = decoded.role || decoded.ruolo; //cerco nel token i permessi relativi al ruolo
+      return ruoloNelToken === role;//confronta il ruolo estratto dal token con quello richiesto
     } catch (e) {
       console.error("Errore decodifica token", e);
-      return false;
+      return false;//se non coicnidono o se il token è invalido, ritorno false
     }
   }
 

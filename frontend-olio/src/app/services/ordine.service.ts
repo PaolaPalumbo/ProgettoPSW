@@ -34,8 +34,8 @@ export class OrdineService {
 
   // Aggiorna lo stato di elaborazione/spedizione di un ordine specifico
   aggiornaStatoOrdine(id: number, nuovoStato: string): Observable<any> {
-    // Uso HttpParams per costruire l'URL in modo pulito e sicuro, 
-    // proprio come abbiamo fatto per le quantità del catalogo!
+    // Uso HttpParams per costruire l'URL in modo pulito e sicuro: Angular applica automaticamente il processo di URL Encoding. 
+    // Se intercetta uno spazio o un carattere speciale, lo traduce in un formato sicuro e universalmente leggibile sul web
     const params = new HttpParams().set('stato', nuovoStato);
     return this.http.put(`${this.apiUrl}/${id}/stato`, {}, { params });
   }

@@ -1,17 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';//Angular capisce di aver a che fare con un componente, ossia
+//un'interfaccia visiva legata ad un file HTML e ad uno CSS.
+
+import { CommonModule } from '@angular/common';//STANDALONE COMPONENT
+import { HttpClient } from '@angular/common/http';// per la comunicazione con il backend-> chiamate http (get, post, put...)
 import { FormsModule } from '@angular/forms'; // Necessario per il form delle recensioni STANDALONE COMPONENT
-import { Router, NavigationEnd } from '@angular/router'; // Per gestire la navigazione
-import { filter } from 'rxjs/operators'; // Per filtrare gli eventi del router
+import { Router, NavigationEnd } from '@angular/router'; // Per gestire la navigazione tra le pagine e ascoltare eventuli "eventi" di navigazione
+import { filter } from 'rxjs/operators'; // Per filtrare gli eventi del router e rimanere in ascolto sull'Observable degli eventi di navigazione
 import { CarrelloService } from '../services/carrello.service';
 import { RecensioneService } from '../services/recensione.service'; // Importa il nuovo servizio
 import { CatalogoService } from '../services/catalogo.service'; //Importa il CatalogoService
 import { Recensione } from '../models/recensione.model'; //  Importa il modello
-import { ChangeDetectorRef } from '@angular/core';//gestione operazioni asincrone lato frontend--->BehaviouralSubject nel backend
+import { ChangeDetectorRef } from '@angular/core';//gestione operazioni asincrone lato frontend-->BehaviouralSubject 
+//per la gestione di stati globali condivisi tra componenti diversi, come il carrello o l'autenticazione dell'utente.
 
 // 1. Definisco la struttura del Prodotto (lo "specchio" della classe Java)--->DTO
-export interface Prodotto {
+//type safety
+export interface Prodotto { //"export interface" definisce la struttura che un oggetto deve avere
   id: number;
   nome: string;
   descrizione: string;
@@ -28,7 +32,11 @@ export interface Prodotto {
   templateUrl: './catalogo.html', 
   styleUrl: './catalogo.css'       
 })
-export class CatalogoComponent implements OnInit {
+export class CatalogoComponent implements OnInit {//"export class" definisce la struttura dei dati ma contiene anche la logica del componente
+  //OnInit è un'interfaccia che indica che il componente ha un metodo ngOnInit() che viene chiamato automaticamente da Angular quando 
+  // il componente viene inizializzato.
+
+
   // 2. Qui salvo l'olio in arrivo dal database
   prodotti: Prodotto[] = []; 
 
@@ -48,7 +56,7 @@ export class CatalogoComponent implements OnInit {
   nuoveRecensioni: { [id: number]: { voto: number, commento: string } } = {};
   
   // Iniezione del nuovo RecensioneService nel costruttore
-  constructor(//Dependency Injection
+  constructor(//Dependency Injection---->"contructor" mi serve per iniettare le dipendenze necessarie al componente
     private http: HttpClient, 
     private carrelloService: CarrelloService,
     private recensioneService: RecensioneService,
@@ -66,17 +74,17 @@ export class CatalogoComponent implements OnInit {
 
   // Getter ottimizzato con pulizia stringhe per evitare errori di match
   get prodottiFiltrati(): Prodotto[] {
-    return this.prodotti.filter(p => {
+    return this.prodotti.filter(p => { //prendo un array completo di prodotti "this.prodotti" e lo filtro in base ai criteri di ricerca
       // 1. Ricerca testuale
-      const matchNome = p.nome.toLowerCase().includes(this.searchTerm.toLowerCase());
+      const matchNome = p.nome.toLowerCase().includes(this.searchTerm.toLowerCase());//confronta il nome del prodotto con la parola cercata dall'utente
       
       // 2. Filtro Formato: ELASTICO
-      // Se selezioni '3L', questo trova 'Latta 3L', 'Bottiglia 3L', '3L' ecc.
+      // Se seleziono '3L', questo trova 'Latta 3L', 'Bottiglia 3L', '3L' ecc.
       const matchFormato = this.filtroFormato 
         ? p.formato.toLowerCase().includes(this.filtroFormato.toLowerCase()) 
         : true;
 
-      // 3. Filtro Prezzo (MODIFICATO: ora è prezzo massimo)
+      // 3. Filtro Prezzo 
       const matchPrezzo = this.filtroPrezzo > 0 ? p.prezzo <= this.filtroPrezzo : true;
       
       return matchNome && matchFormato && matchPrezzo;
@@ -85,18 +93,20 @@ export class CatalogoComponent implements OnInit {
 
   //Genera automaticamente i formati unici dal DB per il menu a tendina:
   //se voglio aggiungere nuovi formati nei DB, Angular si aggiornerà automaticamente
-  //senza modificare il codice
+  //senza modificare il codice:
+  /*Legge dinamicamente l'array dei prodotti che è appena arrivato dal backend e 
+  deduce i formati disponibili in quel preciso istante.*/
   get formatiUnici(): string[] {
     return [...new Set(this.prodotti.map(p => p.formato))].sort();
   }
 
   //INVOCAZIONE DELL'API REST
-  // 3. Questo metodo scatta in automatico appena si apre la pagina
+  // 3. Questo metodo scatta in automatico appena si apre la pagina--->implemento la logica del componente
   ngOnInit(): void {
     // Inizializzazione esplicita: resetto gli array/dizionari per evitare conflitti tra rotte:
     //In questo modo sono sicura che l'utente vedrà solo ed esclusivamente i dati freschi 
     // appena scaricati dal server, offrendo un'esperienza fluida e senza "sfarfallii" 
-    // di vecchi contenuti.-->AGGIORNO I DATI PER VEDERE SEMPRE QUELLI ATTUALI
+    // di vecchi contenuti  -->AGGIORNO I DATI PER VEDERE SEMPRE QUELLI ATTUALI
     this.prodotti = [];
     this.recensioniPerProdotto = {};//dizionario-->associo l'ID univoco di ogni prodotto alla propria recensione
     this.nuoveRecensioni = {};
@@ -141,7 +151,7 @@ export class CatalogoComponent implements OnInit {
     delete this.nuoveRecensioni[idProdotto];
   }
 
-  // AGGIUNTO: Metodo che scatta quando l'utente clicca "Invia Recensione"
+  // Metodo che scatta quando l'utente clicca "Invia Recensione"
   inviaRecensione(prodottoCorrente: Prodotto) {
     const recensioneDaInviare: Recensione = {//contruisco la recensione
       // estraggo i dati dal dizionario usando l'ID del prodotto
@@ -167,7 +177,7 @@ export class CatalogoComponent implements OnInit {
   // Metodo per eliminare una recensione
   eliminaRecensione(idRecensione: number) {
     if (confirm("Sei sicuro di voler eliminare questa recensione?")) {
-      this.recensioneService.eliminaRecensione(idRecensione).subscribe({
+      this.recensioneService.eliminaRecensione(idRecensione).subscribe({//il componente si iscrive all'Observable per rimanere aggiornato sullo stato della chiamata
         next: () => {
           alert("Recensione eliminata.");
           this.aggiornaTutto();
@@ -177,7 +187,7 @@ export class CatalogoComponent implements OnInit {
     }
   }
 
-  // Metodo per recuperare le recensioni approvate
+  // Metodo per recuperare le recensioni per prodotto
   caricaRecensioni(idProdotto: number) {
     // Inizializzo sempre come array vuoto per evitare "undefined"
     if (!this.recensioniPerProdotto[idProdotto]) {

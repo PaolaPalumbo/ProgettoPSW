@@ -19,8 +19,7 @@ export const adminGuard = () => {
     
     // Se il token c'è ma il ruolo non è ancora stato caricato,
     // in un'app robusta devp attendere il caricamento dei dati utente.
-    // Per ora, assumo che se ho il token sono autenticata.
-    // <-- CORREZIONE DI SICUREZZA: Blocchiamo l'accesso a chi non è ADMIN, altrimenti la Guard è inutile.
+    //Blocco l'accesso a chi non è ADMIN, altrimenti la Guard è inutile.
     console.log('Accesso negato: utente autenticato ma permessi insufficienti.');
     router.navigate(['/']); // Redirige un utente standard alla home
     return false; 

@@ -57,7 +57,7 @@ export class CheckoutComponent implements OnInit {
           this.listaIndirizzi = indirizzi;
           console.log("Lunghezza listaIndirizzi attuale:", this.listaIndirizzi.length);
           
-          // AGGIUNTO: Forza Angular ad aggiornare l'HTML istantaneamente!
+          // Forza Angular ad aggiornare l'HTML istantaneamente
           this.cdr.detectChanges(); 
         },
         error: (err) => console.error("Errore nel caricamento della rubrica indirizzi:", err)

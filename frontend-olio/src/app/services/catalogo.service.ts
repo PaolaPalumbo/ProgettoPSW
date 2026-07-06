@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'; // Aggiunto HttpParams
 import { Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
+@Injectable({//tag che permette alla classa di partecipare al sistema di Dependency Injection
+  providedIn: 'root' //singleton: Crea una sola identica copia di questo CatalogoService e usala per tutti
 })
 export class CatalogoService {
   // Questo è l'indirizzo esatto del backend
@@ -24,11 +24,11 @@ export class CatalogoService {
       'Content-Type': 'application/json'
     });
 
-    // Usiamo HttpParams per gestire i parametri della query in modo sicuro
+    // Uso HttpParams per gestire i parametri della query in modo sicuro
     const params = new HttpParams().set('quantita', quantita.toString());
 
-    // La rotta corretta è ${this.apiUrl}/${id}/quantita
-    // Angular aggiungerà automaticamente ?quantita=... in modo pulito
+  
+    // Angular aggiungere automaticamente ?quantita=... in modo pulito
     return this.http.put(`${this.apiUrl}/${id}/quantita`, {}, { headers, params });
   }
 }

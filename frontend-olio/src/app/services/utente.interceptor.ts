@@ -17,3 +17,7 @@ export const utenteInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req);
 };
+
+/* PERCHE' CLONO?
+Gli oggetti HTTP in Angular sono immutabili, quindi devo clonarli per aggiungere intestazioni. 
+In pratica, se non clono la richiesta, non posso settare Authorization: Bearer ${token}*/
