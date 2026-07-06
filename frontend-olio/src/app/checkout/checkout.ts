@@ -93,10 +93,13 @@ export class CheckoutComponent implements OnInit {
       // Recupero i prodotti dal servizio (il Singleton che mantiene lo stato)
       // 1. Mappa correttamente i prodotti in un array di oggetti
       const prodotti = this.carrelloService.getArticoli().map((p: any) => ({
-        idProdotto: p.id,
+
+        //rende il valore numerico contenuto nel frontend (p.id) e lo assegna a una nuova chiave di destinazione chiamata idProdotto.
+        //sta trasformando la "forma" del tuo oggetto per renderlo digeribile al server.
+        idProdotto: p.id,  
         quantita: 1
         }));
-        // 2. Il payload DEVE corrispondere ai campi del nuovo CheckoutDTO.java
+        // 2. Il payload DEVE corrispondere ai campi del CheckoutDTO.java
       const payload = {
         prodotti: prodotti,
         indirizzoSpedizione: this.checkoutForm.value.indirizzoSpedizione,
