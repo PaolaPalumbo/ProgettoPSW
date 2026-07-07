@@ -17,7 +17,7 @@ export class App implements OnInit {
 
   ngOnInit() {
     // Controllo di sicurezza globale all'avvio dell'app:
-    // Se non c'è il token nel localStorage, assicuriamoci che il servizio sia pulito.
+    // Se non c'è il token nel localStorage, mi assicuro che il servizio sia pulito.
     // Questo previene che l'app parta in uno stato incoerente.
     if (!this.utenteService.isLoggedIn()) {
       this.utenteService.logout();

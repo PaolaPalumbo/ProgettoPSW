@@ -20,27 +20,39 @@ import java.util.Arrays;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Configuration
+@Configuration//la classe è un "manuale di istruzioni" per la Spring Security
 @EnableWebSecurity//la classe regola il comportamento web definito nella classe stessa
-@EnableMethodSecurity //Attiva i controlli @PreAuthorize presenti nei miei Controller!
+@EnableMethodSecurity //Attiva i controlli @PreAuthorize presenti nei miei Controller
 public class WebSecurityConfig {//definisco le regole globali, i permessi e il comportamento del server di fronte alle richieste in arrivo.
 
-    @Bean
+    @Bean//il metodo viene chiamato all'avvio dell'app, il risultato viene salvato in memoria e puo' essere usato dalle altre classi
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {//catena di montaggio 
 
         //per vedere se funziona dal terminale
         System.out.println("===============================================");
-        System.out.println("STO CARICANDO LA SICUREZZA PERSONALIZZATA!");
+        System.out.println("STO CARICANDO LA SICUREZZA PERSONALIZZATA");
         System.out.println("===============================================");
         
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))//permette la comunazione sicura, mediante HTTP, con Angular
+            //senza CORS il BROWSER blocca le richieste provenienti da un dominio diverso da quello del server (ad esempio, localhost:4200 per Angular e localhost:8080 per Spring Boot)
+            
             .csrf(csrf -> csrf.disable())//disabilito perchè gestiti da Angular mediante le sue API
+            //è un attacco comune delle vecchie app web che sfruttavano i cookie di sessione per autenticare l'utente. 
+            //visto che uso JWT è inutile usarla, quindi la disabilito per evitare conflitti con Angular.
+
+
+            //disattivo i meccanismi di login standard di Spring Security,
+            //  che non sono compatibili con il mio flusso di autenticazione basato su JWT:
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
-            //ogni richiesta viene autenticata dal suo token, nulla deve essere salvato in memoria
+           
+           
+            //ogni richiesta viene autenticata dal suo token, nulla deve essere salvato in memoria STATELESS
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
+
+            //defnisco il comportamento del server di fronte a RICHIESTE HTTP NON AUTORIZZATE (senza token o con token alterato)
             .exceptionHandling(exc -> exc
                 .authenticationEntryPoint((request, response, authException) -> 
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Credenziali non valide o inesistenti")
@@ -75,7 +87,7 @@ public class WebSecurityConfig {//definisco le regole globali, i permessi e il c
                 
                 .anyRequest().authenticated() //qualsiasi rotta che non ho elencato, viene bloccata da Spring Security
             );
-        //eseguo il controllo basato su JWT prima di procedere con l'autenticazione utente (disabilitata prima di compilare i campi perchè 
+        //eseguo il controllo basato su JWT prima di procedere con l'autenticazione utente standard (disabilitata prima di compilare i campi perchè 
         //l'utente ancora non ha il token)
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         
@@ -112,3 +124,8 @@ public class WebSecurityConfig {//definisco le regole globali, i permessi e il c
         return new BCryptPasswordEncoder();
     }
 }
+
+/*@Bean VS @Service:
+@Bean viene utilizzato per i metodi, come @Service preleva un risultato e lo salva in memoria per essere utilizzato dalle altre classi, la differenza 
+risiede nel fatto che @Service è utilizzato per le classi, in realtà, si usa @Bean per metodi scritti da altri, o in codici più complessi
+per forzare il caricamento dei dati in memoria*/ 

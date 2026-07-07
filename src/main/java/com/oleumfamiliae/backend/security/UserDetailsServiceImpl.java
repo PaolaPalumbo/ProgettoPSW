@@ -10,6 +10,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
+/* l'annotazione @Service indica che la classe implementa un servizio, in particolare, "calcola regole, elebora dati o 
+funge da anello di congiunzione" tra il database e il motore di sicurezza di Spring Security.
+Invece, @Component fa la stessa cosa ma si preferisce @Service per una questione di semanticità.
+Ricordiamo che gli altri tag:
+@Controller--> serve per gestire le richieste HTTP e restituire le risposte (ad esempio, una pagina HTML)
+@Repository--> serve per gestire l'accesso ai dati del database
+*/
+
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {//funge da anello tra il DB e il motore di sicurezza di Spring-boot
 
@@ -27,7 +35,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {//funge da an
         Utente utente = utenteRepository.findByEmail(email)//cerco l'utente
                 .orElseThrow(() -> new UsernameNotFoundException("Nessun utente trovato con email: " + email));
 
-        // 2. Converto il mio Utente nell'oggetto User standard di Spring Security (Adapter Pattern)
+        // 2. Converto il mio Utente nell'oggetto User standard di Spring Security (ADAPTER PATTERN)
         return new org.springframework.security.core.userdetails.User(
                 utente.getEmail(),//estraggo i dati dal model: utente
                 utente.getPassword(),

@@ -15,6 +15,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+//dalla richiesta HTTP estrae il token JWT per verificare l'identità dell'utente e impostare il contesto di sicurezza di Spring Security
 public class AuthTokenFilter extends OncePerRequestFilter {//il filtro viene applicato una sola volta per ogni richiesta HTTP
     
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);//logger nella console
@@ -27,7 +28,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {//il filtro viene app
     private UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, 
+    protected void doFilterInternal(HttpServletRequest request,   //filtri che coinvolgono le richieste HTTP (in entrate e in uscita) e definiscono la catena di filtri di sicurezza
                                     HttpServletResponse response, 
                                     FilterChain filterChain) 
                                     throws ServletException, IOException {

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs'; // <-- Aggiunto BehaviorSubject
 import { CheckoutDTO } from '../models/checkout.dto'; 
 
-@Injectable({// permette alla classa di partecipare al sistema di Dependency Injection
+@Injectable({// permette alla classe di partecipare al sistema di Dependency Injection
   providedIn: 'root' //creo il SINGLETON: Crea una sola identica copia di questo CarrelloService e usala per tutti
 })
 export class CarrelloService {

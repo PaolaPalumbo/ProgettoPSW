@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home'; // <-- AGGIUNTO: Import della tua nuova Home
+import { HomeComponent } from './home/home'; 
 import { CatalogoComponent } from './catalogo/catalogo';
 import { AdminRecensioniComponent } from './admin-recensioni/admin-recensioni';
-// <-- IMPORTATO: nuovo componente AdminDashboard (sostituisce il vecchio AdminComponent)
+// nuovo componente AdminDashboard (sostituisce il vecchio AdminComponent)
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard'; 
 import { CarrelloComponent } from './carrello/carrello';
 import { StoriaComponent } from './storia/storia'; 

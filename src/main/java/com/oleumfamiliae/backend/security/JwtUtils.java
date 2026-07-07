@@ -10,6 +10,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
+
+//gestisce i token JWT: generazione, estrazione username e validazione
 @Component
 public class JwtUtils {
     
