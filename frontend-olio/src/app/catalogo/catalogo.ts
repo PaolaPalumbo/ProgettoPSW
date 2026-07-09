@@ -109,7 +109,7 @@ export class CatalogoComponent implements OnInit {//"export class" definisce la 
     // di vecchi contenuti  -->AGGIORNO I DATI PER VEDERE SEMPRE QUELLI ATTUALI
     this.prodotti = [];
     this.recensioniPerProdotto = {};//dizionario-->associo l'ID univoco di ogni prodotto alla propria recensione
-    this.nuoveRecensioni = {};
+    this.nuoveRecensioni = {};//associo la nuova recensione al prodotto nel form di inserimento
 
     //PERCHE I DIZIONARI? In questo modo associo l’ID univoco di ogni prodotto 
     // alla sua specifica lista di recensioni o allo stato del form di inserimento

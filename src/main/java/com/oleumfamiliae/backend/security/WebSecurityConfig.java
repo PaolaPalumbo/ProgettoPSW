@@ -94,6 +94,8 @@ public class WebSecurityConfig {//definisco le regole globali, i permessi e il c
         return http.build();
     }
 
+    //applico le regole CORS a tutte le rotte per permettere al mio frontend Angular di dialogare
+    // con il backend Spring Boot senza essere bloccato dal browser
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();//creo l'oggetto che contiene le regole CORS

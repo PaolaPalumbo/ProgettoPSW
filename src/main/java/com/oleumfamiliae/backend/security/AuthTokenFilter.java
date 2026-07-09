@@ -1,5 +1,8 @@
 package com.oleumfamiliae.backend.security;
-
+//UTILIZZO INDIRETTAMENTE LE tecnologie delle SERVLET API PER CHE RENDONO IL SERVER INTELLIGENTE E CAPACE DI GESTIRE LE RICHIESTE HTTP
+//dico indirettamente perchè Spring Boot fa tutto il lavoro sporco per me, io devo solo implementare i metodi del filtro
+//IL DESIGN PATTERN MVC (MODEL-VIEW-CONTROLLER) è alla base di Spring Boot, e le servlet sono il cuore del pattern MVC
+//TOMCAT è il server web che implementa le servlet API e permette a Spring Boot di funzionare come un server web intelligente
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

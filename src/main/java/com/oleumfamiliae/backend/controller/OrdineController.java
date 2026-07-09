@@ -69,7 +69,7 @@ public class OrdineController {
                 ordine.getId(),
                 ordine.getDataOrdine(),
                 ordine.getTotale(),
-                ordine.getStato() //Trasporto lo stato nel DTO per il frontend!
+                ordine.getStato() //Trasporto lo stato nel DTO per il frontend
             ))
             .collect(Collectors.toList());
             

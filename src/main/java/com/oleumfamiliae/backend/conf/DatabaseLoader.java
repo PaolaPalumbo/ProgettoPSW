@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
  //implemento CommandLineRunner per popolare, oltre ai Prodotti, l’intero albero delle dipendenze 
  //azionali, inclusi gli Utenti.
 @Component
-public class DatabaseLoader implements CommandLineRunner {
+public class DatabaseLoader implements CommandLineRunner {//avvia run() all'avvio dell'applicazione, per popolare il database con dati
 
     private final ProdottoRepository prodottoRepository;
     private final UtenteRepository utenteRepository; // La repository dell'utente
-    private final PasswordEncoder passwordEncoder;   // Aggiungiamo l'encoder per la sicurezza
+    private final PasswordEncoder passwordEncoder;   // Aggiungo l'encoder per la sicurezza
 
     // Aggiorno il costruttore per iniettare le repository e l'encoder
     public DatabaseLoader(ProdottoRepository prodottoRepository, UtenteRepository utenteRepository, PasswordEncoder passwordEncoder) {
@@ -45,7 +45,7 @@ public class DatabaseLoader implements CommandLineRunner {
             utenteRepository.save(u);
             System.out.println("--- Utente di test inserito nel database con password criptata! ---");
 
-            // AGGIUNTA: Creo anche l'account Amministratore per la Dashboard
+            // Creo anche l'account Amministratore per la Dashboard
             Utente admin = new Utente();
             admin.setNome("Admin");
             admin.setCognome("Oleum Familiae");

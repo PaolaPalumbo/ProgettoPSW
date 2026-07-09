@@ -1,4 +1,14 @@
 package com.oleumfamiliae.backend.model;
+//JPA mi consente di mappare i file nel DB 
+
+
+//utilizzo JPA (Jakarta Persistence API) che è una specifica (insieme di regole) per la gestione della persistenza dei dati in Java. 
+//JPA è un'API standard che permette di mappare le classi Java agli oggetti del database relazionale, facilitando l'interazione con
+// il database senza dover scrivere manualmente query SQL complesse.
+//HYBERNATE è un'implementazione concreta di JPA, che fornisce le funzionalità necessarie per gestire la persistenza dei dati
+// in un'applicazione Java.------> vedi src/main/resources/application.properties 
+
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

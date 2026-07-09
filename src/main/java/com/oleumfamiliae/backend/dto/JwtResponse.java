@@ -5,7 +5,7 @@ public class JwtResponse {//isola la logica di autentificazione, separando le cr
     private String ruolo;
     private Long id; // Campo per contenere l'ID dell'utente
 
-    // Aggiornato il costruttore per accogliere il nuovo parametro id
+    
     public JwtResponse(String token, String ruolo, Long id) {
         this.token = token;
         this.ruolo = ruolo;
