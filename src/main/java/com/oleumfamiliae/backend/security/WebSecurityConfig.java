@@ -38,7 +38,7 @@ public class WebSecurityConfig {//definisco le regole globali, i permessi e il c
             //senza CORS il BROWSER blocca le richieste provenienti da un dominio diverso da quello del server (ad esempio, localhost:4200 per Angular e localhost:8080 per Spring Boot)
             
             .csrf(csrf -> csrf.disable())//disabilito perchè gestiti da Angular mediante le sue API
-            //è un attacco comune delle vecchie app web che sfruttavano i cookie di sessione per autenticare l'utente. 
+            //è un attacco comune delle vecchie app web che sfruttavano i COOKIE di sessione per autenticare l'utente. 
             //visto che uso JWT è inutile usarla, quindi la disabilito per evitare conflitti con Angular.
 
 
